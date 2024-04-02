@@ -36,7 +36,7 @@ public class UserController {
             if (result) { //result 값이 true -> 회원가입 성공
                 return ResponseEntity.ok().body("회원가입 성공");
             } else { //result 값이 False -> 회원가입 실패
-                return ResponseEntity.badRequest().body("이메일 중복, 회원가입 실패");
+                return ResponseEntity.badRequest().body("회원가입 실패");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
