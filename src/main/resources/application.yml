@@ -1,0 +1,45 @@
+#spring:
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: travelwithme.mail@gmail.com
+#    password: puofrxedultxqtul
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+#            required: true
+#          connectiontimeout: 5000
+#          timeout: 5000
+#          writetimeout: 5000
+#    auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분
+
+server:
+  port: 80    # server.port=80
+  servlet:
+    context-path: /wooriarte  # server.servlet.context-path=/probono
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: team1
+    url: jdbc:mysql://192.168.0.52:8777/fisa?useSSL=false&allowPublicKeyRetrieval=true
+
+    username: team1
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+  mvc:        # jsp ??? ?? ?? ??, WEB-INF ?? ?? ???, pom.xml? ??, ProbonoController? ??? setViewName()????
+    view:
+      prefix: /WEB-INF/    # spring.mvc.view.prefix: /WEB-INF/
+      suffix: .jsp         # spring.mvc.view.suffix: .jsp
+  data:
+    redis:
+      host: localhost
+      port: 6379
