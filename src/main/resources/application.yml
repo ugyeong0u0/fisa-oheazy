@@ -1,7 +1,7 @@
 server:
   port: 80    # server.port=80
   servlet:
-    context-path: /woori  # server.servlet.context-path=/probono
+    context-path: /woori
 
 spring:
   datasource:
@@ -17,7 +17,7 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
-  mvc:        # jsp ??? ?? ?? ??, WEB-INF ?? ?? ???, pom.xml? ??, ProbonoController? ??? setViewName()????
+  mvc:
     view:
       prefix: /WEB-INF/    # spring.mvc.view.prefix: /WEB-INF/
       suffix: .jsp         # spring.mvc.view.suffix: .jsp
