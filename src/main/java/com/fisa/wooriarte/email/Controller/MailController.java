@@ -22,9 +22,6 @@ public class MailController {
     @PostMapping("/mailauthCheck")
     public String AuthCheck(@RequestBody @Valid EmailCheckDTO emailCheckDto){
         Boolean Checked=mailService.CheckAuthNum(emailCheckDto.getEmail(),emailCheckDto.getAuthNum());
-        System.out.println("&&&&&&&&&");
-        System.out.println(Checked);
-
         if(Checked){
             return "ok";
         }
