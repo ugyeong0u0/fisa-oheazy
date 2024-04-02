@@ -2,11 +2,8 @@ package com.fisa.wooriarte.spacerental.controller;
 
 import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import com.fisa.wooriarte.spacerental.service.SpaceRentalService;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

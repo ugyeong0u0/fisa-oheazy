@@ -3,7 +3,6 @@ package com.fisa.wooriarte.spacerental.domain;
 import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
