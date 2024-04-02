@@ -4,5 +4,5 @@ import com.fisa.wooriarte.user.domain.User; //User Entity
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User,Integer> {
-    User findUserByEmail(String email);
+    User findUserByEmail(String email); //유저 이메일 찾기
 }

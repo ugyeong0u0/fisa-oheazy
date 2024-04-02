@@ -22,16 +22,22 @@ public class UserService {
     //1. 회워가입 로직 boolean으로 반환
     //true -> 가입 가능
     //false -> 가입 불가능
-    public boolean createUser(UserDTO userDTO)  {
+    public boolean createUser(UserDTO userDTO) {
+        //userDTO.toEntity 를 User userEntity로 변환한 이유는
+        //클라이언트로부터 받은 데이터를 db에 저장하기 위함
         User userEntity = userDTO.toEntity();
         User userEmail = userRepository.findUserByEmail(userEntity.getEmail());
+
+        //중복 이메일이 없다면 회원 등록 후 true를 반환
         if (userEmail == null) {
             userRepository.save(userEntity);
             System.out.println("회원가입 가능");
-            return true;
+            return true; //가능 -> true를 반환
+        } else {  // 중복된 이메일이 있으면 가입 불가능 메시지 출력 후 false 반환
+            System.out.println("회원가입 불가능 (이메일 중복)");
+            return false; //불가능 -> false 반환
+
         }
-        System.out.println("회원가입 불가능 (이메일 중복)");
-        return false;
 
     }
 }

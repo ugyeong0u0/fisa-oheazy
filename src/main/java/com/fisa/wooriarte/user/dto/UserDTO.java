@@ -22,6 +22,7 @@ public class UserDTO {
     private LocalDateTime createAt, updateAt;
     private boolean deleted;
 
+
     public User toEntity(){
         return User.builder().id(this.id).pwd(this.pwd).name(this.name).email(this.email).phone(this.phone).build();
     }

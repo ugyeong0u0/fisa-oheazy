@@ -7,11 +7,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: team1
-    # mysql container? ????? ??, build? ?? ?? ??
-    # build?? test? ?? db? ?? ??? ???? ?? ??? skip?? ?
     url: jdbc:mysql://192.168.0.52:8777/fisa?useSSL=false&allowPublicKeyRetrieval=true
 
-    #    url: jdbc:mysql://mysqldb:3306/fisa?useSSL=false&allowPublicKeyRetrieval=true
     username: team1
   jpa:
     database: mysql

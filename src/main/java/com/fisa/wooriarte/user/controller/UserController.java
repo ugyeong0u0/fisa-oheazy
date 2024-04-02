@@ -28,14 +28,14 @@ public class UserController {
 
 
     // 이메일 중복 체크를 통해 중복회원 거르기
-    @PostMapping("/register/users")
+    @PostMapping("/user")
     //<?> : 제네릭 타입, 모든 종류의 응답 본문 반환할지 나타낸다.
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) throws Exception {
         try {
             boolean result = userService.createUser(userDTO);
-            if (result) {
+            if (result) { //result 값이 true -> 회원가입 성공
                 return ResponseEntity.ok().body("회원가입 성공");
-            } else {
+            } else { //result 값이 False -> 회원가입 실패
                 return ResponseEntity.badRequest().body("이메일 중복, 회원가입 실패");
             }
         } catch (Exception e) {
