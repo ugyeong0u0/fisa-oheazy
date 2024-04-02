@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket,Long> {
-    List<Ticket> findByUser_Id(long userId);
+//    List<Ticket> findByUserIdAndStatusAndCanceled(long userId, boolean status, boolean canceled);
 }

@@ -60,4 +60,14 @@ public class Ticket {
 
         this.ticket_no = ticketNoBuilder.toString();
     }
+
+    //티켓 취소 canceled 컬럼 변경
+    public void cancel() {
+        this.canceled = true;
+    }
+
+    //티켓 상태 status 컬럼 변경
+    public void use() {
+        this.status = true;
+    }
 }
