@@ -32,6 +32,7 @@ public class SpaceRentalDTO {
                 .ceo(this.ceo)
                 .email(this.email)
                 .phone(this.phone)
+                .createAt(this.createAt)
                 .deleted(this.deleted)
                 .build();
     }

@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
-@EnableJpaAuditing
+@EnableJpaAuditing // createAt에서 사용하려고 추가한 어노테이션
 public class WooriarteApplication {
 
 	public static void main(String[] args) {

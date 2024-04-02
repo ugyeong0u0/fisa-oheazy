@@ -43,7 +43,7 @@ public class SpaceRental {
     private String phone;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createAt;
 
     @Column(nullable = false)
