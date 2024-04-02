@@ -36,12 +36,23 @@ public class SpaceRentalController {
     @PatchMapping("{id}")
     public String updateSpaceRentalInfo(@PathVariable("id") String id, @RequestBody SpaceRentalDTO spaceRentalDTO) throws Exception {
         try {
-            service.updateSpaceRental(id, spaceRentalDTO);
-            return "success";
+            if(service.updateSpaceRental(id, spaceRentalDTO))
+                return "success";
         } catch (Exception e) {
             e.printStackTrace();
-            return "fail";
         }
+        return "fail";
+    }
+
+    @DeleteMapping("{id}")
+    public String deleteSpaceRental(@PathVariable("id") String id) {
+        try {
+            if(service.deleteSpaceRental(id))
+                return "success";
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "fail";
     }
 
     @GetMapping("{id}/{matching_status}")
@@ -50,19 +61,7 @@ public class SpaceRentalController {
         return null;
     }
 
-    @DeleteMapping("{id}")
-    public String deleteSpaceRental(@PathVariable("id") String id) {
-        try {
-            service.deleteSpaceRental(id);
-            return "success";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "fail";
-        }
-    }
-
-
-    @ExceptionHandler({DataIntegrityViolationException.class, IllegalArgumentException.class})
+    @ExceptionHandler({DataIntegrityViolationException.class, IllegalArgumentException.class, RuntimeException.class})
     public void handle(Exception e) {
         System.err.println(e.getMessage());
     }

@@ -33,14 +33,14 @@ public class SpaceRentalService {
 
     public SpaceRentalDTO findById(String id) {
        SpaceRental spaceRental = repository.findBySpaceRentalId(id)
-               .orElseThrow(() -> new IllegalArgumentException("No one uses that ID"));
+               .orElseThrow(() -> new IllegalArgumentException("Fail to search info. No one uses that ID"));
        return spaceRental.toDTO();
     }
 
     @Transactional
     public boolean updateSpaceRental(String id, SpaceRentalDTO spaceRentalDTO) throws Exception{
         SpaceRental spaceRental = repository.findBySpaceRentalId(id)
-                .orElseThrow(() -> new IllegalArgumentException("No one uses that ID"));
+                .orElseThrow(() -> new IllegalArgumentException("Fail to update. No one uses that ID"));
         BeanUtils.copyProperties(spaceRentalDTO, spaceRental, "createAt", "businessId");
         try {
             repository.save(spaceRental);
@@ -54,9 +54,10 @@ public class SpaceRentalService {
     @Transactional
     public boolean deleteSpaceRental(String id) throws Exception {
         SpaceRental spaceRental = repository.findBySpaceRentalId(id)
-                .orElseThrow(() -> new IllegalArgumentException("No one uses that ID"));
-        if(spaceRental.isDeleted())
-            return false;
+                .orElseThrow(() -> new IllegalArgumentException(" Fail to delete. No one uses that ID."));
+        if(spaceRental.isDeleted()) {
+            throw new RuntimeException("Already deleted User");
+        }
         spaceRental.setDeleted(true);
         try {
             repository.save(spaceRental);
