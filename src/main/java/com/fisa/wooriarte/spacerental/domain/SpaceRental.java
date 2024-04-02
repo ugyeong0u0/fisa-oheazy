@@ -11,19 +11,19 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 @ToString
-@DynamicUpdate
 public class SpaceRental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long business_id;
+    private long businessId;
 
     @Column(nullable = false, unique = true)
-    private long business_number;
+    private long businessNumber;
 
     @Column(nullable = false, unique = true)
     private String id;
@@ -45,22 +45,22 @@ public class SpaceRental {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime create_at;
+    private LocalDateTime createAt;
 
     @Column(nullable = false)
     private boolean deleted;
 
     public SpaceRentalDTO toDTO() {
         return SpaceRentalDTO.builder()
-                .business_id(this.business_id)
-                .business_number(this.business_number)
+                .businessId(this.businessId)
+                .businessNumber(this.businessNumber)
                 .id(this.id)
                 .pwd(this.pwd)
                 .company(this.company)
                 .ceo(this.ceo)
                 .email(this.email)
                 .phone(this.phone)
-                .create_at(this.create_at)
+                .createAt(this.createAt)
                 .deleted(this.deleted)
                 .build();
     }

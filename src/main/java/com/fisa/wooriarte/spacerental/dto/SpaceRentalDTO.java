@@ -11,28 +11,27 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 public class SpaceRentalDTO {
-    private long business_id;
-    private long business_number;
+    private long businessId;
+    private long businessNumber;
     private String id;
     private String pwd;
     private String company;
     private String ceo;
     private String email;
     private String phone;
-    private LocalDateTime create_at;
+    private LocalDateTime createAt;
     private boolean deleted;
 
     public SpaceRental toEntity() {
         return SpaceRental.builder()
-                .business_id(this.business_id)
-                .business_number(this.business_number)
+                .businessId(this.businessId)
+                .businessNumber(this.businessNumber)
                 .id(this.id)
                 .pwd(this.pwd)
                 .company(this.company)
                 .ceo(this.ceo)
                 .email(this.email)
                 .phone(this.phone)
-                .create_at(this.create_at)
                 .deleted(this.deleted)
                 .build();
     }
