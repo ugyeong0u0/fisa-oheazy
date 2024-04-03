@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 @RequestMapping("/space-rental")
 public class SpaceRentalController {
     @Autowired
-    SpaceRentalService service;
+    private SpaceRentalService service;
 
     //사용자 회원가입(사용자 추가)
     @PostMapping("")
