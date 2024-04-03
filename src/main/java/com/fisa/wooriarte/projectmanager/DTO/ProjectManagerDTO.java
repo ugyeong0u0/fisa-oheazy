@@ -1,16 +1,21 @@
-package com.fisa.wooriarte.spacerental.dto;
+package com.fisa.wooriarte.projectmanager.DTO;
 
-import com.fisa.wooriarte.spacerental.domain.SpaceRental;
+import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
+import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 @ToString
-public class SpaceRentalDTO {
-    private long spaceRentalId;
+public class ProjectManagerDTO {
+    private long projectManagerId;
     private long businessNumber;
     private String id;
     private String pwd;
@@ -21,9 +26,9 @@ public class SpaceRentalDTO {
     private LocalDateTime createAt;
     private boolean deleted;
 
-    public SpaceRental toEntity() {
-        return SpaceRental.builder()
-                .spaceRentalId(this.spaceRentalId)
+    public ProjectManager toEntity() {
+        return ProjectManager.builder()
+                .projectManagerId(this.projectManagerId)
                 .businessNumber(this.businessNumber)
                 .id(this.id)
                 .pwd(this.pwd)

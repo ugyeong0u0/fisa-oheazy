@@ -17,28 +17,34 @@ public class SpaceRentalService {
     SpaceRentalRepository repository;
 
     /*
-    사용자 추가
+    공간대여자 추가
     1. 같은 아이디 사용 확인
         발견시 예외 처리
     2. DB에 저장
      */
     @Transactional
-    public boolean addSpaceRental(SpaceRentalDTO sr) {
-        Optional<SpaceRental> optionalSpaceRental = repository.findBySpaceRentalId(sr.getId());
+    public boolean addSpaceRental(SpaceRentalDTO spaceRentalDTO) {
+        Optional<SpaceRental> optionalSpaceRental = repository.findBySpaceRentalId(spaceRentalDTO.getId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
-        repository.save(sr.toEntity());
+        repository.save(spaceRentalDTO.toEntity());
         return true;
     }
 
+    /*
+    공간대여자 로그인
+    1. id로 유저 검색
+        없으면 예외 처리
+    2. 비밀번호와 비교
+     */
     public boolean loginSpaceRental(String id, String pwd) {
         Optional<SpaceRental> optionalSpaceRental = repository.findBySpaceRentalId(id);
         return optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd);
     }
 
     /*
-    사용자 정보 검색
+    공간대여자 정보 검색
     1. id로 유저 검색
         없으면 예외 처리
     2. DTO로 변환 후 반환
@@ -50,7 +56,7 @@ public class SpaceRentalService {
     }
 
     /*
-    사용자 정보 갱신
+    공간대여자 정보 갱신
     1. id로 유저 검색
         없으면 예외처리
     2. BeanUtils.copyProperties(S, D, ignore)로 같은 컬럼 데이터 갱신
@@ -70,7 +76,7 @@ public class SpaceRentalService {
     }
 
     /*
-    사용자 삭제 soft-delete
+    공간대여자 삭제 soft-delete
     1. id로 유저 검색
         없으면 예외처리
     2. delete를 true로 변경
