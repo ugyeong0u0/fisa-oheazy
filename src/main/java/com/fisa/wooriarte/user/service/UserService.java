@@ -20,47 +20,54 @@ public class UserService {
 //    @Autowired
 //    private PasswordEncoder passwordEncoder;
 
-    //단순 유저생성 테스트
-    public User create(UserDTO userDTO) {
-        return userRepository.save(userDTO.toEntity());
-    }
 
-    //1. 회워가입 로직 boolean으로 반환
-    //true -> 가입 가능
-    //false -> 가입 불가능
-    public boolean createUser(UserDTO userDTO) {
+//    ----------------------------------------------------
+
+
+
+
+
+
+    //회원가입 로직 boolean으로 반환
+    public boolean addUser(UserDTO userDTO) {
         //userDTO.toEntity 를 User userEntity로 변환한 이유는
         //클라이언트로부터 받은 데이터를 db에 저장하기 위함
         User userEntity = userDTO.toEntity();
+
         Optional<User> userEmail = userRepository.findUserByEmail(userEntity.getEmail());
-        if(userEmail.isPresent()){
-            System.out.println("회원가입 불가능(이메일 중복)");
+        if (userEmail.isPresent()) {
+            System.out.println("회원가입 불가능 (이메일 중복)");
             return false;
         }
 
         Optional<User> userId = userRepository.findUserByid(userEntity.getId());
-        if(userId.isPresent()){
-            System.out.println("회원가입 불가능(아이디 중복)");
+        if (userId.isPresent()) {
+            System.out.println("회원가입 불가능 (아이디 중복");
+            return false;
         }
 
         userRepository.save(userEntity);
         System.out.println("회원가입 가능");
         return true;
-
     }
 
+
+
+
+
+    //비밀번호 검증
     public boolean verifyPassword(String id, UserDTO userDTO) throws Exception {
         User user = userRepository.findUserByid(id)
                 .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
 
         if (userDTO.getPwd().equals(user.getPwd())) {
+            System.out.println("비밀번호 일치");
             return true; //비밀번호 일치 -> true 반환
         } else {
             return false; //비밀번호 불일치 -> false 반환
         }
 
     }
-
 
 }
 

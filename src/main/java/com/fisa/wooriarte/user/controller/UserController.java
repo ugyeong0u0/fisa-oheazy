@@ -6,10 +6,7 @@ import com.fisa.wooriarte.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -27,15 +24,13 @@ public class UserController {
     }
 
 
-    // 이메일 중복 체크를 통해 중복회원 거르기
+    // 아이디, 이메일 중복 체크를 통해 회원가입 진행
     @PostMapping("/user")
     //<?> : 제네릭 타입, 모든 종류의 응답 본문 반환할지 나타낸다.
-    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) throws Exception {
+    public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO) throws Exception {
         try {
-            System.out.println("1");
-            boolean result = userService.createUser(userDTO);
+            boolean result = userService.addUser(userDTO);
             if (result) { //result 값이 true -> 회원가입 성공
-                System.out.println("true");
                 return ResponseEntity.ok().body("회원가입 성공");
             } else { //result 값이 False -> 회원가입 실패
                 return ResponseEntity.badRequest().body("회원가입 실패");
@@ -46,13 +41,22 @@ public class UserController {
     }
 
 
-    // 비밀번호 검증
+
+    //유저 로그인한 상태 -> mypage버튼 클릭스 비밀번호 검증 화면 띄우기
+    @GetMapping("/user/{id}")
+    public String showMyPage(){
+        return "페이지";
+    }
+
+
+
+    // 유저 비밀번호 검증
     @PostMapping("/user/{id}/verify-pwd")
     public ResponseEntity<?> verifyPassword(@PathVariable String id, @RequestBody UserDTO userDTO) throws Exception {
 
         try {
             if (userService.verifyPassword(id, userDTO)) {
-                return ResponseEntity.ok().body("비밀번호 검증");
+                return ResponseEntity.ok().body("비밀번호 검증 성공");
             } else {
                 return ResponseEntity.badRequest().body("비밀번호 검증 실패");
             }
