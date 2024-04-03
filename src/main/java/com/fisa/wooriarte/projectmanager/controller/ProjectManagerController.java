@@ -12,13 +12,16 @@ import java.util.NoSuchElementException;
 @RequestMapping("/project-mangers")
 public class ProjectManagerController {
 
-    @Autowired
-    ProjectManagerService service;
+    private final ProjectManagerService projectManagerService;
 
+    @Autowired
+    public ProjectManagerController(ProjectManagerService projectManagerService) {
+        this.projectManagerService = projectManagerService;
+    }
     //프로젝트 매니저 회원가입
     @PostMapping("")
     public String addProjectManager(@RequestBody ProjectManagerDTO projectManagerDTO) {
-        if(service.addProjcerManager(projectManagerDTO))
+        if(projectManagerService.addProjcerManager(projectManagerDTO))
             return "success";
         return "fail";
     }
@@ -28,7 +31,7 @@ public class ProjectManagerController {
     public String loginProjectManager(@RequestBody Map<String, String> loginInfo) {
         String id = loginInfo.get("id");
         String pwd = loginInfo.get("pwd");
-        if(service.loginProjectManager(id, pwd))
+        if(projectManagerService.loginProjectManager(id, pwd))
             return "login success";
         return "login fail";
     }
@@ -36,14 +39,14 @@ public class ProjectManagerController {
     //프로젝트 매니저 정보 조회
     @GetMapping("/{id}")
     public String getProjectManagerInfo(@PathVariable("id") String id) {
-        ProjectManagerDTO projectManagerDTO = service.findById(id);
+        ProjectManagerDTO projectManagerDTO = projectManagerService.findById(id);
         return projectManagerDTO.toString();
     }
 
     //프로젝트 매니저 정보 갱신
     @PatchMapping("{id}")
     public String updateProjectManagerInfo(@PathVariable("id") String id, @RequestBody ProjectManagerDTO projectManagerDTO) {
-        if(service.updateProjectManager(id, projectManagerDTO))
+        if(projectManagerService.updateProjectManager(id, projectManagerDTO))
             return "success";
         return "fail";
     }
@@ -51,7 +54,7 @@ public class ProjectManagerController {
     //프로젝트 매니저 삭제(delete를 true로 변경)
     @DeleteMapping("{id}")
     public String deleteProjectManager(@PathVariable("id") String id) {
-        if(service.deleteProjectManager(id))
+        if(projectManagerService.deleteProjectManager(id))
             return "success";
         return "fail";
     }
