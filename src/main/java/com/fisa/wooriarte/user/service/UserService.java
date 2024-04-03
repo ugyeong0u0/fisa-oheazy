@@ -2,6 +2,7 @@ package com.fisa.wooriarte.user.service;
 
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.dto.UserDTO;
+import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
 import com.fisa.wooriarte.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,14 +37,22 @@ public class UserService {
 
         Optional<User> userEmail = userRepository.findUserByEmail(userEntity.getEmail());
         if (userEmail.isPresent()) {
+<<<<<<< Updated upstream
             System.out.println("회원가입 불가능 (이메일 중복)");
+=======
+            System.out.println("회원가입 불가능(이메일 중복)");
+>>>>>>> Stashed changes
             return false;
         }
 
         Optional<User> userId = userRepository.findUserByid(userEntity.getId());
         if (userId.isPresent()) {
+<<<<<<< Updated upstream
             System.out.println("회원가입 불가능 (아이디 중복");
             return false;
+=======
+            System.out.println("회원가입 불가능(아이디 중복)");
+>>>>>>> Stashed changes
         }
 
         userRepository.save(userEntity);
@@ -69,5 +78,37 @@ public class UserService {
 
     }
 
+<<<<<<< Updated upstream
+=======
+
+    // 유저 개인 정보 단건 조회
+    public UserDTO getMyUser(Long userId) {
+        try {
+            final User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
+            return user.toDto();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    // 유저 개인 정보 수정
+    public Boolean updateMyUser(Long id, UserInfoRequest userInfoRequest) {
+        try {
+            final int result = userRepository.updateAllById(id, userInfoRequest.getId(),
+                    userInfoRequest.getPwd(), userInfoRequest.getName(), userInfoRequest.getEmail(), userInfoRequest.getPhone());
+            System.out.println("변경된 엔터티 개수" + result);
+            return true;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+>>>>>>> Stashed changes
 }
 

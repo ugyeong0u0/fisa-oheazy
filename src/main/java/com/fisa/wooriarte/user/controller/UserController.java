@@ -1,8 +1,11 @@
 package com.fisa.wooriarte.user.controller;
 
 
+import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.dto.UserDTO;
+import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
 import com.fisa.wooriarte.user.service.UserService;
+import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,4 +68,32 @@ public class UserController {
         }
 
     }
+
+    // 유저 개인 정보 조회
+    @GetMapping("/user/{id}/info")
+    public ResponseEntity<?> getUserInfo(@PathVariable(value = "id") Long userId ) throws Exception{
+        try{
+
+            UserDTO userInfo = userService.getMyUser(userId);
+            return ResponseEntity.ok(userInfo);
+        }catch (Exception e ){
+            return ResponseEntity.badRequest().body("요청값 오류 혹은 찾을 수 없음");
+        }
+    }
+
+    // 유저 개인 정보 수정
+    @PatchMapping("/user/{id}/info")
+    public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody UserInfoRequest userInfoRequest) throws Exception{
+        try {
+
+            Boolean result = userService.updateMyUser(id,userInfoRequest);
+            if(result) return ResponseEntity.ok("수정 성공");
+            else return ResponseEntity.badRequest().body("수정실패");
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body("요청값 오류 혹은 찾을 수 없음 ");
+        }
+    }
 }
+
+
