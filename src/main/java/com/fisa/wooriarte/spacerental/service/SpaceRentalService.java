@@ -74,7 +74,7 @@ public class SpaceRentalService {
         SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
         BeanUtils.copyProperties(spaceRentalDTO, spaceRental, "createAt", "spaceRentalId");
-        repository.save(spaceRental);
+        spaceRentalRepository.save(spaceRental);
         return true;
     }
 
