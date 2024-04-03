@@ -1,11 +1,13 @@
 package com.fisa.wooriarte.user.domain;
 
 
+import com.fisa.wooriarte.ticket.domain.Ticket;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -48,6 +50,9 @@ public class User {
     @Column
     private boolean deleted;
 
+    // Ticket 엔티티를 참조하는 필드 추가
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Ticket> tickets;
 
     @Builder
     public User(int userId, @NonNull String id, @NonNull String pwd, @NonNull String name, @NonNull String email,
