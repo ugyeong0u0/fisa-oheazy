@@ -5,7 +5,6 @@ import com.fisa.wooriarte.spacerental.service.SpaceRentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 import java.util.NoSuchElementException;
 
