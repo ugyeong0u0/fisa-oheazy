@@ -11,21 +11,24 @@ import java.util.Optional;
 
 public class ProjectManagerService {
 
-    @Autowired
-    ProjectManagerRepository repository;
+    private final ProjectManagerRepository projectManagerRepository;
 
+    @Autowired
+    public ProjectManagerService(ProjectManagerRepository projectManagerRepository) {
+        this.projectManagerRepository = projectManagerRepository;
+    }
     /*
    프로젝트 매니저 추가
    1. 같은 아이디 사용 확인
        발견시 예외 처리
    2. DB에 저장
     */
-    public boolean addProjcerManager(ProjectManagerDTO projectManagerDTO) {
-        Optional<ProjectManager> optionalSpaceRental = repository.findByProjectManagerId(projectManagerDTO.getId());
+    public boolean addProjectManager(ProjectManagerDTO projectManagerDTO) {
+        Optional<ProjectManager> optionalSpaceRental = projectManagerRepository.findByProjectManagerId(projectManagerDTO.getId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
-        repository.save(projectManagerDTO.toEntity());
+        projectManagerRepository.save(projectManagerDTO.toEntity());
         return true;
     }
 
@@ -36,7 +39,7 @@ public class ProjectManagerService {
     2. 비밀번호와 비교
      */
     public boolean loginProjectManager(String id, String pwd) {
-        Optional<ProjectManager> optionalProjectManager = repository.findByProjectManagerId(id);
+        Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findByProjectManagerId(id);
         return optionalProjectManager.isPresent() && optionalProjectManager.get().getPwd().equals(pwd);
     }
 
@@ -47,7 +50,7 @@ public class ProjectManagerService {
     2. DTO로 변환 후 반환
      */
     public ProjectManagerDTO findById(String id) {
-        ProjectManager projectManager = repository.findByProjectManagerId(id)
+        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
         return projectManager.toDTO();
     }
@@ -64,10 +67,10 @@ public class ProjectManagerService {
             businessId: 고유 번호는 그대로 유지
      */
     public boolean updateProjectManager(String id, ProjectManagerDTO projectManagerDTO) {
-        ProjectManager projectManager = repository.findByProjectManagerId(id)
+        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
         BeanUtils.copyProperties(projectManagerDTO, projectManager, "createAt", "businessId");
-        repository.save(projectManager);
+        projectManagerRepository.save(projectManager);
         return true;
     }
 
@@ -79,13 +82,13 @@ public class ProjectManagerService {
         이미 변경했으면 예외처리
      */
     public boolean deleteProjectManager(String id) {
-        ProjectManager projectManager = repository.findByProjectManagerId(id)
+        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
-        if(projectManager.isDeleted()) {
+        if(projectManager.getDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");
         }
         projectManager.setDeleted(true);
-        repository.save(projectManager);
+        projectManagerRepository.save(projectManager);
         return true;
     }
 }
