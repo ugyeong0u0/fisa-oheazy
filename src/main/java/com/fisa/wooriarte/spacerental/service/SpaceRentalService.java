@@ -23,18 +23,18 @@ public class SpaceRentalService {
     2. DB에 저장
      */
     @Transactional
-    public boolean addSpaceRental(SpaceRentalDTO sr) throws Exception {
+    public boolean addSpaceRental(SpaceRentalDTO sr) {
         Optional<SpaceRental> optionalSpaceRental = repository.findBySpaceRentalId(sr.getId());
-        optionalSpaceRental.ifPresent(a -> {
+        if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
-        });
-        try {
-            repository.save(sr.toEntity());
-            return true;
-        } catch(Exception e) {
-            e.printStackTrace();
         }
-        return false;
+        repository.save(sr.toEntity());
+        return true;
+    }
+
+    public boolean loginSpaceRental(String id, String pwd) {
+        Optional<SpaceRental> optionalSpaceRental = repository.findBySpaceRentalId(id);
+        return optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd);
     }
 
     /*
@@ -43,7 +43,7 @@ public class SpaceRentalService {
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public SpaceRentalDTO findById(String id) throws Exception {
+    public SpaceRentalDTO findById(String id) {
         SpaceRental spaceRental = repository.findBySpaceRentalId(id)
                     .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
         return spaceRental.toDTO();
@@ -61,17 +61,12 @@ public class SpaceRentalService {
             businessId: 고유 번호는 그대로 유지
      */
     @Transactional
-    public boolean updateSpaceRental(String id, SpaceRentalDTO spaceRentalDTO) throws Exception {
+    public boolean updateSpaceRental(String id, SpaceRentalDTO spaceRentalDTO) {
         SpaceRental spaceRental = repository.findBySpaceRentalId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
         BeanUtils.copyProperties(spaceRentalDTO, spaceRental, "createAt", "businessId");
-        try {
-            repository.save(spaceRental);
-            return true;
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        repository.save(spaceRental);
+        return true;
     }
 
     /*
@@ -82,19 +77,14 @@ public class SpaceRentalService {
         이미 변경했으면 예외처리
      */
     @Transactional
-    public boolean deleteSpaceRental(String id) throws Exception {
+    public boolean deleteSpaceRental(String id) {
         SpaceRental spaceRental = repository.findBySpaceRentalId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
         if(spaceRental.isDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");
         }
         spaceRental.setDeleted(true);
-        try {
-            repository.save(spaceRental);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        repository.save(spaceRental);
+        return true;
     }
 }

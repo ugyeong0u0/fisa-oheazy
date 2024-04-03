@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class SpaceRental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long businessId;
+    private long spaceRentalId;
 
     @Column(nullable = false, unique = true)
     private long businessNumber;
@@ -51,7 +51,7 @@ public class SpaceRental {
 
     public SpaceRentalDTO toDTO() {
         return SpaceRentalDTO.builder()
-                .businessId(this.businessId)
+                .spaceRentalId(this.spaceRentalId)
                 .businessNumber(this.businessNumber)
                 .id(this.id)
                 .pwd(this.pwd)
