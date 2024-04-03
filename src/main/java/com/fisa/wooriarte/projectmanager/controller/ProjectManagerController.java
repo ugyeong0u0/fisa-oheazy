@@ -21,7 +21,7 @@ public class ProjectManagerController {
     //프로젝트 매니저 회원가입
     @PostMapping("")
     public String addProjectManager(@RequestBody ProjectManagerDTO projectManagerDTO) {
-        if(projectManagerService.addProjcerManager(projectManagerDTO))
+        if(projectManagerService.addProjectManager(projectManagerDTO))
             return "success";
         return "fail";
     }
