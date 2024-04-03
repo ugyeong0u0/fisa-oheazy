@@ -13,9 +13,12 @@ import java.util.Optional;
 
 @Service
 public class SpaceRentalService {
-    @Autowired
-    SpaceRentalRepository repository;
+    private final SpaceRentalRepository spaceRentalRepository;
 
+    @Autowired
+    public SpaceRentalService(SpaceRentalRepository spaceRentalRepository) {
+        this.spaceRentalRepository = spaceRentalRepository;
+    }
     /*
     사용자 추가
     1. 같은 아이디 사용 확인
@@ -24,16 +27,16 @@ public class SpaceRentalService {
      */
     @Transactional
     public boolean addSpaceRental(SpaceRentalDTO sr) {
-        Optional<SpaceRental> optionalSpaceRental = repository.findBySpaceRentalId(sr.getId());
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(sr.getId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
-        repository.save(sr.toEntity());
+        spaceRentalRepository.save(sr.toEntity());
         return true;
     }
 
     public boolean loginSpaceRental(String id, String pwd) {
-        Optional<SpaceRental> optionalSpaceRental = repository.findBySpaceRentalId(id);
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(id);
         return optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd);
     }
 
@@ -44,7 +47,7 @@ public class SpaceRentalService {
     2. DTO로 변환 후 반환
      */
     public SpaceRentalDTO findById(String id) {
-        SpaceRental spaceRental = repository.findBySpaceRentalId(id)
+        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
                     .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
         return spaceRental.toDTO();
     }
@@ -62,10 +65,10 @@ public class SpaceRentalService {
      */
     @Transactional
     public boolean updateSpaceRental(String id, SpaceRentalDTO spaceRentalDTO) {
-        SpaceRental spaceRental = repository.findBySpaceRentalId(id)
+        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
         BeanUtils.copyProperties(spaceRentalDTO, spaceRental, "createAt", "businessId");
-        repository.save(spaceRental);
+        spaceRentalRepository.save(spaceRental);
         return true;
     }
 
@@ -78,13 +81,13 @@ public class SpaceRentalService {
      */
     @Transactional
     public boolean deleteSpaceRental(String id) {
-        SpaceRental spaceRental = repository.findBySpaceRentalId(id)
+        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
         if(spaceRental.isDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");
         }
         spaceRental.setDeleted(true);
-        repository.save(spaceRental);
+        spaceRentalRepository.save(spaceRental);
         return true;
     }
 }

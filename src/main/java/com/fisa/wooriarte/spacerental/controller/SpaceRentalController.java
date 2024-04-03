@@ -12,13 +12,17 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/space-rental")
 public class SpaceRentalController {
+    private final SpaceRentalService spaceRentalService;
+
     @Autowired
-    SpaceRentalService service;
+    public SpaceRentalController(SpaceRentalService spaceRentalService) {
+        this.spaceRentalService = spaceRentalService;
+    }
 
     //사용자 회원가입(사용자 추가)
     @PostMapping("")
     public String addSpaceRental(@RequestBody SpaceRentalDTO spaceRentalDTO) {
-        if(service.addSpaceRental(spaceRentalDTO))
+        if(spaceRentalService.addSpaceRental(spaceRentalDTO))
             return "success";
         return "fail";
     }
@@ -27,7 +31,7 @@ public class SpaceRentalController {
     public String loginSpaceRental(@RequestBody Map<String, String> loginInfo) {
         String id = loginInfo.get("id");
         String pwd = loginInfo.get("pwd");
-        if(service.loginSpaceRental(id, pwd))
+        if(spaceRentalService.loginSpaceRental(id, pwd))
             return "login success";
         return "login fail";
     }
@@ -35,14 +39,14 @@ public class SpaceRentalController {
     //사용자 정보를 요청
     @GetMapping("/{id}")
     public String getSpaceRentalInfo(@PathVariable("id") String id) {
-        SpaceRentalDTO spaceRentalDTO = service.findById(id);
+        SpaceRentalDTO spaceRentalDTO = spaceRentalService.findById(id);
         return spaceRentalDTO.toString();
     }
 
     //사용자 정보를 갱신
     @PatchMapping("{id}")
     public String updateSpaceRentalInfo(@PathVariable("id") String id, @RequestBody SpaceRentalDTO spaceRentalDTO) {
-        if(service.updateSpaceRental(id, spaceRentalDTO))
+        if(spaceRentalService.updateSpaceRental(id, spaceRentalDTO))
             return "success";
         return "fail";
     }
@@ -50,7 +54,7 @@ public class SpaceRentalController {
     //사용자 삭제(delete를 true로 변경)
     @DeleteMapping("{id}")
     public String deleteSpaceRental(@PathVariable("id") String id) {
-        if(service.deleteSpaceRental(id))
+        if(spaceRentalService.deleteSpaceRental(id))
             return "success";
         return "fail";
     }
