@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,10 +18,10 @@ import java.time.LocalDateTime;
 public class SpaceRental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long spaceRentalId;
+    private Long spaceRentalId;
 
     @Column(nullable = false, unique = true)
-    private long businessNumber;
+    private Long businessNumber;
 
     @Column(nullable = false, unique = true)
     private String id;
@@ -47,7 +46,7 @@ public class SpaceRental {
     private LocalDateTime createAt;
 
     @Column(nullable = false)
-    private boolean deleted;
+    private Boolean deleted;
 
     public SpaceRentalDTO toDTO() {
         return SpaceRentalDTO.builder()
