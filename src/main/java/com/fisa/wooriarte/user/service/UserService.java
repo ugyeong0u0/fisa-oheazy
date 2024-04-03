@@ -1,18 +1,24 @@
 package com.fisa.wooriarte.user.service;
 
-import com.fisa.wooriarte.exception.MessageException;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.dto.UserDTO;
 import com.fisa.wooriarte.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.NoSuchMessageException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    //Spring Security를 사용하여 비밀번호를 인코딩하고 비교하기 위해 PasswordEncoder 의존성 추가
+    //;; Bean등록 해야함 ;;
+    //일단보류
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
 
     //단순 유저생성 테스트
     public User create(UserDTO userDTO) {
@@ -26,22 +32,35 @@ public class UserService {
         //userDTO.toEntity 를 User userEntity로 변환한 이유는
         //클라이언트로부터 받은 데이터를 db에 저장하기 위함
         User userEntity = userDTO.toEntity();
-        User userEmail = userRepository.findUserByEmail(userEntity.getEmail());
-        User userId = userRepository.findUserByid(userEntity.getId());
+        Optional<User> userEmail = userRepository.findUserByEmail(userEntity.getEmail());
+        if(userEmail.isPresent()){
+            System.out.println("회원가입 불가능(이메일 중복)");
+            return false;
+        }
 
-        //중복 아이디 or 이메일이 없다면 회원 등록 후 true를 반환
-        if (userId != null){
-            System.out.println("회원가입 불가능 (아이디 중복)");
-            return false; //불가능 -> false 반환
-        } else if (userEmail != null){
-            System.out.println("회원가입 불가능 (이메일 중복)");
-            return false; //불가능 -> false 반환
+        Optional<User> userId = userRepository.findUserByid(userEntity.getId());
+        if(userId.isPresent()){
+            System.out.println("회원가입 불가능(아이디 중복)");
+        }
+
+        userRepository.save(userEntity);
+        System.out.println("회원가입 가능");
+        return true;
+
+    }
+
+    public boolean verifyPassword(String id, UserDTO userDTO) throws Exception {
+        User user = userRepository.findUserByid(id)
+                .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
+
+        if (userDTO.getPwd().equals(user.getPwd())) {
+            return true; //비밀번호 일치 -> true 반환
         } else {
-            userRepository.save(userEntity);
-            System.out.println("회원가입 가능");
-            return true; //가능 -> true를 반환
+            return false; //비밀번호 불일치 -> false 반환
         }
 
     }
+
+
 }
-    
+
