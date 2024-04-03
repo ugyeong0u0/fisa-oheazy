@@ -6,9 +6,12 @@ import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Service
 public class ProjectManagerService {
 
     private final ProjectManagerRepository projectManagerRepository;
@@ -69,7 +72,7 @@ public class ProjectManagerService {
     public boolean updateProjectManager(String id, ProjectManagerDTO projectManagerDTO) {
         ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
-        BeanUtils.copyProperties(projectManagerDTO, projectManager, "createAt", "businessId");
+        BeanUtils.copyProperties(projectManagerDTO, projectManager, "createAt", "projectManagerId");
         projectManagerRepository.save(projectManager);
         return true;
     }

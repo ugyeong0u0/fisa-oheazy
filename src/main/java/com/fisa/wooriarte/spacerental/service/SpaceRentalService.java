@@ -70,7 +70,7 @@ public class SpaceRentalService {
     public boolean updateSpaceRental(String id, SpaceRentalDTO spaceRentalDTO) {
         SpaceRental spaceRental = repository.findBySpaceRentalId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
-        BeanUtils.copyProperties(spaceRentalDTO, spaceRental, "createAt", "businessId");
+        BeanUtils.copyProperties(spaceRentalDTO, spaceRental, "createAt", "spaceRentalId");
         repository.save(spaceRental);
         return true;
     }

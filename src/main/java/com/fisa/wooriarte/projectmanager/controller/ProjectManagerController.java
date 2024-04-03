@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/project-mangers")
+@RequestMapping("/project-manager")
 public class ProjectManagerController {
 
     private final ProjectManagerService projectManagerService;
