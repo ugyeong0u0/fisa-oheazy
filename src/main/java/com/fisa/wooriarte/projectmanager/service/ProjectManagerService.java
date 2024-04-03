@@ -84,7 +84,7 @@ public class ProjectManagerService {
     public boolean deleteProjectManager(String id) {
         ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
-        if(projectManager.isDeleted()) {
+        if(projectManager.getDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");
         }
         projectManager.setDeleted(true);

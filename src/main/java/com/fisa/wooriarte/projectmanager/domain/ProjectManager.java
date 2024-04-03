@@ -18,10 +18,10 @@ import java.time.LocalDateTime;
 public class ProjectManager {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long projectManagerId;
+    private Long projectManagerId;
 
     @Column(nullable = false, unique = true)
-    private long businessNumber;
+    private Long businessNumber;
 
     @Column(nullable = false, unique = true)
     private String id;
@@ -46,7 +46,7 @@ public class ProjectManager {
     private LocalDateTime createAt;
 
     @Column(nullable = false)
-    private boolean deleted;
+    private Boolean deleted;
 
     public ProjectManagerDTO toDTO() {
         return ProjectManagerDTO.builder()

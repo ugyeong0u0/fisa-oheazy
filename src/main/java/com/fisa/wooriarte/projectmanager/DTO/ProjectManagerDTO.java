@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @ToString
 public class ProjectManagerDTO {
-    private long projectManagerId;
-    private long businessNumber;
+    private Long projectManagerId;
+    private Long businessNumber;
     private String id;
     private String pwd;
     private String company;
@@ -24,7 +24,7 @@ public class ProjectManagerDTO {
     private String email;
     private String phone;
     private LocalDateTime createAt;
-    private boolean deleted;
+    private Boolean deleted;
 
     public ProjectManager toEntity() {
         return ProjectManager.builder()
