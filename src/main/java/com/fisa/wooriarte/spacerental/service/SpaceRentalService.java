@@ -27,11 +27,11 @@ public class SpaceRentalService {
      */
     @Transactional
     public boolean addSpaceRental(SpaceRentalDTO spaceRentalDTO) {
-        Optional<SpaceRental> optionalSpaceRental = repository.findBySpaceRentalId(spaceRentalDTO.getId());
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(spaceRentalDTO.getId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
-        repository.save(spaceRentalDTO.toEntity());
+        spaceRentalRepository.save(spaceRentalDTO.toEntity());
         return true;
     }
 
