@@ -37,22 +37,14 @@ public class UserService {
 
         Optional<User> userEmail = userRepository.findUserByEmail(userEntity.getEmail());
         if (userEmail.isPresent()) {
-<<<<<<< Updated upstream
-            System.out.println("회원가입 불가능 (이메일 중복)");
-=======
             System.out.println("회원가입 불가능(이메일 중복)");
->>>>>>> Stashed changes
             return false;
         }
 
         Optional<User> userId = userRepository.findUserByid(userEntity.getId());
         if (userId.isPresent()) {
-<<<<<<< Updated upstream
             System.out.println("회원가입 불가능 (아이디 중복");
             return false;
-=======
-            System.out.println("회원가입 불가능(아이디 중복)");
->>>>>>> Stashed changes
         }
 
         userRepository.save(userEntity);
@@ -78,8 +70,6 @@ public class UserService {
 
     }
 
-<<<<<<< Updated upstream
-=======
 
     // 유저 개인 정보 단건 조회
     public UserDTO getMyUser(Long userId) {
@@ -109,6 +99,6 @@ public class UserService {
     }
 
 
->>>>>>> Stashed changes
+
 }
 

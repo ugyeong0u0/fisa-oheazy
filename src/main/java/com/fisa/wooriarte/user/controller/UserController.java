@@ -21,7 +21,7 @@ public class UserController {
     //RequestBody를 달아야 postman Raw-Json 방식으로 사용이 가능하다.
     @PostMapping("/create")
     public String create(@RequestBody UserDTO userDTO) {
-        userService.create(userDTO);
+        userService.addUser(userDTO);
         System.out.println("회원가입 완료");
         return "유저 생성 완료";
     }
