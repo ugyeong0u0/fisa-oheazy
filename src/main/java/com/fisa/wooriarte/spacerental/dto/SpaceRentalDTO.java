@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 public class SpaceRentalDTO {
-    private long spaceRentalId;
-    private long businessNumber;
+    private Long spaceRentalId;
+    private Long businessNumber;
     private String id;
     private String pwd;
     private String company;
@@ -19,7 +19,7 @@ public class SpaceRentalDTO {
     private String email;
     private String phone;
     private LocalDateTime createAt;
-    private boolean deleted;
+    private Boolean deleted;
 
     public SpaceRental toEntity() {
         return SpaceRental.builder()
