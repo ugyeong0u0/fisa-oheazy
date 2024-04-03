@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 public class SpaceRentalDTO {
-    private long businessId;
+    private long spaceRentalId;
     private long businessNumber;
     private String id;
     private String pwd;
@@ -24,7 +24,7 @@ public class SpaceRentalDTO {
 
     public SpaceRental toEntity() {
         return SpaceRental.builder()
-                .businessId(this.businessId)
+                .spaceRentalId(this.spaceRentalId)
                 .businessNumber(this.businessNumber)
                 .id(this.id)
                 .pwd(this.pwd)
