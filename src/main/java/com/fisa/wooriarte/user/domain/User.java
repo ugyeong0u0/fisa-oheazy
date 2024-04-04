@@ -1,10 +1,11 @@
 package com.fisa.wooriarte.user.domain;
 
-
-import com.fisa.wooriarte.ticket.domain.Ticket;
+import com.fisa.wooriarte.user.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -41,11 +44,11 @@ public class User {
     private String phone;
 
     @CreationTimestamp //현재시간을 나타내기 위한 어노테이션
-    @Column(name="create_at")
+    @Column(name = "create_at")
     private LocalDateTime createAt;
 
-    @CreationTimestamp //현재시간을 나타내기 위한 어노테이션
-    @Column(name="update_at")
+    @CreatedDate //현재시간을 나타내기 위한 어노테이션
+    @Column(name = "update_at")
     private LocalDateTime updateAt;
 
     @Column
@@ -55,18 +58,20 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Ticket> tickets;
 
-    @Builder
-    public User(int userId, @NonNull String id, @NonNull String pwd, @NonNull String name, @NonNull String email,
-    @NonNull String phone, LocalDateTime createAt, LocalDateTime updateAt, boolean deleted){
-        this.userId = userId;
-        this.id = id;
-        this.pwd = pwd;
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-        this.deleted = deleted;
+    public UserDTO toDto() {
+        return UserDTO.builder()
+                .userId(this.userId)
+                .id(this.id)
+                .pwd(this.pwd)
+                .name(this.name)
+                .email(this.email)
+                .phone(this.phone)
+                .createAt(this.createAt)
+                .updateAt(this.updateAt)
+                .deleted(this.deleted)
+                .build();
     }
+
+
 
 }
