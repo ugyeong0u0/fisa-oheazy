@@ -16,11 +16,15 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
+
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
+    @Autowired
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
     //유저 생성 test (DB 들어가는지 확인)
     //RequestBody를 달아야 postman Raw-Json 방식으로 사용이 가능하다.
     @PostMapping("/create")
@@ -108,9 +112,9 @@ public class UserController {
             String userId = userService.findUserId(name, email);
             return ResponseEntity.ok().body("찾은 아이디 : " + userId);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body("입력한 이름과 이메일을 다시 확인해주세요.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("입력한 이름과 이메일을 다시 확인해주세요.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

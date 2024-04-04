@@ -4,7 +4,6 @@ import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.dto.UserDTO;
 import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
 import com.fisa.wooriarte.user.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +14,11 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private final UserRepository userRepository;
     @Autowired
-    private UserRepository userRepository;
+    public UserService (UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
 
     //Spring Security를 사용하여 비밀번호를 인코딩하고 비교하기 위해 PasswordEncoder 의존성 추가
     //;; Bean등록 해야함 ;;
