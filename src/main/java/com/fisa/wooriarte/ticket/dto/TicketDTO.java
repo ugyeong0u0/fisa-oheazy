@@ -16,7 +16,7 @@ import java.util.Optional;
 public class TicketDTO {
     private long ticketId;
 //    private long exhbtId;
-    private long user;
+    private long userId;
     private int amount;
     private LocalDateTime date;
     private boolean canceled;
@@ -26,10 +26,10 @@ public class TicketDTO {
     @Builder
     public Ticket toEntity(UserRepository userRepository) {
         // 사용자를 찾아서 Optional로 받음
-        Optional<User> optionalUser = userRepository.findById(Math.toIntExact(this.user));
+        Optional<User> optionalUser = userRepository.findById(Math.toIntExact(this.userId));
 
         // Optional에서 사용자를 가져오거나 사용자가 존재하지 않으면 예외 발생
-        User user = optionalUser.orElseThrow(() -> new IllegalArgumentException("User not found with id: " + this.user));
+        User user = optionalUser.orElseThrow(() -> new IllegalArgumentException("User not found with id: " + this.userId));
 
         return Ticket.builder()
                 .ticketId(this.ticketId)
@@ -55,7 +55,7 @@ public class TicketDTO {
 //            dto.setExhibit_id(ticket.getExhibit().getId());
 //        }
         if (ticket.getUser() != null) {
-            dto.setUser(ticket.getUser().getUserId()); // User 엔티티 대신 userId를 사용
+            dto.setUserId(ticket.getUser().getUserId()); // User 엔티티 대신 userId를 사용
         }
 
         return dto;

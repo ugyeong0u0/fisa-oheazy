@@ -17,6 +17,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private long userId;
 
     @NonNull
@@ -51,7 +52,7 @@ public class User {
     private boolean deleted;
 
     // Ticket 엔티티를 참조하는 필드 추가
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Ticket> tickets;
 
     @Builder

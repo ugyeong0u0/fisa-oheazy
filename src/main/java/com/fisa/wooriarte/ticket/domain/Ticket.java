@@ -28,8 +28,8 @@ public class Ticket {
 //    @JoinColumn(name = "exhbt_id", nullable = false)
 //    private Exhibit exhibit;
 //
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
     private User user;
 
     @Column(nullable = false)
@@ -57,7 +57,7 @@ public class Ticket {
 //            ticketNoBuilder.append(exhibit.getId()).append("-");
 //        }
         if (user != null) {
-            ticketNoBuilder.append(user.getId()).append("-");
+            ticketNoBuilder.append(user).append("-");
         }
         ticketNoBuilder.append(date.toString());
 

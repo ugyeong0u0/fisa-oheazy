@@ -5,8 +5,9 @@ import com.fisa.wooriarte.ticket.dto.TicketDTO;
 import com.fisa.wooriarte.ticket.repository.TicketRepository;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.repository.UserRepository;
+import jakarta.annotation.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class TicketService {
 
@@ -30,10 +32,19 @@ public class TicketService {
     // 사용 여부에 따라 티켓 리스트를 가져오는 메서드
     public List<TicketDTO> getTicketsByUserIdAndStatus(long userId, boolean status) {
         List<Ticket> tickets;
+        Integer integerUserId = (int)userId;
+        log.info("userId :: " + String.valueOf(integerUserId));
+        User user = userRepository.findById(integerUserId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
         if (status) {
-            tickets = ticketRepository.findByUserIdAndStatusAndCanceled(String.valueOf(userId), true, false);
+            tickets = ticketRepository.findByUserAndStatusAndCanceled(user, true, false);
+            log.info("UsedTicket :: " + String.valueOf(tickets.toString()));
+            System.out.println(tickets.toString());
         } else {
-            tickets = ticketRepository.findByUserIdAndStatusAndCanceled(String.valueOf(userId), false, false);
+            tickets = ticketRepository.findByUserAndStatusAndCanceled(user,false, false);
+            log.info("UnusedTicket :: " + String.valueOf(tickets.toString()));
+            System.out.println(tickets.toString());
         }
         return tickets.stream()
                 .map(TicketDTO::fromEntity)
@@ -41,10 +52,15 @@ public class TicketService {
     }
 
     //새로운 ticket 생성
-    public TicketDTO createTicket(TicketDTO ticketDTO){
-        // userId를 사용하여 User 엔티티를 가져옴
-        User user = userRepository.findById(Math.toIntExact(ticketDTO.getUser()))
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + ticketDTO.getUser()));
+    public TicketDTO createTicket(TicketDTO ticketDTO, long userId) {
+        log.info("createTicket :: " + String.valueOf(ticketDTO.toString()));
+        // userId를 Long으로 변환하여 사용자 엔티티를 가져옴
+        Integer integerUserId = (int)userId;
+        log.info("userId :: " + String.valueOf(integerUserId));
+        User user = userRepository.findById(integerUserId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+        // TicketDTO에 사용자 정보 설정
+        ticketDTO.setUserId(user.getUserId());
         //TicketDTO -> 엔티티 변환
         Ticket ticket = ticketDTO.toEntity(userRepository);
         //Ticket 엔티티 저장

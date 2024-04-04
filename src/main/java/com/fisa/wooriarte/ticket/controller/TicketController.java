@@ -2,12 +2,14 @@ package com.fisa.wooriarte.ticket.controller;
 
 import com.fisa.wooriarte.ticket.dto.TicketDTO;
 import com.fisa.wooriarte.ticket.service.TicketService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 public class TicketController {
 
@@ -20,20 +22,22 @@ public class TicketController {
 
     //결제 완료 -> 티켓 생성
     @PostMapping("/exhibits/{userId}/bookings/payments")
-    public String addTicket(@RequestBody TicketDTO ticketDTO){
+    public String addTicket(@RequestBody TicketDTO ticketDTO, @PathVariable("userId") long userId) {
+        log.info("addTicket :: " + String.valueOf(ticketDTO.toString()));
+        System.out.println("userID :: " + userId);
         try {
-            ticketService.createTicket(ticketDTO);
+            ticketService.createTicket(ticketDTO, userId);
             System.out.println("티켓 생성 완료");
             return "success";
         } catch (Exception e) {
             System.err.println("티켓 생성 중 오류 발생: " + e.getMessage());
-            return "Failed to create ticket: " ;
+            return "Failed to create ticket: ";
         }
     }
 
     // status에 따라 ticket list 출력 : 관람 예정 / 관람 완료
     @GetMapping("/user/bookings/{userId}/{status}")
-    public List<TicketDTO> getTicketsByUserIdAndStatus(@PathVariable long userId, @PathVariable boolean status) {
+    public List<TicketDTO> getTicketsByUserIdAndStatus(@PathVariable("userId") long userId, @PathVariable("status") boolean status) {
         return ticketService.getTicketsByUserIdAndStatus(userId, status);
     }
 
