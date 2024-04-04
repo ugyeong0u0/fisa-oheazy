@@ -5,56 +5,57 @@ import com.fisa.wooriarte.spacerental.service.SpaceRentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/space-rental")
 public class SpaceRentalController {
-    @Autowired
-    private SpaceRentalService service;
+    private final SpaceRentalService spaceRentalService;
 
-    //사용자 회원가입(사용자 추가)
+    @Autowired
+    public SpaceRentalController(SpaceRentalService spaceRentalService) {
+        this.spaceRentalService = spaceRentalService;
+    }
+
+    //공간대여자 회원가입
     @PostMapping("")
-    public String addSpaceRental(@RequestBody SpaceRentalDTO spaceRentalDTO) throws Exception {
-        if(service.addSpaceRental(spaceRentalDTO))
+    public String addSpaceRental(@RequestBody SpaceRentalDTO spaceRentalDTO) {
+        if(spaceRentalService.addSpaceRental(spaceRentalDTO))
             return "success";
         return "fail";
     }
 
-    //사용자 정보를 요청
+    //공간대여자 로그인
+    @PostMapping("/login")
+    public String loginSpaceRental(@RequestBody Map<String, String> loginInfo) {
+        String id = loginInfo.get("id");
+        String pwd = loginInfo.get("pwd");
+        if(spaceRentalService.loginSpaceRental(id, pwd))
+            return "login success";
+        return "login fail";
+    }
+
+    //공간대여자 정보 조회
     @GetMapping("/{id}")
-    public String getSpaceRentalInfo(@PathVariable("id") String id) throws Exception{
-        try {
-            SpaceRentalDTO spaceRentalDTO = service.findById(id);
-            return spaceRentalDTO.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "fail";
+    public String getSpaceRentalInfo(@PathVariable("id") String id) {
+        SpaceRentalDTO spaceRentalDTO = spaceRentalService.findById(id);
+        return spaceRentalDTO.toString();
     }
 
-    //사용자 정보를 갱신
+    //공간대여자 정보 갱신
     @PatchMapping("{id}")
-    public String updateSpaceRentalInfo(@PathVariable("id") String id, @RequestBody SpaceRentalDTO spaceRentalDTO) throws Exception {
-        try {
-            if(service.updateSpaceRental(id, spaceRentalDTO))
-                return "success";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public String updateSpaceRentalInfo(@PathVariable("id") String id, @RequestBody SpaceRentalDTO spaceRentalDTO) {
+        if(spaceRentalService.updateSpaceRental(id, spaceRentalDTO))
+            return "success";
         return "fail";
     }
 
-    //사용자 삭제(delete를 true로 변경)
+    //공간대여자 삭제(delete를 true로 변경)
     @DeleteMapping("{id}")
     public String deleteSpaceRental(@PathVariable("id") String id) {
-        try {
-            if(service.deleteSpaceRental(id))
-                return "success";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if(spaceRentalService.deleteSpaceRental(id))
+            return "success";
         return "fail";
     }
 
@@ -62,7 +63,7 @@ public class SpaceRentalController {
     @GetMapping("{id}/{matching_status}")
     public String getSpaceRentalMatching(@PathVariable("id") String id, @PathVariable("matching_status") int status) {
         // 나중에 matching 생기면 추가할 내용
-        return null;
+        return "";
     }
 
     /*
@@ -70,8 +71,13 @@ public class SpaceRentalController {
     DataIntegrityViolationException: 데이터베이스 제약조건, 무결성 위반 시도 (이미 존재하는 아이디 삽입, 이미 삭제된 사용자 삭제 등등)
     NoSuchElementException: 검색 요소가 발견되지 않음 (해당 아이디 찾을 수 없음 등등)
      */
-    @ExceptionHandler({DataIntegrityViolationException.class, NoSuchElementException.class})
-    public void handle(Exception e) {
-        System.err.println(e.getMessage());
+    @ExceptionHandler({NoSuchElementException.class})
+    public String handleNoSuchElementException(Exception e) {
+        return "해당 id를 사용하는 유저가 없습니다";
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public String handleDataIntegrityViolationException(Exception e) {
+        return "불가능한 요청입니다";
     }
 }
