@@ -5,6 +5,8 @@ import com.fisa.wooriarte.user.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -42,27 +46,13 @@ public class User {
     @Column(name = "create_at")
     private LocalDateTime createAt;
 
-    @CreationTimestamp //현재시간을 나타내기 위한 어노테이션
+    @CreatedDate //현재시간을 나타내기 위한 어노테이션
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
     @Column
     private boolean deleted;
 
-
-    @Builder
-    public User(int userId, @NonNull String id, @NonNull String pwd, @NonNull String name, @NonNull String email,
-                @NonNull String phone, LocalDateTime createAt, LocalDateTime updateAt, boolean deleted) {
-        this.userId = userId;
-        this.id = id;
-        this.pwd = pwd;
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-        this.deleted = deleted;
-    }
 
     public UserDTO toDto() {
         return UserDTO.builder()
@@ -77,5 +67,7 @@ public class User {
                 .deleted(this.deleted)
                 .build();
     }
+
+
 
 }

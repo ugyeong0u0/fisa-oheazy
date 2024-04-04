@@ -4,14 +4,17 @@ import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.dto.UserDTO;
 import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
 import com.fisa.wooriarte.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -23,10 +26,6 @@ public class UserService {
 
 
 //    ----------------------------------------------------
-
-
-
-
 
 
     //회원가입 로직 boolean으로 반환
@@ -41,7 +40,7 @@ public class UserService {
             return false;
         }
 
-        Optional<User> userId = userRepository.findUserByid(userEntity.getId());
+        Optional<User> userId = userRepository.findUserById(userEntity.getId());
         if (userId.isPresent()) {
             System.out.println("회원가입 불가능 (아이디 중복");
             return false;
@@ -53,12 +52,9 @@ public class UserService {
     }
 
 
-
-
-
     //비밀번호 검증
     public boolean verifyPassword(String id, UserDTO userDTO) throws Exception {
-        User user = userRepository.findUserByid(id)
+        User user = userRepository.findUserById(id)
                 .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
 
         if (userDTO.getPwd().equals(user.getPwd())) {
@@ -98,7 +94,20 @@ public class UserService {
 
     }
 
+    // 유저 아이디 찾기
+    public String findUserId(String name, String email)  {
+        User userInfo = userRepository.findUserByNameAndEmail(name, email)
+                .orElseThrow(() -> new NoSuchElementException("유저 아이디를 찾을 수 없습니다.")); //객체 없으면 에러던지기
 
+        return userInfo.getId(); //아이디 던저주기
+    }
 
+    // 유저 비밀번호 찾기
+    public String findUserPw(String id, String name, String email)  {
+        User userInfo = userRepository.findUserByIdAndNameAndEmail(id, name, email)
+                .orElseThrow(() -> new NoSuchElementException("유저 비밀번호를 찾을 수 없습니다.")); //객체 없으면 에러던지기
+
+        return userInfo.getPwd(); //아이디 던저주기
+    }
 }
 
