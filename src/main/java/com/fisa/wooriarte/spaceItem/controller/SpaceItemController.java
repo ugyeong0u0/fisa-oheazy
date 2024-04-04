@@ -40,15 +40,15 @@ public class SpaceItemController {
     }
 
     // 공간 아이템 수정
-//    @PatchMapping("/{id}")
-//    public String updateSpaceItem(@PathVariable Long id, @RequestBody SpaceItemDTO spaceItemDTO) {
-//        return spaceItemService.updateSpaceItem(id, spaceItemDTO) ? "update complete" : "update failed";
-//    }
+    @PatchMapping("/{id}")
+    public String updateSpaceItem(@PathVariable Long id, @RequestBody SpaceItemDTO spaceItemDTO) {
+        return spaceItemService.updateSpaceItem(id, spaceItemDTO) ? "update complete" : "update failed";
+    }
 
-//    @PostMapping("/{id}/request")
-//        public String requestSpaceMatching() {
-//
-//        return  "";
-//    }
+    @PostMapping("/{id}/request")
+        public String requestSpaceMatching() {
+
+        return  "";
+    }
 
 }
