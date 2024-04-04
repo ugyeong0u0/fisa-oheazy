@@ -83,7 +83,6 @@ public class SpaceItemController {
 
     @PostMapping("/{id}/request")
     public String requestSpaceMatching() {
-        // 이 부분은 구현의 예시가 되지 않았으므로, 구체적인 로직에 따라 예외 처리 및 로깅을 추가할 필요가 있습니다.
         logger.info("Request space matching");
         return "";
     }
