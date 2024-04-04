@@ -64,7 +64,7 @@ public class SpaceItem {
     private LocalDateTime createdAt;
 
     @Column
-    private boolean deleted;
+    private boolean isDeleted;
 
     public SpaceItemDTO toDTO() {
         return SpaceItemDTO.builder()
@@ -81,8 +81,11 @@ public class SpaceItem {
                 .startDate(this.startDate)
                 .endDate(this.endDate)
                 .createdAt(this.createdAt)
-                .deleted(this.deleted)
+                .isDeleted(this.isDeleted)
                 .build();
     }
 
+    public void updateIsDeleted() {
+        this.isDeleted = true;
+    }
 }
