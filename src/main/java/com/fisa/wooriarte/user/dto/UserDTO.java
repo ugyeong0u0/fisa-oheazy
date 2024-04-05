@@ -24,6 +24,12 @@ public class UserDTO {
 
 
     public User toEntity(){
-        return User.builder().id(this.id).pwd(this.pwd).name(this.name).email(this.email).phone(this.phone).build();
+        return User.builder()
+                .id(this.id)
+                .pwd(this.pwd)
+                .name(this.name)
+                .email(this.email)
+                .phone(this.phone)
+                .build();
     }
 }
