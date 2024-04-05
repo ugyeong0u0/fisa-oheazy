@@ -28,6 +28,9 @@ public class ProjectItem {
     private Long businessId;
 
     @Column
+    private String artistName;
+
+    @Column
     private String intro;
 
     @Column
@@ -55,6 +58,7 @@ public class ProjectItem {
         return ProjectItemDTO.builder()
                 .projectId(projectId)
                 .businessId(businessId)
+                .artistName(artistName)
                 .intro(intro)
                 .phone(phone)
                 .approval(approval)
