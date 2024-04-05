@@ -1,5 +1,9 @@
 package com.fisa.wooriarte.user.service;
 
+
+import com.fisa.wooriarte.exception.MessageException;
+import com.fisa.wooriarte.spacerental.domain.SpaceRental;
+
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.dto.UserDTO;
 import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
@@ -81,6 +85,11 @@ public class UserService {
         }
 
     }
+
+    // 유저 로그인
+    public boolean loginUser(String id, String pwd) {
+        Optional<User> optionalUser = userRepository.findUserById(id);
+        return optionalUser.isPresent() && optionalUser.get().getPwd().equals(pwd);
 
     // 유저 개인 정보 수정
     public Boolean updateMyUser(Long id, UserInfoRequest userInfoRequest) {
