@@ -9,9 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -28,7 +32,7 @@ public class UserController {
 
 
     // 이메일 중복 체크를 통해 중복회원 거르기
-    @PostMapping("/user")
+    @PostMapping("")
     //<?> : 제네릭 타입, 모든 종류의 응답 본문 반환할지 나타낸다.
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) throws Exception {
         try {
@@ -41,6 +45,15 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
         }
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@RequestBody Map<String, String> loginInfo) {
+        String id = loginInfo.get("id");
+        String pwd = loginInfo.get("pwd");
+        if(userService.loginUser(id, pwd))
+            return "login success";
+        return "login fail";
     }
 
 
