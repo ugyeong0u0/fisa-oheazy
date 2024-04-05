@@ -13,44 +13,53 @@ import java.util.Optional;
 
 @Service
 public class SpaceRentalService {
-    @Autowired
-    SpaceRentalRepository repository;
+    private final SpaceRentalRepository spaceRentalRepository;
 
+    @Autowired
+    public SpaceRentalService(SpaceRentalRepository spaceRentalRepository) {
+        this.spaceRentalRepository = spaceRentalRepository;
+    }
     /*
-    사용자 추가
+    공간대여자 추가
     1. 같은 아이디 사용 확인
         발견시 예외 처리
     2. DB에 저장
      */
     @Transactional
-    public boolean addSpaceRental(SpaceRentalDTO sr) throws Exception {
-        Optional<SpaceRental> optionalSpaceRental = repository.findBySpaceRentalId(sr.getId());
-        optionalSpaceRental.ifPresent(a -> {
+    public boolean addSpaceRental(SpaceRentalDTO spaceRentalDTO) {
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(spaceRentalDTO.getId());
+        if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
-        });
-        try {
-            repository.save(sr.toEntity());
-            return true;
-        } catch(Exception e) {
-            e.printStackTrace();
         }
-        return false;
+        spaceRentalRepository.save(spaceRentalDTO.toEntity());
+        return true;
     }
 
     /*
-    사용자 정보 검색
+    공간대여자 로그인
+    1. id로 유저 검색
+        없으면 예외 처리
+    2. 비밀번호와 비교
+     */
+    public boolean loginSpaceRental(String id, String pwd) {
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(id);
+        return optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd);
+    }
+
+    /*
+    공간대여자 정보 검색
     1. id로 유저 검색
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public SpaceRentalDTO findById(String id) throws Exception {
-        SpaceRental spaceRental = repository.findBySpaceRentalId(id)
+    public SpaceRentalDTO findById(String id) {
+        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
                     .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
         return spaceRental.toDTO();
     }
 
     /*
-    사용자 정보 갱신
+    공간대여자 정보 갱신
     1. id로 유저 검색
         없으면 예외처리
     2. BeanUtils.copyProperties(S, D, ignore)로 같은 컬럼 데이터 갱신
@@ -61,40 +70,30 @@ public class SpaceRentalService {
             businessId: 고유 번호는 그대로 유지
      */
     @Transactional
-    public boolean updateSpaceRental(String id, SpaceRentalDTO spaceRentalDTO) throws Exception {
-        SpaceRental spaceRental = repository.findBySpaceRentalId(id)
+    public boolean updateSpaceRental(String id, SpaceRentalDTO spaceRentalDTO) {
+        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
-        BeanUtils.copyProperties(spaceRentalDTO, spaceRental, "createAt", "businessId");
-        try {
-            repository.save(spaceRental);
-            return true;
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        BeanUtils.copyProperties(spaceRentalDTO, spaceRental, "createAt", "spaceRentalId");
+        spaceRentalRepository.save(spaceRental);
+        return true;
     }
 
     /*
-    사용자 삭제 soft-delete
+    공간대여자 삭제 soft-delete
     1. id로 유저 검색
         없으면 예외처리
     2. delete를 true로 변경
         이미 변경했으면 예외처리
      */
     @Transactional
-    public boolean deleteSpaceRental(String id) throws Exception {
-        SpaceRental spaceRental = repository.findBySpaceRentalId(id)
+    public boolean deleteSpaceRental(String id) {
+        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
-        if(spaceRental.isDeleted()) {
+        if(spaceRental.getDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");
         }
         spaceRental.setDeleted(true);
-        try {
-            repository.save(spaceRental);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+        spaceRentalRepository.save(spaceRental);
+        return true;
     }
 }

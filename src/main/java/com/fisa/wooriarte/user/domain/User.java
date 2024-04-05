@@ -1,6 +1,5 @@
 package com.fisa.wooriarte.user.domain;
 
-
 import com.fisa.wooriarte.user.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,6 +20,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private long userId;
 
     @NonNull
@@ -53,6 +54,9 @@ public class User {
     @Column
     private boolean deleted;
 
+    // Ticket 엔티티를 참조하는 필드 추가
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Ticket> tickets;
 
     public UserDTO toDto() {
         return UserDTO.builder()
