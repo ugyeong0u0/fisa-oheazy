@@ -37,9 +37,8 @@ public class TicketService {
     // 사용 여부에 따라 티켓 리스트를 가져오는 메서드
     public List<TicketDTO> getTicketsByUserIdAndStatus(long userId, boolean status) {
         List<Ticket> tickets;
-        Integer integerUserId = (int)userId;
-        log.info("userId :: " + String.valueOf(integerUserId));
-        User user = userRepository.findById(integerUserId)
+        log.info("userId :: " + String.valueOf(userId));
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
         if (status) {
@@ -60,10 +59,9 @@ public class TicketService {
     public TicketDTO addTicket(TicketDTO ticketDTO, long userId, long exhibitId) {
         log.info("addTicket :: " + String.valueOf(ticketDTO.toString()));
         // userId를 Long으로 변환하여 사용자 엔티티를 가져옴
-        Integer integerUserId = (int)userId;
 
-        log.info("userId :: " + String.valueOf(integerUserId));
-        User user = userRepository.findById(integerUserId)
+        log.info("userId :: " + String.valueOf(userId));
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
         Exhibit exhibit = exhibitRepository.findById(exhibitId)
                 .orElseThrow(() -> new IllegalArgumentException("Exhibit not found with id: " + exhibitId));
