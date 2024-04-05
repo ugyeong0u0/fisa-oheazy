@@ -1,5 +1,7 @@
 package com.fisa.wooriarte.ticket.service;
 
+import com.fisa.wooriarte.exhibit.domain.Exhibit;
+import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
 import com.fisa.wooriarte.ticket.domain.Ticket;
 import com.fisa.wooriarte.ticket.dto.TicketDTO;
 import com.fisa.wooriarte.ticket.repository.TicketRepository;
@@ -23,10 +25,13 @@ public class TicketService {
 
     private final UserRepository userRepository;
 
+    private final ExhibitRepository exhibitRepository;
+
     @Autowired
-    public TicketService(TicketRepository ticketRepository, UserRepository userRepository){
+    public TicketService(TicketRepository ticketRepository, UserRepository userRepository, ExhibitRepository exhibitRepository){
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
+        this.exhibitRepository = exhibitRepository;
     }
 
     // 사용 여부에 따라 티켓 리스트를 가져오는 메서드
@@ -52,17 +57,21 @@ public class TicketService {
     }
 
     //새로운 ticket 생성
-    public TicketDTO createTicket(TicketDTO ticketDTO, long userId) {
-        log.info("createTicket :: " + String.valueOf(ticketDTO.toString()));
+    public TicketDTO addTicket(TicketDTO ticketDTO, long userId, long exhibitId) {
+        log.info("addTicket :: " + String.valueOf(ticketDTO.toString()));
         // userId를 Long으로 변환하여 사용자 엔티티를 가져옴
         Integer integerUserId = (int)userId;
+
         log.info("userId :: " + String.valueOf(integerUserId));
         User user = userRepository.findById(integerUserId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+        Exhibit exhibit = exhibitRepository.findById(exhibitId)
+                .orElseThrow(() -> new IllegalArgumentException("Exhibit not found with id: " + exhibitId));
         // TicketDTO에 사용자 정보 설정
         ticketDTO.setUserId(user.getUserId());
+        ticketDTO.setExhibitId(exhibit.getExhibitId());
         //TicketDTO -> 엔티티 변환
-        Ticket ticket = ticketDTO.toEntity(userRepository);
+        Ticket ticket = ticketDTO.toEntity(userRepository, exhibitRepository);
         //Ticket 엔티티 저장
         Ticket savedTicket = ticketRepository.save(ticket);
         //Ticket 엔티티 -> TicketDTO 변환
