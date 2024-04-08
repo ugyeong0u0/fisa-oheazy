@@ -23,35 +23,37 @@ public class TicketController {
     }
 
     //결제 완료 -> 티켓 생성
-    @PostMapping("/exhibits/{id}/payments/{userid}")
-    public String addTicket(@RequestBody TicketDTO ticketDTO, @PathVariable long userid, @PathVariable long id) {
-        log.info("addTicket :: " + String.valueOf(ticketDTO.toString()));
-        System.out.println("userID :: " + userid);
-
+    @PostMapping("/exhibits/{exhibit-id}/payments/{user-id}")
+    public ResponseEntity<String> addTicket(
+            @RequestBody TicketDTO ticketDTO,
+            @PathVariable(name = "exhibit-id") long exhibitId,
+            @PathVariable(name = "user-id") long userId) {
         // 이름, 이메일, 연락처 값이 누락되었는지 확인
         if (ticketDTO.getName() == null || ticketDTO.getEmail() == null || ticketDTO.getPhone() == null) {
             throw new IllegalArgumentException("이름, 이메일, 연락처는 필수 값입니다.");
         }
 
         try {
-            ticketService.addTicket(ticketDTO, userid, id);
-            System.out.println("티켓 생성 완료");
-            return "success";
+            ticketService.addTicket(ticketDTO, userId, exhibitId);
+            return ResponseEntity.ok("티켓 생성 완료");
         } catch (Exception e) {
-            System.err.println("티켓 생성 중 오류 발생: " + e.getMessage());
-            return "Failed to create ticket: ";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("티켓 생성 중 오류 발생: " + e.getMessage());
         }
     }
 
     // status에 따라 ticket list 출력 : 관람 예정 / 관람 완료
-    @GetMapping("/user/bookings/{id}/{status}")
-    public List<TicketDTO> getTicketsByUserIdAndStatus(@PathVariable long id, @PathVariable("status") boolean status) {
-        return ticketService.getTicketsByUserIdAndStatus(id, status);
+    @GetMapping("/user/{user-id}/bookings/{status}")
+    public ResponseEntity<List<TicketDTO>> getTicketsByUserIdAndStatus(
+            @PathVariable(name = "user-id") long userId,
+            @RequestParam(required = false, defaultValue = "false") boolean status) {
+
+        List<TicketDTO> tickets = ticketService.getTicketsByUserIdAndStatus(userId, status);
+        return ResponseEntity.ok(tickets);
     }
 
     // 티켓 취소
-    @DeleteMapping("/user/{ticketId}")
-    public ResponseEntity<String> deleteTicket(@PathVariable long ticketId) {
+    @DeleteMapping("/user/{ticket-id}")
+    public ResponseEntity<String> deleteTicket(@PathVariable(name = "ticket-id") long ticketId) {
         try {
             ticketService.deleteTicketById(ticketId);
             return ResponseEntity.ok("취소된 티켓 ID " + ticketId + "입니다.");
@@ -63,8 +65,8 @@ public class TicketController {
     }
 
     // 티켓 사용 처리 변경
-    @PatchMapping("/user/{ticketId}")
-    public ResponseEntity<String> useTicket(@PathVariable long ticketId) {
+    @PatchMapping("/{ticket-id}")
+    public ResponseEntity<String> useTicket(@PathVariable(name = "ticket-id") long ticketId) {
         boolean isUsed = ticketService.useTicketAndCheckIfUsed(ticketId);
         if (isUsed) {
             return ResponseEntity.ok("Ticket with ID " + ticketId + " status changed.");

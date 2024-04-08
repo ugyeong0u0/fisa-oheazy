@@ -7,7 +7,6 @@ import com.fisa.wooriarte.ticket.dto.TicketDTO;
 import com.fisa.wooriarte.ticket.repository.TicketRepository;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.repository.UserRepository;
-import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +55,7 @@ public class TicketService {
     }
 
     //새로운 ticket 생성
-    public TicketDTO addTicket(TicketDTO ticketDTO, long userId, long exhibitId) {
+    public void addTicket(TicketDTO ticketDTO, long userId, long exhibitId) {
         log.info("addTicket :: " + String.valueOf(ticketDTO.toString()));
         // userId를 Long으로 변환하여 사용자 엔티티를 가져옴
 
@@ -73,7 +72,7 @@ public class TicketService {
         //Ticket 엔티티 저장
         Ticket savedTicket = ticketRepository.save(ticket);
         //Ticket 엔티티 -> TicketDTO 변환
-        return TicketDTO.fromEntity(savedTicket);
+        TicketDTO.fromEntity(savedTicket);
     }
 
     //티켓 취소 메소드
