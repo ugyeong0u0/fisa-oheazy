@@ -99,7 +99,7 @@ public class UserController {
     }
 
     // 유저 개인 정보 수정
-    @PatchMapping("/user/{id}/info")
+    @PostMapping("/user/{id}/info")
     public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody UserInfoRequest userInfoRequest) throws Exception {
         try {
 

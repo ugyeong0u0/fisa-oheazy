@@ -7,6 +7,7 @@ import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,7 @@ public class FindController {
     private FindService findService;
 
     // 공간렌탈 id찾기
-    @GetMapping("/find-business-id")
+    @PostMapping("/find-business-id")
     public ResponseEntity<?> findBusinessId(@RequestBody FindBusinessIdRequest businessDTO) {
         try {
             if (businessDTO.getCheck()) {
@@ -34,7 +35,7 @@ public class FindController {
     }
 
     // 공간 대여자 비밀번호 찾기
-    @GetMapping("/find-business-pw")
+    @PostMapping("/find-business-pw")
     public ResponseEntity<?> findBusinessPass(@RequestBody FindBusinessPassRequest pwDTO) {
         try {
             if (pwDTO.getCheck()) {

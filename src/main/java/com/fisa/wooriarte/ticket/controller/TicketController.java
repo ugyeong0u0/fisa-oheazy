@@ -28,7 +28,6 @@ public class TicketController {
             @RequestBody TicketDTO ticketDTO,
             @PathVariable(name = "exhibit-id") long exhibitId,
             @PathVariable(name = "user-id") long userId) {
-
         // 이름, 이메일, 연락처 값이 누락되었는지 확인
         if (ticketDTO.getName() == null || ticketDTO.getEmail() == null || ticketDTO.getPhone() == null) {
             throw new IllegalArgumentException("이름, 이메일, 연락처는 필수 값입니다.");

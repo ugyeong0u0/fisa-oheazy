@@ -90,6 +90,7 @@ public class UserService {
     public boolean loginUser(String id, String pwd) {
         Optional<User> optionalUser = userRepository.findUserById(id);
         return optionalUser.isPresent() && optionalUser.get().getPwd().equals(pwd);
+    }
 
     // 유저 개인 정보 수정
     public Boolean updateMyUser(Long id, UserInfoRequest userInfoRequest) {

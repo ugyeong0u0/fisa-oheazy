@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.user.domain;
 
+import com.fisa.wooriarte.ticket.domain.Ticket;
 import com.fisa.wooriarte.user.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;

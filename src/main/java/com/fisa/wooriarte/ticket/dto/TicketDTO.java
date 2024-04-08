@@ -16,6 +16,7 @@ import java.util.Optional;
 @Builder
 @ToString
 public class TicketDTO {
+    private Long ticketId;
     private Long exhibitId;
     private Long userId;
     private Long amount;
@@ -39,6 +40,7 @@ public class TicketDTO {
         User user = optionalUser.orElseThrow(() -> new IllegalArgumentException("User not found with id: " + this.userId));
 
         return Ticket.builder()
+                .ticketId(this.ticketId)
                 .exhibit(exhibit)
                 .user(user)
                 .amount(this.amount)
@@ -67,7 +69,6 @@ public class TicketDTO {
         if (ticket.getUser() != null) {
             dto.setUserId(ticket.getUser().getUserId()); // User 엔티티 대신 userId를 사용
         }
-
         return dto;
     }
 }
