@@ -27,49 +27,34 @@ public class ProjectItem {
     @JoinColumn // 수정 필요
     private Long businessId;
 
-    @Column
+    @Column(nullable = false)
     private String artistName;
 
-    @Column
+    @Column(nullable = false)
     private String intro;
 
-    @Column
+    @Column(nullable = false)
     private String phone;
 
-    @Column
-    private boolean approval;
+    @Column(nullable = false)
+    private boolean approved;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private LocalDateTime startDate;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private LocalDateTime endDate;
 
-    @Column
-    private boolean isDeleted;
-
-    public ProjectItemDTO toDTO() {
-        return ProjectItemDTO.builder()
-                .projectId(projectId)
-                .businessId(businessId)
-                .artistName(artistName)
-                .intro(intro)
-                .phone(phone)
-                .approval(approval)
-                .createdAt(createdAt)
-                .startDate(startDate)
-                .endDate(endDate)
-                .isDeleted(isDeleted)
-                .build();
-    }
+    @Column(nullable = false)
+    private boolean deleted;
 
     public void updateIsDeleted() {
-        this.isDeleted = true;
+        this.deleted = true;
     }
 }

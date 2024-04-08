@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -22,15 +23,13 @@ public class ProjectItemDTO {
 
     private String phone;
 
-    private boolean approval;
-
-    private LocalDateTime createdAt;
+    private boolean approved;
 
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
 
-    private boolean isDeleted;
+    private boolean deleted;
 
     public ProjectItem toEntity() {
         return ProjectItem.builder()
@@ -39,11 +38,25 @@ public class ProjectItemDTO {
                 .artistName(this.artistName)
                 .intro(this.intro)
                 .phone(this.phone)
-                .approval(this.approval)
-                .createdAt(this.createdAt)
+                .approved(this.approved)
                 .startDate(this.startDate)
                 .endDate(this.endDate)
-                .isDeleted(this.isDeleted)
+                .deleted(this.deleted)
                 .build();
+    }
+
+    public static ProjectItemDTO fromEntity(ProjectItem entity) {
+        return ProjectItemDTO.builder()
+                .projectId(entity.getProjectId())
+                .businessId(entity.getBusinessId())
+                .artistName(entity.getArtistName())
+                .intro(entity.getIntro())
+                .phone(entity.getPhone())
+                .approved(entity.isApproved())
+                .startDate(entity.getStartDate())
+                .endDate(entity.getEndDate())
+                .deleted(entity.isDeleted())
+                .build();
+
     }
 }

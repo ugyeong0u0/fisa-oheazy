@@ -22,23 +22,22 @@ public class ProjectItemService {
     }
 
     @Transactional
-    public boolean addProjectItem(ProjectItemDTO projectItemDTO){
+    public void addProjectItem(ProjectItemDTO projectItemDTO){
         System.out.println("addProjectItem");
         projectItemRepository.save(projectItemDTO.toEntity());
-        return true;
     }
 
     public List<ProjectItemDTO> findAll() {
         System.out.println("findAll");
         return projectItemRepository.findAll().stream()
-                .map(ProjectItem::toDTO) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
+                .map(ProjectItemDTO::fromEntity) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
                 .collect(Collectors.toList());
     }
 
     public Optional<ProjectItemDTO> findProjectItembyId(Long projectId) {
         System.out.println("findProjectItemById");
         return projectItemRepository.findById(projectId)
-                .map(ProjectItem::toDTO);
+                .map(ProjectItemDTO::fromEntity);
 
     }
     @Transactional
