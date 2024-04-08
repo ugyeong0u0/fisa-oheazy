@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.projectmanager.service;
 
+import com.fisa.wooriarte.exhibit.dto.ExhibitDTO;
 import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
@@ -27,7 +28,7 @@ public class ProjectManagerService {
    2. DB에 저장
     */
     public boolean addProjectManager(ProjectManagerDTO projectManagerDTO) {
-        Optional<ProjectManager> optionalSpaceRental = projectManagerRepository.findByProjectManagerId(projectManagerDTO.getId());
+        Optional<ProjectManager> optionalSpaceRental = projectManagerRepository.findById(projectManagerDTO.getProjectManagerId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
@@ -52,10 +53,9 @@ public class ProjectManagerService {
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public ProjectManagerDTO findById(String id) {
-        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
-                .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
-        return projectManager.toDTO();
+    public Optional<ProjectManagerDTO> findByProjectManagerId(Long id) {
+        return projectManagerRepository.findById(id)
+                .map(ProjectManagerDTO::fromEntity);
     }
 
     /*
@@ -69,8 +69,8 @@ public class ProjectManagerService {
             createAt: 생성 시점은 갱신하지 않음
             businessId: 고유 번호는 그대로 유지
      */
-    public boolean updateProjectManager(String id, ProjectManagerDTO projectManagerDTO) {
-        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
+    public boolean updateProjectManager(Long id, ProjectManagerDTO projectManagerDTO) {
+        ProjectManager projectManager = projectManagerRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
         BeanUtils.copyProperties(projectManagerDTO, projectManager, "createAt", "projectManagerId");
         projectManagerRepository.save(projectManager);
@@ -84,14 +84,13 @@ public class ProjectManagerService {
     2. delete를 true로 변경
         이미 변경했으면 예외처리
      */
-    public boolean deleteProjectManager(String id) {
-        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
+    public boolean deleteProjectManager(Long id) {
+        ProjectManager projectManager = projectManagerRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
         if(projectManager.getDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");
         }
-        projectManager.setDeleted(true);
-        projectManagerRepository.save(projectManager);
+        projectManager.setDeleted();
         return true;
     }
 }

@@ -16,6 +16,8 @@ public class ProjectItemDTO {
 
     private Long businessId;
 
+    private String artistName;
+
     private String intro;
 
     private String phone;
@@ -34,6 +36,7 @@ public class ProjectItemDTO {
         return ProjectItem.builder()
                 .projectId(this.projectId)
                 .businessId(this.businessId)
+                .artistName(this.artistName)
                 .intro(this.intro)
                 .phone(this.phone)
                 .approval(this.approval)

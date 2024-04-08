@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.user.repository;
 
-import com.fisa.wooriarte.user.domain.User; //User Entity
+import com.fisa.wooriarte.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,6 +35,4 @@ public interface UserRepository extends JpaRepository<User,Long> {
             @Param("email") String email,
             @Param("phone") String phone
     );
-
-
 }

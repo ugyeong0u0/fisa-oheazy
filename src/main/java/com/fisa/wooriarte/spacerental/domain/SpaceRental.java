@@ -2,19 +2,16 @@ package com.fisa.wooriarte.spacerental.domain;
 
 import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-@ToString
 public class SpaceRental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,18 +45,15 @@ public class SpaceRental {
     @Column(nullable = false)
     private Boolean deleted;
 
-    public SpaceRentalDTO toDTO() {
-        return SpaceRentalDTO.builder()
-                .spaceRentalId(this.spaceRentalId)
-                .businessNumber(this.businessNumber)
-                .id(this.id)
-                .pwd(this.pwd)
-                .company(this.company)
-                .ceo(this.ceo)
-                .email(this.email)
-                .phone(this.phone)
-                .createAt(this.createAt)
-                .deleted(this.deleted)
-                .build();
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public void updateSpaceRental(SpaceRentalDTO spaceRentalDTO) {
+        this.businessNumber = spaceRentalDTO.getBusinessNumber();
+        this.company = spaceRentalDTO.getCompany();
+        this.ceo = spaceRentalDTO.getCeo();
+        this.email = spaceRentalDTO.getEmail();
+        this.phone = spaceRentalDTO.getPhone();
     }
 }

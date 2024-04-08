@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-@RestController
+import java.util.Map;
 
+@RestController
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -27,8 +29,8 @@ public class UserController {
     }
 
 
-    // 아이디, 이메일 중복 체크를 통해 회원가입 진행
-    @PostMapping("/user")
+    // 이메일 중복 체크를 통해 중복회원 거르기
+    @PostMapping("")
     //<?> : 제네릭 타입, 모든 종류의 응답 본문 반환할지 나타낸다.
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO)  {
         try {
@@ -41,6 +43,15 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
         }
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@RequestBody Map<String, String> loginInfo) {
+        String id = loginInfo.get("id");
+        String pwd = loginInfo.get("pwd");
+        if(userService.loginUser(id, pwd))
+            return "login success";
+        return "login fail";
     }
 
 
