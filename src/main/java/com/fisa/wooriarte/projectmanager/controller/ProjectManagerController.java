@@ -4,9 +4,12 @@ import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
 import com.fisa.wooriarte.projectmanager.service.ProjectManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/project-manager")
@@ -18,52 +21,60 @@ public class ProjectManagerController {
     public ProjectManagerController(ProjectManagerService projectManagerService) {
         this.projectManagerService = projectManagerService;
     }
+
     //프로젝트 매니저 회원가입
     @PostMapping("")
-    public String addProjectManager(@RequestBody ProjectManagerDTO projectManagerDTO) {
-        if(projectManagerService.addProjectManager(projectManagerDTO))
-            return "success";
-        return "fail";
+    public ResponseEntity<String> addProjectManager(@RequestBody ProjectManagerDTO projectManagerDTO) {
+        boolean added = projectManagerService.addProjectManager(projectManagerDTO);
+        if (added) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("Project manager added successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add project manager.");
+        }
     }
 
     //프로젝트 매니저 로그인
     @PostMapping("/login")
-    public String loginProjectManager(@RequestBody Map<String, String> loginInfo) {
+    public ResponseEntity<String> loginProjectManager(@RequestBody Map<String, String> loginInfo) {
         String id = loginInfo.get("id");
         String pwd = loginInfo.get("pwd");
-        if(projectManagerService.loginProjectManager(id, pwd))
-            return "login success";
-        return "login fail";
+        boolean loggedIn = projectManagerService.loginProjectManager(id, pwd);
+        if (loggedIn) {
+            return ResponseEntity.ok("Login success.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed. Invalid credentials.");
+        }
     }
 
     //프로젝트 매니저 정보 조회
-    @GetMapping("/{id}")
-    public String getProjectManagerInfo(@PathVariable("id") String id) {
-        ProjectManagerDTO projectManagerDTO = projectManagerService.findById(id);
-        return projectManagerDTO.toString();
+    @GetMapping("/{project-manager-id}")
+    public ResponseEntity<ProjectManagerDTO> getProjectManagerInfo(@PathVariable("project-manager-id") Long projectManagerId) {
+        Optional<ProjectManagerDTO> projectManageroptional = projectManagerService.findByProjectManagerId(projectManagerId);
+        return projectManageroptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     //프로젝트 매니저 정보 갱신
-    @PatchMapping("{id}")
-    public String updateProjectManagerInfo(@PathVariable("id") String id, @RequestBody ProjectManagerDTO projectManagerDTO) {
-        if(projectManagerService.updateProjectManager(id, projectManagerDTO))
-            return "success";
-        return "fail";
+    @PutMapping("{project-manager-id}")
+    public ResponseEntity<String> updateProjectManagerInfo(
+            @PathVariable("project-manager-id") Long projectManagerId,
+            @RequestBody ProjectManagerDTO projectManagerDTO) {
+
+        boolean updated = projectManagerService.updateProjectManager(projectManagerId, projectManagerDTO);
+        if (updated) {
+            return ResponseEntity.ok("Project manager information updated successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to update project manager information. Project manager not found.");
+        }
     }
 
     //프로젝트 매니저 삭제(delete를 true로 변경)
-    @DeleteMapping("{id}")
-    public String deleteProjectManager(@PathVariable("id") String id) {
-        if(projectManagerService.deleteProjectManager(id))
-            return "success";
-        return "fail";
-    }
-
-    //매칭 조회 TBD
-    @GetMapping("{id}/{matching_status}")
-    public String getProjectManagerMatching(@PathVariable("id") String id, @PathVariable("matching_status") int status) {
-        // 나중에 matching 생기면 추가할 내용
-        return "";
+    public ResponseEntity<String> deleteProjectManager(@PathVariable("project-manager-id") Long projectManagerId) {
+        boolean deleted = projectManagerService.deleteProjectManager(projectManagerId);
+        if (deleted) {
+            return ResponseEntity.ok("Project manager deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to delete project manager. Project manager not found.");
+        }
     }
 
     /*
