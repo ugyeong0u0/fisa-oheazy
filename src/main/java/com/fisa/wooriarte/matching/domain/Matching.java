@@ -1,20 +1,14 @@
 package com.fisa.wooriarte.matching.domain;
 
-import com.fisa.wooriarte.matching.DTO.MatchingDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import java.time.LocalDate;
 
+@Getter
 @Entity
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 public class Matching {
@@ -33,7 +27,7 @@ public class Matching {
     private Long sender;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDate createAt;
 
     @Column(nullable = false, updatable = false)
@@ -46,16 +40,7 @@ public class Matching {
     @Enumerated(EnumType.STRING)
     private SenderType senderType;
 
-    public MatchingDTO toDTO() {
-        return MatchingDTO.builder()
-                .matchingId(this.matchingId)
-                .matchingStatus(this.matchingStatus)
-                .receiver(this.receiver)
-                .sender(this.sender)
-                .createAt(this.createAt)
-                .projectId(this.projectId)
-                .spaceId(this.spaceId)
-                .senderType(this.senderType)
-                .build();
+    public void setMatchingStatus(MatchingStatus matchingStatus) {
+        this.matchingStatus = matchingStatus;
     }
 }
