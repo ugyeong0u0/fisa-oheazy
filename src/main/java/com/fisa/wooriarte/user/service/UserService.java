@@ -55,11 +55,11 @@ public class UserService {
 
 
     //비밀번호 검증
-    public boolean verifyPassword(String id, UserDTO userDTO) throws Exception {
+    public boolean verifyPassword(String id, String password) throws Exception {
         User user = userRepository.findUserById(id)
                 .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
 
-        if (userDTO.getPwd().equals(user.getPwd())) {
+        if (password.equals(user.getPwd())) {
             System.out.println("비밀번호 일치");
             return true; //비밀번호 일치 -> true 반환
         } else {
@@ -74,7 +74,7 @@ public class UserService {
         try {
             final User user = userRepository.findById(userId)
                     .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
-            return user.toDto();
+            return UserDTO.fromEntity(user);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

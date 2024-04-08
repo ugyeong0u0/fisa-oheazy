@@ -59,19 +59,6 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Ticket> tickets;
 
-    public UserDTO toDto() {
-        return UserDTO.builder()
-                .userId(this.userId)
-                .id(this.id)
-                .pwd(this.pwd)
-                .name(this.name)
-                .email(this.email)
-                .phone(this.phone)
-                .createAt(this.createAt)
-                .updateAt(this.updateAt)
-                .deleted(this.deleted)
-                .build();
-    }
 
 
 

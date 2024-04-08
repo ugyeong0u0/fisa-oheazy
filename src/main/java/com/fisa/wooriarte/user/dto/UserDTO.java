@@ -19,7 +19,6 @@ public class UserDTO {
     private String name;
     private String email;
     private String phone;
-    private LocalDateTime createAt, updateAt;
     private boolean deleted;
 
 
@@ -30,6 +29,16 @@ public class UserDTO {
                 .name(this.name)
                 .email(this.email)
                 .phone(this.phone)
+                .build();
+    }
+    public static UserDTO fromEntity(User user) {
+        return UserDTO.builder()
+                .userId(user.getUserId())
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .deleted(user.isDeleted())
                 .build();
     }
 }

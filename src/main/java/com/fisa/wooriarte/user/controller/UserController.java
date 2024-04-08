@@ -64,7 +64,7 @@ public class UserController {
     public ResponseEntity<?> verifyPassword(@PathVariable String id, @RequestBody UserDTO userDTO)  {
 
         try {
-            if (userService.verifyPassword(id, userDTO)) {
+            if (userService.verifyPassword(id, userDTO.getPwd())) {
                 return ResponseEntity.ok().body("비밀번호 검증 성공");
             } else {
                 return ResponseEntity.badRequest().body("비밀번호 검증 실패");
@@ -88,7 +88,7 @@ public class UserController {
     }
 
     // 유저 개인 정보 수정
-    @PostMapping("/user/{id}/info")
+    @PutMapping("/user/{id}/info")
     public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody UserInfoRequest userInfoRequest) throws Exception {
         try {
 
