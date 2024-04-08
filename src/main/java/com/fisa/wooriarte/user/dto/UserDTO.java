@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class UserDTO {
-    private long userId;
+    private Long userId;
     private String id;
     private String pwd;
     private String name;
     private String email;
     private String phone;
-    private boolean deleted;
+    private Boolean deleted;
 
 
     public User toEntity(){
@@ -38,7 +38,7 @@ public class UserDTO {
                 .name(user.getName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
-                .deleted(user.isDeleted())
+                .deleted(user.getDeleted())
                 .build();
     }
 }

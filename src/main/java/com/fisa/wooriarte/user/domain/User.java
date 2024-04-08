@@ -22,7 +22,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    private long userId;
+    private Long userId;
 
     @NonNull
     @Column(length = 20)
@@ -53,13 +53,17 @@ public class User {
     private LocalDateTime updateAt;
 
     @Column
-    private boolean deleted;
+    private Boolean deleted;
 
     // Ticket 엔티티를 참조하는 필드 추가
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Ticket> tickets;
 
 
+
+    public void setDeleted(){
+        this.deleted = !this.deleted;
+    }
 
 
 }
