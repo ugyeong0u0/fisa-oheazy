@@ -40,9 +40,9 @@ public class MatchingService {
     //공간 대여자가 매칭 신청
     @Transactional
     public MatchingDTO addMatchingBySpaceRental(Long spaceId, Long projectId) {
-        matchingRepository.findByProjectIdAndSpaceId(projectId, spaceId)
-                .orElseThrow(() -> new DataIntegrityViolationException("해당 매칭이 이미 존재합니다"));
-
+        if(matchingRepository.findByProjectIdAndSpaceId(projectId, spaceId).isPresent()) {
+                throw new DataIntegrityViolationException("해당 매칭이 이미 존재합니다");
+        }
         SpaceItem spaceItem = spaceItemRepository.findById(spaceId).orElseThrow(() -> new NoSuchElementException("해당 공간 아이템 없음"));
         ProjectItem projectItem = projectItemRepository.findById(projectId).orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템 없음"));
 
@@ -62,9 +62,9 @@ public class MatchingService {
     //프로젝트 매니저가 매칭 신청
     @Transactional
     public MatchingDTO addMatchingByProjectManager(Long projectId, Long spaceId) {
-        matchingRepository.findByProjectIdAndSpaceId(projectId, spaceId)
-                .orElseThrow(() -> new DataIntegrityViolationException("해당 매칭이 이미 존재합니다"));
-
+        if(matchingRepository.findByProjectIdAndSpaceId(projectId, spaceId).isPresent()) {
+            throw new DataIntegrityViolationException("해당 매칭이 이미 존재합니다");
+        }
         SpaceItem spaceItem = spaceItemRepository.findById(spaceId).orElseThrow(() -> new NoSuchElementException("해당 공간 아이템 없음"));
         ProjectItem projectItem = projectItemRepository.findById(projectId).orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템 없음"));
 
