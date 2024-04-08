@@ -12,7 +12,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Builder
 @ToString
 @DynamicUpdate
@@ -20,7 +19,7 @@ public class Exhibit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long exhibitId;
+    private Long exhibitId;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn
@@ -47,19 +46,24 @@ public class Exhibit {
     private String hostName;
 
     @Column(nullable = false)
-    private long price;
+    private Long price;
 
     @Column(nullable = false)
-    private long soldAmount;
+    private Long soldAmount;
 
     @Column(nullable = false)
     private City city;
 
     @Column(nullable = false)
-    private boolean deleted;
+    private Boolean deleted;
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime date;
+
+    //티켓 삭제 deleted 컬럼 변경
+    public void setDeleted() {
+        this.deleted = !this.deleted;
+    }
 
 }

@@ -14,7 +14,7 @@ import java.util.Date;
 @Builder
 @ToString
 public class ExhibitDTO {
-    private long exhibitId;
+    private Long exhibitId;
 //    private long matchingId;
     private String name;
     private String intro;
@@ -22,11 +22,10 @@ public class ExhibitDTO {
     private Date endDate;
     private String artistName;
     private String hostName;
-    private long price;
-    private long soldAmount;
+    private Long price;
+    private Long soldAmount;
     private String city;
-    private boolean deleted;
-    private LocalDateTime date;
+    private Boolean deleted;
 
     public Exhibit toEntity(){
         return Exhibit.builder()
@@ -41,11 +40,13 @@ public class ExhibitDTO {
                 .soldAmount(this.soldAmount)
                 .city(City.valueOf(this.city))
                 .deleted(this.deleted)
-                .date(this.date)
                 .build();
     }
 
     public static ExhibitDTO fromEntity(Exhibit exhibit){
+        if (exhibit == null) {
+            return null;
+        }
         ExhibitDTO dto = new ExhibitDTO();
         dto.setExhibitId(exhibit.getExhibitId());
         dto.setName(exhibit.getName());
@@ -57,8 +58,7 @@ public class ExhibitDTO {
         dto.setPrice(exhibit.getPrice());
         dto.setSoldAmount(exhibit.getSoldAmount());
         dto.setCity(exhibit.getCity().name());
-        dto.setDeleted(exhibit.isDeleted());
-        dto.setDate(exhibit.getDate());
+        dto.setDeleted(exhibit.getDeleted());
 
 //        if (exhhibit.getMatching() != null) {
 //            dto.setMatching_id(exhibit.getMatching().getId());

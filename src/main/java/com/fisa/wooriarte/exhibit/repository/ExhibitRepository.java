@@ -11,6 +11,5 @@ import java.util.Optional;
 
 @Repository
 public interface ExhibitRepository extends JpaRepository<Exhibit,Long> {
-        @Query(value = "select * from exhibit e where e.exhibit_id = :id", nativeQuery = true)
-        Optional<Exhibit> findByExhibitId(String id);
+
 }
