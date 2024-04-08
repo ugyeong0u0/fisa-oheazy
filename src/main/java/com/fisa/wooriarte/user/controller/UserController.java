@@ -27,14 +27,6 @@ public class UserController {
     public UserController(UserService userService){
         this.userService = userService;
     }
-    //유저 생성 test (DB 들어가는지 확인)
-    //RequestBody를 달아야 postman Raw-Json 방식으로 사용이 가능하다.
-    @PostMapping("/create")
-    public String create(@RequestBody UserDTO userDTO) {
-        userService.addUser(userDTO);
-        System.out.println("회원가입 완료");
-        return "유저 생성 완료";
-    }
 
 
     // 이메일 중복 체크를 통해 중복회원 거르기
@@ -71,11 +63,11 @@ public class UserController {
 
 
     // 유저 마이페이지 수정하기 위한 -> 비밀번호 검증
-    @PostMapping("/user/{id}/verify-pwd")
-    public ResponseEntity<?> verifyPassword(@PathVariable String id, @RequestBody UserDTO userDTO)  {
+    @PostMapping("/user/{user-id}/verify-pwd")
+    public ResponseEntity<?> verifyPassword(@PathVariable(name = "user-id") Long userId, @RequestBody UserDTO userDTO)  {
 
         try {
-            if (userService.verifyPassword(id, userDTO)) {
+            if (userService.verifyPassword(userId, userDTO.getPwd())) {
                 return ResponseEntity.ok().body("비밀번호 검증 성공");
             } else {
                 return ResponseEntity.badRequest().body("비밀번호 검증 실패");
@@ -87,8 +79,8 @@ public class UserController {
     }
 
     // 유저 개인 정보 조회
-    @GetMapping("/user/{id}/info")
-    public ResponseEntity<?> getUserInfo(@PathVariable(value = "id") Long userId) throws Exception {
+    @GetMapping("/user/{user-id}/info")
+    public ResponseEntity<?> getUserInfo(@PathVariable(name = "user-id") Long userId){
         try {
 
             UserDTO userInfo = userService.getMyUser(userId);
@@ -99,11 +91,11 @@ public class UserController {
     }
 
     // 유저 개인 정보 수정
-    @PostMapping("/user/{id}/info")
-    public ResponseEntity<?> updateUserInfo(@PathVariable Long id, @RequestBody UserInfoRequest userInfoRequest) throws Exception {
+    @PostMapping("/user/{user-id}/info")
+    public ResponseEntity<?> updateUserInfo(@PathVariable(name = "user-id") Long userId, @RequestBody UserInfoRequest userInfoRequest) throws Exception {
         try {
 
-            Boolean result = userService.updateMyUser(id, userInfoRequest);
+            Boolean result = userService.updateMyUser(userId, userInfoRequest);
             if (result) return ResponseEntity.ok("수정 성공");
             else return ResponseEntity.badRequest().body("수정실패");
 
@@ -147,6 +139,9 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
         }
     }
+
+
+
 
 
 

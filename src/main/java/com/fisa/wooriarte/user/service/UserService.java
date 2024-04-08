@@ -1,15 +1,14 @@
 package com.fisa.wooriarte.user.service;
 
-
 import com.fisa.wooriarte.exception.MessageException;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
-
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.dto.UserDTO;
 import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
 import com.fisa.wooriarte.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -46,7 +45,7 @@ public class UserService {
             return false;
         }
 
-        Optional<User> userId = userRepository.findUserById(userEntity.getId());
+        Optional<User> userId = userRepository.findUserById(userEntity.getUserId());
         if (userId.isPresent()) {
             System.out.println("회원가입 불가능 (아이디 중복");
             return false;
@@ -59,11 +58,11 @@ public class UserService {
 
 
     //비밀번호 검증
-    public boolean verifyPassword(String id, UserDTO userDTO) throws Exception {
+    public boolean verifyPassword(Long id, String password) throws Exception {
         User user = userRepository.findUserById(id)
                 .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
 
-        if (userDTO.getPwd().equals(user.getPwd())) {
+        if (password.equals(user.getPwd())) {
             System.out.println("비밀번호 일치");
             return true; //비밀번호 일치 -> true 반환
         } else {
@@ -78,7 +77,7 @@ public class UserService {
         try {
             final User user = userRepository.findById(userId)
                     .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
-            return user.toDto();
+            return UserDTO.fromEntity(user);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -120,6 +119,18 @@ public class UserService {
                 .orElseThrow(() -> new NoSuchElementException("유저 비밀번호를 찾을 수 없습니다.")); //객체 없으면 에러던지기
 
         return userInfo.getPwd(); //아이디 던저주기
+    }
+
+
+    //유저 삭제 ~
+    //user_id 검색 후 delete 상태 변경
+    @Transactional
+    public void deleteUser(Long userId){
+        //user_id로 검색
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+
+        optionalUser.ifPresent(User::setDeleted);
     }
 }
 
