@@ -9,6 +9,5 @@ import java.util.Optional;
 @Repository
 public interface ProjectManagerRepository extends JpaRepository<ProjectManager, Long> {
 
-    @Query(value = "select * from project_manager p where p.id =:id", nativeQuery = true)
-    public Optional<ProjectManager> findByProjectManagerId(String id);
+    Optional<ProjectManager> findById(String id);
 }

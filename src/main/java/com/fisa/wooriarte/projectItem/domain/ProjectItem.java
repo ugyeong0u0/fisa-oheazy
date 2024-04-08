@@ -23,7 +23,6 @@ public class ProjectItem {
     @Column
     private Long projectId;
 
-
     @JoinColumn // 수정 필요
     private Long businessId;
 
@@ -37,7 +36,7 @@ public class ProjectItem {
     private String phone;
 
     @Column
-    private boolean approval;
+    private Boolean approval;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -52,7 +51,7 @@ public class ProjectItem {
     private LocalDateTime endDate;
 
     @Column
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     public ProjectItemDTO toDTO() {
         return ProjectItemDTO.builder()
