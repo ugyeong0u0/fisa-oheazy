@@ -3,7 +3,6 @@ package com.fisa.wooriarte.spacerental.service;
 import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
 import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -52,10 +51,10 @@ public class SpaceRentalService {
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public SpaceRentalDTO findById(String id) {
-        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
+    public SpaceRentalDTO findById(Long spaceRentalId) {
+        SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
                     .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
-        return spaceRental.toDTO();
+        return SpaceRentalDTO.fromEntity(spaceRental);
     }
 
     /*
@@ -70,10 +69,10 @@ public class SpaceRentalService {
             businessId: 고유 번호는 그대로 유지
      */
     @Transactional
-    public boolean updateSpaceRental(String id, SpaceRentalDTO spaceRentalDTO) {
-        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
+    public boolean updateSpaceRental(Long spaceRentalId, SpaceRentalDTO spaceRentalDTO) {
+        SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
-        BeanUtils.copyProperties(spaceRentalDTO, spaceRental, "createAt", "businessId");
+        spaceRental.updateSpaceRental(spaceRentalDTO);
         spaceRentalRepository.save(spaceRental);
         return true;
     }
@@ -86,8 +85,8 @@ public class SpaceRentalService {
         이미 변경했으면 예외처리
      */
     @Transactional
-    public boolean deleteSpaceRental(String id) {
-        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
+    public boolean deleteSpaceRental(Long spaceRentalId) {
+        SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
         if(spaceRental.getDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");

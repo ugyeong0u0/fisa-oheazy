@@ -1,14 +1,13 @@
 package com.fisa.wooriarte.spacerental.dto;
 
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-@ToString
 public class SpaceRentalDTO {
     private Long spaceRentalId;
     private Long businessNumber;
@@ -23,7 +22,6 @@ public class SpaceRentalDTO {
 
     public SpaceRental toEntity() {
         return SpaceRental.builder()
-                .spaceRentalId(this.spaceRentalId)
                 .businessNumber(this.businessNumber)
                 .id(this.id)
                 .pwd(this.pwd)
@@ -31,8 +29,19 @@ public class SpaceRentalDTO {
                 .ceo(this.ceo)
                 .email(this.email)
                 .phone(this.phone)
-                .createAt(this.createAt)
                 .deleted(this.deleted)
+                .build();
+    }
+
+    public static SpaceRentalDTO fromEntity(SpaceRental spaceRental) {
+        return SpaceRentalDTO.builder()
+                .businessNumber(spaceRental.getBusinessNumber())
+                .id(spaceRental.getId())
+                .company(spaceRental.getCompany())
+                .ceo(spaceRental.getCeo())
+                .email(spaceRental.getEmail())
+                .phone(spaceRental.getPhone())
+                .deleted(spaceRental.getDeleted())
                 .build();
     }
 }
