@@ -17,7 +17,6 @@ public class SpaceRentalDTO {
     private String ceo;
     private String email;
     private String phone;
-    private LocalDateTime createAt;
     private Boolean deleted;
 
     public SpaceRental toEntity() {
