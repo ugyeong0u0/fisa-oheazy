@@ -50,7 +50,7 @@ public class ProjectItemController {
     @GetMapping("/{project-item-id}")
     public Optional<ProjectItemDTO> getProjectItemInfo(@PathVariable(name = "project-item-id") Long projectItemId) throws Exception {
         try {
-            return projectItemService.findProjectItembyId(projectItemId);
+            return projectItemService.findByProjectItemId(projectItemId);
         } catch (Exception e) {
             logger.error("Error retrieving project item with id: {}", projectItemId, e);
             throw new Exception("프로젝트 아이템 상세정보를 가져오지 못했습니다.");
@@ -81,9 +81,9 @@ public class ProjectItemController {
         }
     }
 
-    @PostMapping("/{project-item-id}/request")
-    public String requestProjectMatching() {
-        logger.info("Request project matching");
-        return "";
-    }
+//    @PostMapping("/{project-item-id}/request")
+//    public String requestProjectMatching() {
+//        logger.info("Request project matching");
+//        return "";
+//    }
 }

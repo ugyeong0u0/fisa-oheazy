@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.projectItem.domain;
 
-import com.fisa.wooriarte.projectItem.dto.ProjectItemDTO;
+import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -21,11 +20,11 @@ public class ProjectItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    private Long projectId;
+    private Long projectItemId;
 
-
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn // 수정 필요
-    private Long businessId;
+    private ProjectManager projectManager;
 
     @Column(nullable = false)
     private String artistName;
@@ -37,7 +36,7 @@ public class ProjectItem {
     private String phone;
 
     @Column(nullable = false)
-    private boolean approved;
+    private Boolean approval;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -52,9 +51,9 @@ public class ProjectItem {
     private LocalDateTime endDate;
 
     @Column(nullable = false)
-    private boolean deleted;
+    private Boolean isDeleted;
 
     public void updateIsDeleted() {
-        this.deleted = true;
+        this.isDeleted = true;
     }
 }

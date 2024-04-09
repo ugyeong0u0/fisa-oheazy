@@ -34,17 +34,17 @@ public class ProjectItemService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<ProjectItemDTO> findProjectItembyId(Long projectId) {
-        System.out.println("findProjectItemById");
-        return projectItemRepository.findById(projectId)
+    public Optional<ProjectItemDTO> findByProjectItemId(Long projectItemId) {
+        System.out.println("findByProjectItemId");
+        return projectItemRepository.findById(projectItemId)
                 .map(ProjectItemDTO::fromEntity);
 
     }
     @Transactional
-    public void updateProjectItem(Long id, ProjectItemDTO projectItemDTO) {
+    public void updateProjectItem(Long projectItemId, ProjectItemDTO projectItemDTO) {
         System.out.println("updateProjectItem");
         // 기존 엔티티를 찾고, 있으면 업데이트
-        projectItemRepository.findById(id).ifPresent(existingItem -> {
+        projectItemRepository.findByProjectItemId(projectItemId).ifPresent(existingItem -> {
             // DTO에서 엔티티로 프로퍼티 복사, "id", "createdAt" 등 변경되면 안되는 필드는 제외
             BeanUtils.copyProperties(projectItemDTO, existingItem, "id", "createdAt");
             // 변경된 엔티티 저장
@@ -53,9 +53,9 @@ public class ProjectItemService {
     }
 
     @Transactional
-    public void deleteProjectItem(Long id) throws Exception {
-        ProjectItem projectItem = projectItemRepository.findByProjectIdAndIsDeletedFalse(id)
-                .orElseThrow(() -> new Exception("projectItem id: " + id + " 는 존재하지 않습니다"));
+    public void deleteProjectItem(Long projectItemId) throws Exception {
+        ProjectItem projectItem = projectItemRepository.findByProjectItemIdAndIsDeletedFalse(projectItemId)
+                .orElseThrow(() -> new Exception("projectItem id: " + projectItemId + " 는 존재하지 않습니다"));
         projectItem.updateIsDeleted();
     }
 

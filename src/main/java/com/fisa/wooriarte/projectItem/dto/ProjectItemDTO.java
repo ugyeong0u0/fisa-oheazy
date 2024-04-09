@@ -1,21 +1,21 @@
 package com.fisa.wooriarte.projectItem.dto;
 
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
+import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
 public class ProjectItemDTO {
 
-    private Long projectId;
+    private Long projectItemId;
 
-    private Long businessId;
+    private ProjectManager projectManager;
 
     private String artistName;
 
@@ -23,39 +23,39 @@ public class ProjectItemDTO {
 
     private String phone;
 
-    private boolean approved;
+    private Boolean approval;
 
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
 
-    private boolean deleted;
+    private Boolean isDeleted;
 
     public ProjectItem toEntity() {
         return ProjectItem.builder()
-                .projectId(this.projectId)
-                .businessId(this.businessId)
+                .projectItemId(this.projectItemId)
+                .projectManager(this.projectManager)
                 .artistName(this.artistName)
                 .intro(this.intro)
                 .phone(this.phone)
-                .approved(this.approved)
+                .approval(this.approval)
                 .startDate(this.startDate)
                 .endDate(this.endDate)
-                .deleted(this.deleted)
+                .isDeleted(this.isDeleted)
                 .build();
     }
 
     public static ProjectItemDTO fromEntity(ProjectItem entity) {
         return ProjectItemDTO.builder()
-                .projectId(entity.getProjectId())
-                .businessId(entity.getBusinessId())
+                .projectItemId(entity.getProjectItemId())
+                .projectManager(entity.getProjectManager())
                 .artistName(entity.getArtistName())
                 .intro(entity.getIntro())
                 .phone(entity.getPhone())
-                .approved(entity.isApproved())
+                .approval(entity.getApproval())
                 .startDate(entity.getStartDate())
                 .endDate(entity.getEndDate())
-                .deleted(entity.isDeleted())
+                .isDeleted(entity.getIsDeleted())
                 .build();
 
     }
