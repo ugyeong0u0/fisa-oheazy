@@ -7,7 +7,6 @@ import com.fisa.wooriarte.ticket.dto.TicketDTO;
 import com.fisa.wooriarte.ticket.repository.TicketRepository;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.repository.UserRepository;
-import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,9 +36,8 @@ public class TicketService {
     // 사용 여부에 따라 티켓 리스트를 가져오는 메서드
     public List<TicketDTO> getTicketsByUserIdAndStatus(long userId, boolean status) {
         List<Ticket> tickets;
-        Integer integerUserId = (int)userId;
-        log.info("userId :: " + String.valueOf(integerUserId));
-        User user = userRepository.findById(integerUserId)
+        log.info("userId :: " + String.valueOf(userId));
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
         if (status) {
@@ -57,13 +55,8 @@ public class TicketService {
     }
 
     //새로운 ticket 생성
-    public TicketDTO addTicket(TicketDTO ticketDTO, long userId, long exhibitId) {
-        log.info("addTicket :: " + String.valueOf(ticketDTO.toString()));
-        // userId를 Long으로 변환하여 사용자 엔티티를 가져옴
-        Integer integerUserId = (int)userId;
-
-        log.info("userId :: " + String.valueOf(integerUserId));
-        User user = userRepository.findById(integerUserId)
+    public void addTicket(TicketDTO ticketDTO, long userId, long exhibitId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
         Exhibit exhibit = exhibitRepository.findById(exhibitId)
                 .orElseThrow(() -> new IllegalArgumentException("Exhibit not found with id: " + exhibitId));
@@ -75,7 +68,7 @@ public class TicketService {
         //Ticket 엔티티 저장
         Ticket savedTicket = ticketRepository.save(ticket);
         //Ticket 엔티티 -> TicketDTO 변환
-        return TicketDTO.fromEntity(savedTicket);
+        TicketDTO.fromEntity(savedTicket);
     }
 
     //티켓 취소 메소드
@@ -96,7 +89,7 @@ public class TicketService {
         Optional<Ticket> optionalTicket = ticketRepository.findById(ticketId);
         if(optionalTicket.isPresent()){
             Ticket ticket = optionalTicket.get();
-            if(!ticket.isCanceled()){
+            if(!ticket.getCanceled()){
                 ticket.setstatus();
                 ticketRepository.save(ticket);
                 return true; // 티켓 status 상태 변경 완료

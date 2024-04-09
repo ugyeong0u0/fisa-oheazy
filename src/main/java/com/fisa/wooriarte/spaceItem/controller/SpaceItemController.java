@@ -47,44 +47,44 @@ public class SpaceItemController {
     }
 
     // 공간 아이템 상세 조회
-    @GetMapping("/{id}")
-    public Optional<SpaceItemDTO> getSpaceItemInfo(@PathVariable Long id) throws Exception {
+    @GetMapping("/{space-item-id}")
+    public Optional<SpaceItemDTO> getSpaceItemInfo(@PathVariable(name = "space-item-id") Long spaceItemId) throws Exception {
         try {
-            return spaceItemService.findSpaceItembyId(id);
+            return spaceItemService.findSpaceItembyId(spaceItemId);
         } catch (Exception e) {
-            logger.error("Error retrieving space item with id: {}", id, e);
+            logger.error("Error retrieving space item with id: {}", spaceItemId, e);
             throw new Exception("공간 아이템 상세정보를 가져오지 못했습니다.");
         }
     }
 
     // 공간 아이템 수정
-    @PatchMapping("/{id}")
-    public String updateSpaceItem(@PathVariable Long id, @RequestBody SpaceItemDTO spaceItemDTO) {
+    @PatchMapping("/{space-item-id}")
+    public String updateSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId, @RequestBody SpaceItemDTO spaceItemDTO) {
         try {
-            spaceItemService.updateSpaceItem(id, spaceItemDTO);
+            spaceItemService.updateSpaceItem(spaceItemId, spaceItemDTO);
             return "공간 아이템 수정 완료";
         } catch (Exception e) {
-            logger.error("Error updating space item with id: {}", id, e);
+            logger.error("Error updating space item with id: {}", spaceItemId, e);
             return "공간 아이템 수정 실패";
         }
     }
 
     // 공간 아이템 삭제
-    @DeleteMapping("/{id}")
-    public String deleteSpaceItem(@PathVariable Long id) {
+    @DeleteMapping("/{space-item-id}")
+    public String deleteSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId) {
         try {
-            spaceItemService.deleteSpaceItem(id);
+            spaceItemService.deleteSpaceItem(spaceItemId);
             return "공간 아이템 삭제 성공";
         } catch (Exception e) {
-            logger.error("Error deleting space item with id: {}", id, e);
+            logger.error("Error deleting space item with id: {}", spaceItemId, e);
             return "공간 아이템 삭제 실패";
         }
     }
 
-    @PostMapping("/{id}/request")
-    public String requestSpaceMatching() {
-        // 이 부분은 구현의 예시가 되지 않았으므로, 구체적인 로직에 따라 예외 처리 및 로깅을 추가할 필요가 있습니다.
-        logger.info("Request space matching");
-        return "";
-    }
+//    @PostMapping("/{space-item-id}/request")
+//    public String requestSpaceMatching() {
+//        // 이 부분은 구현의 예시가 되지 않았으므로, 구체적인 로직에 따라 예외 처리 및 로깅을 추가할 필요가 있습니다.
+//        logger.info("Request space matching");
+//        return "";
+//    }
 }

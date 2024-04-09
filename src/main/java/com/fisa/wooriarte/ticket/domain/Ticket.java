@@ -23,7 +23,7 @@ public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long ticketId;
+    private Long ticketId;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn
@@ -34,20 +34,20 @@ public class Ticket {
     private User user;
 
     @Column(nullable = false)
-    private int amount;
+    private Long amount;
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime date;
 
     @Column(nullable = false)
-    private boolean canceled;
+    private Boolean canceled;
 
     @Column(nullable = false)
     private String ticket_no;
 
     @Column(nullable = false)
-    private boolean status;
+    private Boolean status;
 
     @Column(nullable = false)
     private String name;
@@ -57,6 +57,7 @@ public class Ticket {
 
     @Column(nullable = false)
     private String phone;
+
 
     // PrePersist 메서드: 엔티티가 영구 저장되기 전에 자동으로 호출됨
     @PrePersist

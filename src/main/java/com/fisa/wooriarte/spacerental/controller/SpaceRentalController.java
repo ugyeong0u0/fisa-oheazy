@@ -4,12 +4,12 @@ import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import com.fisa.wooriarte.spacerental.service.SpaceRentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/space-rental")
 public class SpaceRentalController {
     private final SpaceRentalService spaceRentalService;
 
@@ -19,7 +19,7 @@ public class SpaceRentalController {
     }
 
     //공간대여자 회원가입
-    @PostMapping("")
+    @PostMapping("/space-rental")
     public String addSpaceRental(@RequestBody SpaceRentalDTO spaceRentalDTO) {
         if(spaceRentalService.addSpaceRental(spaceRentalDTO))
             return "success";
@@ -27,7 +27,7 @@ public class SpaceRentalController {
     }
 
     //공간대여자 로그인
-    @PostMapping("/login")
+    @PostMapping("/space-rental/login")
     public String loginSpaceRental(@RequestBody Map<String, String> loginInfo) {
         String id = loginInfo.get("id");
         String pwd = loginInfo.get("pwd");
@@ -36,36 +36,44 @@ public class SpaceRentalController {
         return "login fail";
     }
 
-    //공간대여자 정보 조회
-    @GetMapping("/{id}")
-    public String getSpaceRentalInfo(@PathVariable("id") String id) {
-        SpaceRentalDTO spaceRentalDTO = spaceRentalService.findById(id);
+    //공간대여자 아이디 찾기
+    @PostMapping("/space-rental/find-id")
+    public String findBusinessId(@RequestBody String email) {
+        return spaceRentalService.getId(email);
+    }
+
+    // 공간대여자 비밀번호 재설정
+    @PostMapping("/space-rental/set-pw")
+    public String findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
+        Long spaceRentalId = Long.parseLong(pwdInfo.get("space_rental_id"));
+        String newPwd = pwdInfo.get("new_pwd");
+        if(spaceRentalService.setPwd(spaceRentalId, newPwd))
+            return "success";
+        return "fail";
+    }
+
+            //공간대여자 정보 조회
+    @GetMapping("/space-rental/{space_rental_id}")
+    public String getSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId) {
+        SpaceRentalDTO spaceRentalDTO = spaceRentalService.findBySpaceRentalId(spaceRentalId);
         return spaceRentalDTO.toString();
     }
 
     //공간대여자 정보 갱신
-    @PatchMapping("{id}")
-    public String updateSpaceRentalInfo(@PathVariable("id") String id, @RequestBody SpaceRentalDTO spaceRentalDTO) {
-        if(spaceRentalService.updateSpaceRental(id, spaceRentalDTO))
+    @PutMapping("/space-rental/{space_rental_id}")
+    public String updateSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId, @RequestBody SpaceRentalDTO spaceRentalDTO) {
+        if(spaceRentalService.updateSpaceRental(spaceRentalId, spaceRentalDTO))
             return "success";
         return "fail";
     }
 
     //공간대여자 삭제(delete를 true로 변경)
-    @DeleteMapping("{id}")
-    public String deleteSpaceRental(@PathVariable("id") String id) {
-        if(spaceRentalService.deleteSpaceRental(id))
+    @DeleteMapping("/space-rental/{space_rental_id}")
+    public String deleteSpaceRental(@PathVariable("space_rental_id") Long spaceRentalId) {
+        if(spaceRentalService.deleteSpaceRental(spaceRentalId))
             return "success";
         return "fail";
     }
-
-    //매칭 조회 TBD
-    @GetMapping("{id}/{matching_status}")
-    public String getSpaceRentalMatching(@PathVariable("id") String id, @PathVariable("matching_status") int status) {
-        // 나중에 matching 생기면 추가할 내용
-        return "";
-    }
-
     /*
     예외 처리하는 부분
     DataIntegrityViolationException: 데이터베이스 제약조건, 무결성 위반 시도 (이미 존재하는 아이디 삽입, 이미 삭제된 사용자 삭제 등등)

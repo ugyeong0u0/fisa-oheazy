@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.exhibit.domain;
 
+import com.fisa.wooriarte.matching.domain.Matching;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -21,9 +22,9 @@ public class Exhibit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long exhibitId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn
-//    private Matching matching;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Matching matching;
 
     @Column(nullable = false, length = 255)
     private String name;
