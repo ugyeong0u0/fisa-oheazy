@@ -45,6 +45,22 @@ public class SpaceRentalService {
         return optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd);
     }
 
+    //공간 대여자 아이디 찾기
+    public String getId(String email) {
+        SpaceRental spaceRental = spaceRentalRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
+        return spaceRental.getId();
+    }
+
+    //공간 대여자 pw 재설정
+    public boolean setPwd(Long spaceRentalId, String newPwd) {
+        SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
+                .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
+        //비밀번호 검증
+        spaceRental.setPwd(newPwd);
+        return true;
+    }
+
     /*
     공간대여자 정보 검색
     1. id로 유저 검색

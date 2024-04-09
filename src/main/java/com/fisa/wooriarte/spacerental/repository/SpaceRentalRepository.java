@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface SpaceRentalRepository extends JpaRepository<SpaceRental, Long> {
     //고유번호가 아닌 ID로 검색
     Optional<SpaceRental> findBySpaceRentalId(String id);
+    Optional<SpaceRental> findByEmail(String email);
 }
