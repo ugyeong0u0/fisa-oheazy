@@ -1,4 +1,4 @@
-package com.fisa.wooriarte.email.DTO;
+package com.fisa.wooriarte.email.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -41,7 +41,7 @@ public class ProjectManagerService {
     2. 비밀번호와 비교
      */
     public boolean loginProjectManager(String id, String pwd) {
-        Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findByProjectManagerId(id);
+        Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findById(id);
         return optionalProjectManager.isPresent() && optionalProjectManager.get().getPwd().equals(pwd);
     }
 
