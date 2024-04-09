@@ -23,7 +23,7 @@ public class ProjectItem {
     @Column
     private Long projectId;
 
-    @JoinColumn // 수정 필요
+    @Column // 수정 필요
     private Long businessId;
 
     @Column
