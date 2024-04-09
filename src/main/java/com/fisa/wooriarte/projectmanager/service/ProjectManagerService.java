@@ -26,7 +26,7 @@ public class ProjectManagerService {
    2. DB에 저장
     */
     public boolean addProjectManager(ProjectManagerDTO projectManagerDTO) {
-        Optional<ProjectManager> optionalSpaceRental = projectManagerRepository.findById(projectManagerDTO.getProjectManagerId());
+        Optional<ProjectManager> optionalSpaceRental = projectManagerRepository.findByProjectManagerId(projectManagerDTO.getId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
