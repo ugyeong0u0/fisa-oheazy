@@ -45,8 +45,8 @@ public class SpaceRentalController {
     // 공간대여자 비밀번호 재설정
     @PostMapping("/space-rental/set-pw")
     public String findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
-        Long spaceRentalId = Long.parseLong(pwdInfo.get("spaceRentalId"));
-        String newPwd = pwdInfo.get("newPwd");
+        Long spaceRentalId = Long.parseLong(pwdInfo.get("space_rental_id"));
+        String newPwd = pwdInfo.get("new_pwd");
         if(spaceRentalService.setPwd(spaceRentalId, newPwd))
             return "success";
         return "fail";
