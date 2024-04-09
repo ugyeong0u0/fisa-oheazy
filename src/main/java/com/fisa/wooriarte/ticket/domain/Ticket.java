@@ -58,6 +58,7 @@ public class Ticket {
     @Column(nullable = false)
     private String phone;
 
+
     // PrePersist 메서드: 엔티티가 영구 저장되기 전에 자동으로 호출됨
     @PrePersist
     public void generateTicketNo() {
