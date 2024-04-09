@@ -38,7 +38,7 @@ public class ExhibitService {
                 .filter(exhibit -> {
                     Date startDate = exhibit.getStartDate();
                     Date endDate = exhibit.getEndDate();
-                    return startDate.before(todayDate) && endDate.after(todayDate) && !exhibit.isDeleted();
+                    return startDate.before(todayDate) && endDate.after(todayDate) && !exhibit.getDeleted();
                 })
                 .map(ExhibitDTO::fromEntity)
                 .collect(Collectors.toList());

@@ -7,15 +7,12 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
-@Setter
 @Builder
-@ToString
 public class ExhibitDTO {
     private Long exhibitId;
-//    private long matchingId;
+    private Long matchingId;
     private String name;
     private String intro;
     private Date startDate;
@@ -43,27 +40,24 @@ public class ExhibitDTO {
                 .build();
     }
 
-    public static ExhibitDTO fromEntity(Exhibit exhibit){
+    public static ExhibitDTO fromEntity(Exhibit exhibit) {
         if (exhibit == null) {
             return null;
         }
-        ExhibitDTO dto = new ExhibitDTO();
-        dto.setExhibitId(exhibit.getExhibitId());
-        dto.setName(exhibit.getName());
-        dto.setIntro(exhibit.getIntro());
-        dto.setStartDate(exhibit.getStartDate());
-        dto.setEndDate(exhibit.getEndDate());
-        dto.setArtistName(exhibit.getArtistName());
-        dto.setHostName(exhibit.getHostName());
-        dto.setPrice(exhibit.getPrice());
-        dto.setSoldAmount(exhibit.getSoldAmount());
-        dto.setCity(exhibit.getCity().name());
-        dto.setDeleted(exhibit.getDeleted());
 
-//        if (exhhibit.getMatching() != null) {
-//            dto.setMatching_id(exhibit.getMatching().getId());
-//        }
-
-        return dto;
+        return ExhibitDTO.builder()
+                .exhibitId(exhibit.getExhibitId())
+                .name(exhibit.getName())
+                .intro(exhibit.getIntro())
+                .startDate(exhibit.getStartDate())
+                .endDate(exhibit.getEndDate())
+                .artistName(exhibit.getArtistName())
+                .hostName(exhibit.getHostName())
+                .price(exhibit.getPrice())
+                .soldAmount(exhibit.getSoldAmount())
+                .city(exhibit.getCity().name())
+                .deleted(exhibit.getDeleted())
+//                .matching_id((exhibit.getMatching() != null) ? exhibit.getMatching().getId() : null)
+                .build();
     }
 }
