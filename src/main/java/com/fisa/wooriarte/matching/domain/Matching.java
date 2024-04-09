@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class  Matching {
+public class Matching {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long matchingId;
@@ -31,11 +31,11 @@ public class  Matching {
     private List<Exhibit> exhibits = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private SpaceItem spaceItemId;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private ProjectItem projectItemId;
 
     @Column(nullable = false)

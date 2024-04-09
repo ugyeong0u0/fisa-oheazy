@@ -25,6 +25,9 @@ public class SpaceRental {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long spaceRentalId;
 
+    @OneToMany(mappedBy = "spaceRentalId", fetch = FetchType.LAZY)
+    private List<SpaceItem> spaceItems = new ArrayList<>();
+
     @Column(nullable = false, unique = true)
     private Long businessNumber;
 
@@ -52,9 +55,6 @@ public class SpaceRental {
 
     @Column(nullable = false)
     private Boolean deleted;
-
-    @OneToMany(mappedBy = "spaceRentalId", fetch = FetchType.LAZY)
-    private List<SpaceItem> spaceItems = new ArrayList<>();
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;

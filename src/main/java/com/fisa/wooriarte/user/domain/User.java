@@ -29,6 +29,9 @@ public class User {
     @Column
     private String id;
 
+    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
+    private List<Ticket> tickets = new ArrayList<>();
+
     @NonNull
     @Column
     private String pwd;
@@ -56,9 +59,6 @@ public class User {
     @Column
     private Boolean deleted;
 
-    // Ticket 엔티티를 참조하는 필드 추가
-    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
-    private List<Ticket> tickets = new ArrayList<>();
 
 
 

@@ -25,7 +25,7 @@ public class ProjectItem {
     @Column
     private Long projectItemId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(nullable = false) // 수정 필요
     private ProjectManager projectManagerId;
 

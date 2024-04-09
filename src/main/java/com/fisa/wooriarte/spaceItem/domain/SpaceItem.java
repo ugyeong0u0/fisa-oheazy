@@ -26,8 +26,8 @@ public class SpaceItem {
     @Column
     private Long spaceItemId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private SpaceRental spaceRentalId;
 
     @OneToMany(mappedBy = "spaceItemId", fetch = FetchType.LAZY)
