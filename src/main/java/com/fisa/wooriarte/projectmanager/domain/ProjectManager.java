@@ -56,4 +56,7 @@ public class ProjectManager {
 
     public void setDeleted(){this.deleted=!this.deleted;}
 
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
 }

@@ -1,6 +1,5 @@
 package com.fisa.wooriarte.projectmanager.service;
 
-import com.fisa.wooriarte.exhibit.dto.ExhibitDTO;
 import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
@@ -8,7 +7,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -45,6 +43,22 @@ public class ProjectManagerService {
     public boolean loginProjectManager(String id, String pwd) {
         Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findById(id);
         return optionalProjectManager.isPresent() && optionalProjectManager.get().getPwd().equals(pwd);
+    }
+
+    //프로젝트 매니저 아이디 찾기
+    public String getId(String email) {
+        ProjectManager projectManager = projectManagerRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
+        return projectManager.getId();
+    }
+
+    //프로젝트 매니저 pw 재설정
+    public boolean setPwd(Long projectManagerId, String newPwd) {
+        ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
+                .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
+        //비밀번호 검증
+        projectManager.setPwd(newPwd);
+        return true;
     }
 
     /*

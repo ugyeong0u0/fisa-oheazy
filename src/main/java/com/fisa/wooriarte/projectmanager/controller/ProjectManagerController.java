@@ -46,6 +46,22 @@ public class ProjectManagerController {
         }
     }
 
+    //공간대여자 아이디 찾기
+    @PostMapping("/find-id")
+    public String findBusinessId(@RequestBody String email) {
+        return projectManagerService.getId(email);
+    }
+
+    // 공간대여자 비밀번호 재설정
+    @PostMapping("/set-pw")
+    public String findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
+        Long projectManagerId = Long.parseLong(pwdInfo.get("project_manager_id"));
+        String newPwd = pwdInfo.get("new_pwd");
+        if(projectManagerService.setPwd(projectManagerId, newPwd))
+            return "success";
+        return "fail";
+    }
+
     //프로젝트 매니저 정보 조회
     @GetMapping("/{project-manager-id}")
     public ResponseEntity<ProjectManagerDTO> getProjectManagerInfo(@PathVariable("project-manager-id") Long projectManagerId) {
