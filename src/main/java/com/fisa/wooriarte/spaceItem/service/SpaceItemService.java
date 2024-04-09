@@ -29,9 +29,13 @@ public class SpaceItemService {
     @Transactional
     public boolean addSpaceItem(SpaceItemDTO spaceItemDTO){
         System.out.println("addSpaceItem");
+<<<<<<< HEAD
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceItemDTO.getSpaceRentalId())
                 .orElseThrow(() -> new NoSuchElementException("No space Rental"));
         spaceItemRepository.save(spaceItemDTO.toEntity(spaceRental));
+=======
+        spaceItemRepository.save(spaceItemDTO.toEntity(spaceRentalRepository));
+>>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
         return true;
     }
 

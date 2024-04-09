@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.spaceItem.domain;
 
+import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDTO;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import jakarta.persistence.*;
@@ -8,6 +9,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,9 +26,12 @@ public class SpaceItem {
     @Column
     private Long spaceItemId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    private SpaceRental spaceRental;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private SpaceRental spaceRentalId;
+
+    @OneToMany(mappedBy = "spaceItemId", fetch = FetchType.LAZY)
+    private List<Matching> matchings = new ArrayList<>();
 
     @Column
     private String intro;
@@ -65,6 +71,7 @@ public class SpaceItem {
 
     @Column
     private Boolean isDeleted;
+
 
     public void updateIsDeleted() {
         this.isDeleted = true;

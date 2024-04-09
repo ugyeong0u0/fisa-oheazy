@@ -48,8 +48,13 @@ public class MatchingService {
 
         Matching matching = Matching.builder()
                 .matchingStatus(MatchingStatus.REQUESTWAITING)
+<<<<<<< HEAD
                 .sender(spaceItem.getSpaceRental().getSpaceRentalId())
                 .receiver(projectItem.getProjectManager().getProjectManagerId())
+=======
+                .sender(spaceItem.getSpaceItemId())
+                .receiver(projectItem.getProjectItemId())
+>>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
                 .spaceId(spaceId)
                 .projectId(projectId)
                 .senderType(SenderType.SPACERENTAL)
@@ -70,8 +75,13 @@ public class MatchingService {
 
         Matching matching = Matching.builder()
                 .matchingStatus(MatchingStatus.REQUESTWAITING)
+<<<<<<< HEAD
                 .sender(projectItem.getProjectManager().getProjectManagerId())
                 .receiver(spaceItem.getSpaceRental().getSpaceRentalId())
+=======
+                .sender(spaceItem.getSpaceItemId())
+                .receiver(projectItem.getProjectItemId())
+>>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
                 .spaceId(spaceId)
                 .projectId(projectId)
                 .senderType(SenderType.PROJECTMANAGER)

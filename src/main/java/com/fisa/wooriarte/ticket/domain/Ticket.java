@@ -25,6 +25,7 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketId;
 
+<<<<<<< HEAD
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "exhibit_id")
     private Exhibit exhibit;
@@ -32,6 +33,15 @@ public class Ticket {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+=======
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Exhibit exhibitId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private User userId;
+>>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
 
     @Column(nullable = false)
     private Long amount;
@@ -64,11 +74,11 @@ public class Ticket {
     public void generateTicketNo() {
         StringBuilder ticketNoBuilder = new StringBuilder();
         ticketNoBuilder.append(ticketId).append("-");
-        if (exhibit != null) {
-            ticketNoBuilder.append(exhibit).append("-");
+        if (exhibitId != null) {
+            ticketNoBuilder.append(exhibitId).append("-");
         }
-        if (user != null) {
-            ticketNoBuilder.append(user).append("-");
+        if (userId != null) {
+            ticketNoBuilder.append(userId).append("-");
         }
         ticketNoBuilder.append(date.toString());
 

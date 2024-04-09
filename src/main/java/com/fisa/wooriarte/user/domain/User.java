@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,8 +26,11 @@ public class User {
     private Long userId;
 
     @NonNull
-    @Column(length = 20)
+    @Column
     private String id;
+
+    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
+    private List<Ticket> tickets = new ArrayList<>();
 
     @NonNull
     @Column
@@ -45,19 +49,16 @@ public class User {
     private String phone;
 
     @CreationTimestamp //현재시간을 나타내기 위한 어노테이션
-    @Column(name = "create_at")
+    @Column
     private LocalDateTime createAt;
 
     @CreatedDate //현재시간을 나타내기 위한 어노테이션
-    @Column(name = "update_at")
+    @Column
     private LocalDateTime updateAt;
 
     @Column
     private Boolean deleted;
 
-    // Ticket 엔티티를 참조하는 필드 추가
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<Ticket> tickets;
 
 
 

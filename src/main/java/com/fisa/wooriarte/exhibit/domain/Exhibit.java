@@ -1,13 +1,17 @@
 package com.fisa.wooriarte.exhibit.domain;
 
 import com.fisa.wooriarte.matching.domain.Matching;
+import com.fisa.wooriarte.ticket.domain.Ticket;
+import com.fisa.wooriarte.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -23,8 +27,15 @@ public class Exhibit {
     private Long exhibitId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+<<<<<<< HEAD
     @JoinColumn(name = "matching_id")
     private Matching matching;
+=======
+    private Matching matchingId;
+
+    @OneToMany(mappedBy = "exhibitId", fetch = FetchType.LAZY)
+    private List<Ticket> ticketList = new ArrayList<>();
+>>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
 
     @Column(nullable = false, length = 255)
     private String name;

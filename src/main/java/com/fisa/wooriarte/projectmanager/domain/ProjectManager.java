@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,6 +31,9 @@ public class ProjectManager {
 
     @Column(nullable = false, unique = true)
     private String id;
+
+    @OneToMany(mappedBy = "projectManagerId", fetch = FetchType.LAZY)
+    private List<ProjectItem> projectItems = new ArrayList<>();
 
     @Column(nullable = false)
     private String pwd;
@@ -54,10 +58,15 @@ public class ProjectManager {
     private Boolean deleted;
 
     // projectItem 엔티티를 참조하는 필드 추가
+<<<<<<< HEAD
     @OneToMany(mappedBy = "projectManager", fetch = FetchType.EAGER)
     private List<ProjectItem> projectItem;
+=======
+>>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
 
-    public void setDeleted(){this.deleted=!this.deleted;}
+    public void setDeleted(){
+        this.deleted=!this.deleted;
+    }
 
     public void setPwd(String pwd) {
         this.pwd = pwd;
