@@ -1,11 +1,15 @@
 package com.fisa.wooriarte.projectmanager.DTO;
 
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ProjectManagerDTO {
     private Long projectManagerId;
