@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.projectItem.domain;
 
+import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,6 +8,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,8 +26,11 @@ public class ProjectItem {
     private Long projectItemId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn // 수정 필요
-    private ProjectManager projectManager;
+    @JoinColumn(nullable = false) // 수정 필요
+    private ProjectManager projectManagerId;
+
+    @OneToMany(mappedBy = "projectItemId", fetch = FetchType.LAZY)
+    private List<Matching> Matchings = new ArrayList<>();
 
     @Column(nullable = false)
     private String artistName;
@@ -55,8 +61,5 @@ public class ProjectItem {
 
     public void updateIsDeleted() {
         this.isDeleted = true;
-    }
-
-    public Long getBusinessId() {
     }
 }

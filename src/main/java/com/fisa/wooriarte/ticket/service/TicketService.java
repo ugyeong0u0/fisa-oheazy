@@ -41,11 +41,11 @@ public class TicketService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
         if (status) {
-            tickets = ticketRepository.findByUserAndStatusAndCanceled(user, true, false);
+            tickets = ticketRepository.findByUserIdAndStatusAndCanceled(user, true, false);
             log.info("UsedTicket :: " + String.valueOf(tickets.toString()));
             System.out.println(tickets.toString());
         } else {
-            tickets = ticketRepository.findByUserAndStatusAndCanceled(user,false, false);
+            tickets = ticketRepository.findByUserIdAndStatusAndCanceled(user,false, false);
             log.info("UnusedTicket :: " + String.valueOf(tickets.toString()));
             System.out.println(tickets.toString());
         }

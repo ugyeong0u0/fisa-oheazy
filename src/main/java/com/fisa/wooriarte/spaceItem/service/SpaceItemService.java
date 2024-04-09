@@ -27,7 +27,7 @@ public class SpaceItemService {
     @Transactional
     public boolean addSpaceItem(SpaceItemDTO spaceItemDTO){
         System.out.println("addSpaceItem");
-        spaceItemRepository.save(spaceItemDTO.toEntity());
+        spaceItemRepository.save(spaceItemDTO.toEntity(spaceRentalRepository));
         return true;
     }
 
@@ -58,7 +58,7 @@ public class SpaceItemService {
 
     @Transactional
     public void deleteSpaceItem(Long spaceItemId) throws Exception {
-        SpaceItem spaceItem = spaceItemRepository.findBySpaceIdAndIsDeletedFalse(spaceItemId)
+        SpaceItem spaceItem = spaceItemRepository.findBySpaceItemIdAndIsDeletedFalse(spaceItemId)
                 .orElseThrow(() -> new Exception("spaceItem id: " + spaceItemId + " 는 존재하지 않습니다"));
         spaceItem.updateIsDeleted();
     }

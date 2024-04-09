@@ -25,14 +25,6 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    private Exhibit exhibit;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private User user;
-
     @Column(nullable = false)
     private Long amount;
 
@@ -58,17 +50,24 @@ public class Ticket {
     @Column(nullable = false)
     private String phone;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private Exhibit exhibitId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private User userId;
 
     // PrePersist 메서드: 엔티티가 영구 저장되기 전에 자동으로 호출됨
     @PrePersist
     public void generateTicketNo() {
         StringBuilder ticketNoBuilder = new StringBuilder();
         ticketNoBuilder.append(ticketId).append("-");
-        if (exhibit != null) {
-            ticketNoBuilder.append(exhibit).append("-");
+        if (exhibitId != null) {
+            ticketNoBuilder.append(exhibitId).append("-");
         }
-        if (user != null) {
-            ticketNoBuilder.append(user).append("-");
+        if (userId != null) {
+            ticketNoBuilder.append(userId).append("-");
         }
         ticketNoBuilder.append(date.toString());
 

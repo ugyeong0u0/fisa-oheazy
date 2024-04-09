@@ -8,6 +8,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -51,10 +52,12 @@ public class ProjectManager {
     private Boolean deleted;
 
     // projectItem 엔티티를 참조하는 필드 추가
-    @OneToMany(mappedBy = "ProjectItem", fetch = FetchType.EAGER)
-    private List<ProjectItem> projectItem;
+    @OneToMany(mappedBy = "projectManagerId", fetch = FetchType.LAZY)
+    private List<ProjectItem> projectItems = new ArrayList<>();
 
-    public void setDeleted(){this.deleted=!this.deleted;}
+    public void setDeleted(){
+        this.deleted=!this.deleted;
+    }
 
     public void setPwd(String pwd) {
         this.pwd = pwd;

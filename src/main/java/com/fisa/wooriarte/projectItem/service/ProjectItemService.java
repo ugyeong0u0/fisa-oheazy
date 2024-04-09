@@ -3,6 +3,7 @@ package com.fisa.wooriarte.projectItem.service;
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectItem.dto.ProjectItemDTO;
 import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
+import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,18 @@ import java.util.stream.Collectors;
 @Service
 public class ProjectItemService {
     private final ProjectItemRepository projectItemRepository;
+    private final ProjectManagerRepository projectManagerRepository;
 
     @Autowired
-    public ProjectItemService(ProjectItemRepository projectItemRepository) {
+    public ProjectItemService(ProjectItemRepository projectItemRepository, ProjectManagerRepository projectManagerRepository) {
         this.projectItemRepository = projectItemRepository;
+        this.projectManagerRepository = projectManagerRepository;
     }
 
     @Transactional
     public void addProjectItem(ProjectItemDTO projectItemDTO){
         System.out.println("addProjectItem");
-        projectItemRepository.save(projectItemDTO.toEntity());
+        projectItemRepository.save(projectItemDTO.toEntity(projectManagerRepository));
     }
 
     public List<ProjectItemDTO> findAll() {

@@ -2,9 +2,11 @@ package com.fisa.wooriarte.projectItem.dto;
 
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
+import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @NoArgsConstructor
@@ -15,7 +17,7 @@ public class ProjectItemDTO {
 
     private Long projectItemId;
 
-    private ProjectManager projectManager;
+    private Long projectManagerId;
 
     private String artistName;
 
@@ -31,10 +33,14 @@ public class ProjectItemDTO {
 
     private Boolean isDeleted;
 
-    public ProjectItem toEntity() {
+    public ProjectItem toEntity(ProjectManagerRepository projectManagerRepository) {
+        Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findById(projectManagerId);
+
+        ProjectManager projectManager = optionalProjectManager.orElseThrow(() -> new IllegalArgumentException(""));
+
         return ProjectItem.builder()
                 .projectItemId(this.projectItemId)
-                .projectManager(this.projectManager)
+                .projectManagerId(projectManager)
                 .artistName(this.artistName)
                 .intro(this.intro)
                 .phone(this.phone)
@@ -48,7 +54,7 @@ public class ProjectItemDTO {
     public static ProjectItemDTO fromEntity(ProjectItem entity) {
         return ProjectItemDTO.builder()
                 .projectItemId(entity.getProjectItemId())
-                .projectManager(entity.getProjectManager())
+                .projectManagerId(entity.getProjectManagerId().getProjectManagerId())
                 .artistName(entity.getArtistName())
                 .intro(entity.getIntro())
                 .phone(entity.getPhone())

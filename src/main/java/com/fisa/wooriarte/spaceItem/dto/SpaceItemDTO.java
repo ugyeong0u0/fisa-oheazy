@@ -44,13 +44,13 @@ public class SpaceItemDTO {
     private Boolean isDeleted;
 
     public SpaceItem toEntity(SpaceRentalRepository spaceRentalRepository) {
-        Optional<SpaceRental> optionalSpaceRental = SpaceRentalRepository.findBySpaceRentalId(this.spaceRentalId);
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(this.spaceRentalId);
 
         SpaceRental spaceRental = optionalSpaceRental.orElseThrow(() -> new IllegalArgumentException(""));
 
         return SpaceItem.builder()
                 .spaceItemId(this.spaceItemId) // 엔티티의 ID를 설정합니다. 새 엔티티를 생성하는 경우에는 이 필드를 생략할 수도 있습니다.
-                .spaceRental(spaceRental)
+                .spaceRentalId(spaceRental)
                 .intro(this.intro)
                 .hostName(this.hostName)
                 .city(this.city)
@@ -69,7 +69,7 @@ public class SpaceItemDTO {
     public static SpaceItemDTO fromEntity(SpaceItem entity) {
         return SpaceItemDTO.builder()
                 .spaceItemId(entity.getSpaceItemId())
-                .spaceRentalId(entity.getSpaceRentalId()) // SpaceRental 객체의 ID를 추출
+                .spaceRentalId(entity.getSpaceRentalId().getSpaceRentalId()) // SpaceRental 객체의 ID를 추출
                 .intro(entity.getIntro())
                 .hostName(entity.getHostName())
                 .city(entity.getCity())
