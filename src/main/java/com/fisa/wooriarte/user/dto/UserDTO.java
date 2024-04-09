@@ -13,17 +13,32 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class UserDTO {
-    private long userId;
+    private Long userId;
     private String id;
     private String pwd;
     private String name;
     private String email;
     private String phone;
-    private LocalDateTime createAt, updateAt;
-    private boolean deleted;
+    private Boolean deleted;
 
 
     public User toEntity(){
-        return User.builder().id(this.id).pwd(this.pwd).name(this.name).email(this.email).phone(this.phone).build();
+        return User.builder()
+                .id(this.id)
+                .pwd(this.pwd)
+                .name(this.name)
+                .email(this.email)
+                .phone(this.phone)
+                .build();
+    }
+    public static UserDTO fromEntity(User user) {
+        return UserDTO.builder()
+                .userId(user.getUserId())
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .deleted(user.getDeleted())
+                .build();
     }
 }

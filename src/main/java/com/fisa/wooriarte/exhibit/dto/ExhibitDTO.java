@@ -1,0 +1,80 @@
+package com.fisa.wooriarte.exhibit.dto;
+
+import com.fisa.wooriarte.exhibit.domain.City;
+import com.fisa.wooriarte.exhibit.domain.Exhibit;
+import com.fisa.wooriarte.matching.domain.Matching;
+import com.fisa.wooriarte.matching.repository.MatchingRepository;
+import com.fisa.wooriarte.user.domain.User;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Optional;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
+@ToString
+public class ExhibitDTO {
+    private Long exhibitId;
+    private Long matchingId;
+    private String name;
+    private String intro;
+    private Date startDate;
+    private Date endDate;
+    private String artistName;
+    private String hostName;
+    private Long price;
+    private Long soldAmount;
+    private String city;
+    private Boolean deleted;
+
+
+    public Exhibit toEntity(MatchingRepository matchingRepository){
+        // 매칭를 찾아서 Optional로 받음
+        Optional<Matching> optionalMatching = matchingRepository.findById(this.matchingId);
+
+        // Optional에서 매칭를 가져오거나 매칭이 존재하지 않으면 예외 발생
+        Matching matching = optionalMatching.orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + this.matchingId));
+        return Exhibit.builder()
+                .exhibitId(this.exhibitId)
+                .matching(matching)
+                .name(this.name)
+                .intro(this.intro)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .artistName(this.artistName)
+                .hostName(this.hostName)
+                .price(this.price)
+                .soldAmount(this.soldAmount)
+                .city(City.valueOf(this.city))
+                .deleted(this.deleted)
+                .build();
+    }
+
+    public static ExhibitDTO fromEntity(Exhibit exhibit){
+        if (exhibit == null) {
+            return null;
+        }
+        ExhibitDTO dto = new ExhibitDTO();
+        dto.setExhibitId(exhibit.getExhibitId());
+        dto.setName(exhibit.getName());
+        dto.setIntro(exhibit.getIntro());
+        dto.setStartDate(exhibit.getStartDate());
+        dto.setEndDate(exhibit.getEndDate());
+        dto.setArtistName(exhibit.getArtistName());
+        dto.setHostName(exhibit.getHostName());
+        dto.setPrice(exhibit.getPrice());
+        dto.setSoldAmount(exhibit.getSoldAmount());
+        dto.setCity(exhibit.getCity().name());
+        dto.setDeleted(exhibit.getDeleted());
+
+        if (exhibit.getMatching() != null) {
+            dto.setMatchingId(exhibit.getMatching().getMatchingId());
+        }
+
+        return dto;
+    }
+}

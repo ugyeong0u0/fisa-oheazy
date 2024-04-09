@@ -45,6 +45,7 @@ public class ProjectItemService {
         System.out.println("updateProjectItem");
         // 기존 엔티티를 찾고, 있으면 업데이트
         projectItemRepository.findByProjectItemId(projectItemId).ifPresent(existingItem -> {
+
             // DTO에서 엔티티로 프로퍼티 복사, "id", "createdAt" 등 변경되면 안되는 필드는 제외
             BeanUtils.copyProperties(projectItemDTO, existingItem, "id", "createdAt");
             // 변경된 엔티티 저장
@@ -56,6 +57,7 @@ public class ProjectItemService {
     public void deleteProjectItem(Long projectItemId) throws Exception {
         ProjectItem projectItem = projectItemRepository.findByProjectItemIdAndIsDeletedFalse(projectItemId)
                 .orElseThrow(() -> new Exception("projectItem id: " + projectItemId + " 는 존재하지 않습니다"));
+
         projectItem.updateIsDeleted();
     }
 

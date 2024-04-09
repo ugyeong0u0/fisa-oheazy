@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ProjectItemRepository extends JpaRepository<ProjectItem, Long> {
 
-    Optional<ProjectItem> findByProjectItemId(Long id);
-    Optional<ProjectItem> findByProjectItemIdAndIsDeletedFalse(Long id);
+    Optional<ProjectItem> findByProjectItemId(Long projectItemId);
+    Optional<ProjectItem> findByProjectItemIdAndIsDeletedFalse(Long projectItemId);
 }
