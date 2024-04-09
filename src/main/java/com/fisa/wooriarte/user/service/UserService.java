@@ -45,7 +45,7 @@ public class UserService {
             return false;
         }
 
-        Optional<User> userId = userRepository.findUserById(userEntity.getUserId());
+        Optional<User> userId = userRepository.findUserById(userEntity.getId());
         if (userId.isPresent()) {
             System.out.println("회원가입 불가능 (아이디 중복");
             return false;
@@ -59,7 +59,7 @@ public class UserService {
 
     //비밀번호 검증
     public boolean verifyPassword(Long id, String password) throws Exception {
-        User user = userRepository.findUserById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
 
         if (password.equals(user.getPwd())) {
@@ -91,9 +91,18 @@ public class UserService {
         return optionalUser.isPresent() && optionalUser.get().getPwd().equals(pwd);
     }
 
+    
     // 유저 개인 정보 수정
     public Boolean updateMyUser(Long id, UserInfoRequest userInfoRequest) {
         try {
+            // 이메일 중복 확인
+            Optional<User> userEmail = userRepository.findUserByEmail(userInfoRequest.getEmail());
+            if (userEmail.isPresent()) {
+                System.out.println("수정 불가능(이메일 중복)");
+                return false;
+            }
+
+            // 이메일이 중복되지 않은 경우, 엔터티 업데이트
             final int result = userRepository.updateAllById(id, userInfoRequest.getId(),
                     userInfoRequest.getPwd(), userInfoRequest.getName(), userInfoRequest.getEmail(), userInfoRequest.getPhone());
             System.out.println("변경된 엔터티 개수" + result);
@@ -102,7 +111,6 @@ public class UserService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     // 유저 아이디 찾기

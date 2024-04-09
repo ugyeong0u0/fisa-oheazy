@@ -38,7 +38,7 @@ public class SpaceRentalController {
     //공간대여자 정보 조회
     @GetMapping("/space-rental/{space_rental_id}")
     public String getSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId) {
-        SpaceRentalDTO spaceRentalDTO = spaceRentalService.findById(spaceRentalId);
+        SpaceRentalDTO spaceRentalDTO = spaceRentalService.findBySpaceRentalId(spaceRentalId);
         return spaceRentalDTO.toString();
     }
 

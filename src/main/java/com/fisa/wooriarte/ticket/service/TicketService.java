@@ -56,10 +56,6 @@ public class TicketService {
 
     //새로운 ticket 생성
     public void addTicket(TicketDTO ticketDTO, long userId, long exhibitId) {
-        log.info("addTicket :: " + String.valueOf(ticketDTO.toString()));
-        // userId를 Long으로 변환하여 사용자 엔티티를 가져옴
-
-        log.info("userId :: " + String.valueOf(userId));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
         Exhibit exhibit = exhibitRepository.findById(exhibitId)
@@ -93,7 +89,7 @@ public class TicketService {
         Optional<Ticket> optionalTicket = ticketRepository.findById(ticketId);
         if(optionalTicket.isPresent()){
             Ticket ticket = optionalTicket.get();
-            if(!ticket.isCanceled()){
+            if(!ticket.getCanceled()){
                 ticket.setstatus();
                 ticketRepository.save(ticket);
                 return true; // 티켓 status 상태 변경 완료

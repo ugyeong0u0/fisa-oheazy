@@ -1,11 +1,14 @@
 package com.fisa.wooriarte.matching.domain;
 
+import com.fisa.wooriarte.exhibit.domain.Exhibit;
+import com.fisa.wooriarte.ticket.domain.Ticket;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Entity
@@ -39,6 +42,9 @@ public class Matching {
     @Column(nullable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private SenderType senderType;
+
+    @OneToMany(mappedBy = "matching", fetch = FetchType.EAGER)
+    private List<Exhibit> exhibit;
 
     public void setMatchingStatus(MatchingStatus matchingStatus) {
         this.matchingStatus = matchingStatus;

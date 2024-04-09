@@ -3,6 +3,8 @@ package com.fisa.wooriarte.exhibit.service;
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.exhibit.dto.ExhibitDTO;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
+import com.fisa.wooriarte.matching.domain.Matching;
+import com.fisa.wooriarte.matching.repository.MatchingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +24,13 @@ import java.util.stream.Collectors;
 public class ExhibitService {
 
     private final ExhibitRepository exhibitRepository;
+    private final MatchingRepository matchingRepository;
 
     @Autowired
-    public ExhibitService(ExhibitRepository exhibitRepository){
+    public ExhibitService(ExhibitRepository exhibitRepository, MatchingRepository matchingRepository){
+
         this.exhibitRepository = exhibitRepository;
+        this.matchingRepository = matchingRepository;
     }
 
     //현재 진행 중인 전시데이터 목록 출력
@@ -38,7 +43,7 @@ public class ExhibitService {
                 .filter(exhibit -> {
                     Date startDate = exhibit.getStartDate();
                     Date endDate = exhibit.getEndDate();
-                    return startDate.before(todayDate) && endDate.after(todayDate) && !exhibit.isDeleted();
+                    return startDate.before(todayDate) && endDate.after(todayDate) && !exhibit.getDeleted();
                 })
                 .map(ExhibitDTO::fromEntity)
                 .collect(Collectors.toList());
@@ -52,13 +57,13 @@ public class ExhibitService {
     }
 
     //전시 생성
-    public void addExhibit(ExhibitDTO exhibitDTO) {
-//        Matching matching = matchingRepository.findById(matchingId)
-//                .orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + matchingId));
+    public void addExhibit(ExhibitDTO exhibitDTO, Long matchingId) {
+        Matching matching = matchingRepository.findById(matchingId)
+                .orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + matchingId));
         // ExhibitDTO에 사용자 정보 설정
-//        ExhibitDTO.setMatichingId(matching.getMatchingId());
+        exhibitDTO.setMatchingId(matching.getMatchingId());
         //TicketDTO -> 엔티티 변환
-        Exhibit exhibit = exhibitDTO.toEntity();
+        Exhibit exhibit = exhibitDTO.toEntity(matchingRepository);
         //Ticket 엔티티 저장
         Exhibit savedExhibit = exhibitRepository.save(exhibit);
         //Ticket 엔티티 -> TicketDTO 변환

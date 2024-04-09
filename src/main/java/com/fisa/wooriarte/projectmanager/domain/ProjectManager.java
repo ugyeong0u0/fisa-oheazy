@@ -50,9 +50,9 @@ public class ProjectManager {
     @Column(nullable = false)
     private Boolean deleted;
 
-    // projectItem 엔티티를 참조하는 필드 추가
-    @OneToMany(mappedBy = "ProjectItem", fetch = FetchType.EAGER)
-    private List<ProjectItem> projectItem;
+//    // projectItem 엔티티를 참조하는 필드 추가
+//    @OneToMany(mappedBy = "ProjectItem", fetch = FetchType.EAGER)
+//    private List<ProjectItem> projectItem;
 
     public void setDeleted(){this.deleted=!this.deleted;}
 

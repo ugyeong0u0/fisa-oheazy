@@ -39,10 +39,10 @@ public class ExhibitController {
     }
 
     //전시 정보 생성 (매칭 성공)
-    @PostMapping("/admin/matchings/exhibits")
-    public ResponseEntity<String> addExhibit(@RequestBody ExhibitDTO exhibitDTO) {
+    @PostMapping("/admin/matchings/{matching-id}/exhibits")
+    public ResponseEntity<String> addExhibit(@PathVariable(name = "matching-id") Long matchingId, @RequestBody ExhibitDTO exhibitDTO) {
         try {
-            exhibitService.addExhibit(exhibitDTO);
+            exhibitService.addExhibit(exhibitDTO, matchingId);
             return ResponseEntity.status(HttpStatus.CREATED).body("전시 생성 완료");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("전시 생성 중 오류 발생: " + e.getMessage());
