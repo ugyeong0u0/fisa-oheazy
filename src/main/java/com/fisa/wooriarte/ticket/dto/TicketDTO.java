@@ -9,10 +9,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
-@Setter
 @Builder
 @ToString
 public class TicketDTO {
@@ -27,7 +25,6 @@ public class TicketDTO {
     private String email;
     private String phone;
 
-    @Builder
     public Ticket toEntity(UserRepository userRepository, ExhibitRepository exhibitRepository) {
         // 전시를 찾아서 Optional로 받음
         Optional<Exhibit> optionalExhibit = exhibitRepository.findById(this.exhibitId);
@@ -54,21 +51,24 @@ public class TicketDTO {
     }
 
     public static TicketDTO fromEntity(Ticket ticket) {
-        TicketDTO dto = new TicketDTO();
-        dto.setAmount(ticket.getAmount());
-        dto.setCanceled(ticket.getCanceled());
-        dto.setTicket_no(ticket.getTicket_no());
-        dto.setStatus(ticket.getStatus());
-        dto.setName(ticket.getName());
-        dto.setEmail(ticket.getEmail());
-        dto.setPhone(ticket.getPhone());
+        return TicketDTO.builder()
+                .amount(ticket.getAmount())
+                .canceled(ticket.getCanceled())
+                .ticket_no(ticket.getTicket_no())
+                .status(ticket.getStatus())
+                .name(ticket.getName())
+                .email(ticket.getEmail())
+                .phone(ticket.getPhone())
+                .exhibitId(ticket.getExhibit() != null ? ticket.getExhibit().getExhibitId() : null)
+                .userId(ticket.getUser() != null ? ticket.getUser().getUserId() : null)
+                .build();
+    }
 
-        if (ticket.getExhibit() != null) {
-            dto.setExhibitId(ticket.getExhibit().getExhibitId());
-        }
-        if (ticket.getUser() != null) {
-            dto.setUserId(ticket.getUser().getUserId()); // User 엔티티 대신 userId를 사용
-        }
-        return dto;
+    public void setUserId(Long userId) {
+        this.userId=userId;
+    }
+
+    public void setExhibitId(Long exhibitId) {
+        this.exhibitId=exhibitId;
     }
 }

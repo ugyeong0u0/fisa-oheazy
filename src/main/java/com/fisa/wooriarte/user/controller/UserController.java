@@ -93,7 +93,6 @@ public class UserController {
     @PutMapping("/user/{user-id}/info")
     public ResponseEntity<?> updateUserInfo(@PathVariable(name = "user-id") Long userId, @RequestBody UserInfoRequest userInfoRequest) throws Exception {
         try {
-
             Boolean result = userService.updateMyUser(userId, userInfoRequest);
             if (result) return ResponseEntity.ok("수정 성공");
             else return ResponseEntity.badRequest().body("수정실패");
