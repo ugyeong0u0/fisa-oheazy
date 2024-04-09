@@ -47,43 +47,43 @@ public class ProjectItemController {
     }
 
     // 프로젝트 아이템 상세 조회
-    @GetMapping("/{id}")
-    public Optional<ProjectItemDTO> getProjectItemInfo(@PathVariable Long id) throws Exception {
+    @GetMapping("/{project-item-id}")
+    public Optional<ProjectItemDTO> getProjectItemInfo(@PathVariable(name = "project-item-id") Long projectItemId) throws Exception {
         try {
-            return projectItemService.findProjectItembyId(id);
+            return projectItemService.findByProjectItemId(projectItemId);
         } catch (Exception e) {
-            logger.error("Error retrieving project item with id: {}", id, e);
+            logger.error("Error retrieving project item with id: {}", projectItemId, e);
             throw new Exception("프로젝트 아이템 상세정보를 가져오지 못했습니다.");
         }
     }
 
     // 프로젝트 아이템 수정
-    @PatchMapping("/{id}")
-    public String updateProjectItem(@PathVariable Long id, @RequestBody ProjectItemDTO projectItemDTO) {
+    @PutMapping("/{project-item-id}")
+    public String updateProjectItem(@PathVariable(name = "project-item-id") Long projectItemId, @RequestBody ProjectItemDTO projectItemDTO) {
         try {
-            projectItemService.updateProjectItem(id, projectItemDTO);
+            projectItemService.updateProjectItem(projectItemId, projectItemDTO);
             return "프로젝트 아이템 수정 완료";
         } catch (Exception e) {
-            logger.error("Error updating project item with id: {}", id, e);
+            logger.error("Error updating project item with id: {}", projectItemId, e);
             return "프로젝트 아이템 수정 실패";
         }
     }
 
     // 프로젝트 아이템 삭제
-    @DeleteMapping("/{id}")
-    public String deleteProjectItem(@PathVariable Long id) {
+    @DeleteMapping("/{project-item-id}")
+    public String deleteProjectItem(@PathVariable(name = "project-item-id") Long projectItemId) {
         try {
-            projectItemService.deleteProjectItem(id);
+            projectItemService.deleteProjectItem(projectItemId);
             return "프로젝트 아이템 삭제 성공";
         } catch (Exception e) {
-            logger.error("Error deleting project item with id: {}", id, e);
+            logger.error("Error deleting project item with id: {}", projectItemId, e);
             return "프로젝트 아이템 삭제 실패";
         }
     }
 
-    @PostMapping("/{id}/request")
-    public String requestProjectMatching() {
-        logger.info("Request project matching");
-        return "";
-    }
+//    @PostMapping("/{project-item-id}/request")
+//    public String requestProjectMatching() {
+//        logger.info("Request project matching");
+//        return "";
+//    }
 }

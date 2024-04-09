@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.projectItem.domain;
 
-import com.fisa.wooriarte.projectItem.dto.ProjectItemDTO;
+import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -21,21 +20,22 @@ public class ProjectItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    private Long projectId;
+    private Long projectItemId;
 
-    @Column // 수정 필요
-    private Long businessId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn // 수정 필요
+    private ProjectManager projectManager;
 
-    @Column
+    @Column(nullable = false)
     private String artistName;
 
-    @Column
+    @Column(nullable = false)
     private String intro;
 
-    @Column
+    @Column(nullable = false)
     private String phone;
 
-    @Column
+    @Column(nullable = false)
     private Boolean approval;
 
     @CreatedDate
@@ -43,30 +43,15 @@ public class ProjectItem {
     private LocalDateTime createdAt;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private LocalDateTime startDate;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     private LocalDateTime endDate;
 
-    @Column
+    @Column(nullable = false)
     private Boolean isDeleted;
-
-    public ProjectItemDTO toDTO() {
-        return ProjectItemDTO.builder()
-                .projectId(projectId)
-                .businessId(businessId)
-                .artistName(artistName)
-                .intro(intro)
-                .phone(phone)
-                .approval(approval)
-                .createdAt(createdAt)
-                .startDate(startDate)
-                .endDate(endDate)
-                .isDeleted(isDeleted)
-                .build();
-    }
 
     public void updateIsDeleted() {
         this.isDeleted = true;
