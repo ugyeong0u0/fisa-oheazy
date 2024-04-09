@@ -3,6 +3,8 @@ package com.fisa.wooriarte.exhibit.service;
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.exhibit.dto.ExhibitDTO;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
+import com.fisa.wooriarte.matching.domain.Matching;
+import com.fisa.wooriarte.matching.repository.MatchingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +24,17 @@ import java.util.stream.Collectors;
 public class ExhibitService {
 
     private final ExhibitRepository exhibitRepository;
+    private final MatchingRepository matchingRepository;
 
     @Autowired
-    public ExhibitService(ExhibitRepository exhibitRepository){
+    public ExhibitService(ExhibitRepository exhibitRepository, MatchingRepository matchingRepository){
+
         this.exhibitRepository = exhibitRepository;
+        this.matchingRepository = matchingRepository;
     }
 
     //현재 진행 중인 전시데이터 목록 출력
-    public List<ExhibitDTO> findAllExhibit() {
+    public List<ExhibitDTO> findAllExhibits() {
         System.out.println("findAllExhibits");
         LocalDate today = LocalDate.now();
         Date todayDate = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -38,41 +43,36 @@ public class ExhibitService {
                 .filter(exhibit -> {
                     Date startDate = exhibit.getStartDate();
                     Date endDate = exhibit.getEndDate();
-                    return startDate.before(todayDate) && endDate.after(todayDate) && !exhibit.isDeleted();
+                    return startDate.before(todayDate) && endDate.after(todayDate) && !exhibit.getDeleted();
                 })
                 .map(ExhibitDTO::fromEntity)
                 .collect(Collectors.toList());
     }
-
 
     //전시 1개 출력
     public Optional<ExhibitDTO> findExhibitbyId(Long ExhibitId) {
         System.out.println("findExhibitItemById");
         return exhibitRepository.findById(ExhibitId)
                 .map(ExhibitDTO::fromEntity);
-
     }
-    //전시 생성
-    public ExhibitDTO addExhibit(ExhibitDTO exhibitDTO) {
-//        log.info("addTicket :: " + String.valueOf(ExhibitDTO.toString()));
-        // userId를 Long으로 변환하여 사용자 엔티티를 가져옴
-//        Integer integerUserId = (int)userId;
 
-//        User user = userRepository.findById(integerUserId)
-//                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+    //전시 생성
+    public void addExhibit(ExhibitDTO exhibitDTO, Long matchingId) {
+        Matching matching = matchingRepository.findById(matchingId)
+                .orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + matchingId));
         // ExhibitDTO에 사용자 정보 설정
-//        ExhibitDTO.setMatichingId(matching.getMatchingId());
+        exhibitDTO.setMatchingId(matching.getMatchingId());
         //TicketDTO -> 엔티티 변환
-        Exhibit exhibit = exhibitDTO.toEntity();
+        Exhibit exhibit = exhibitDTO.toEntity(matchingRepository);
         //Ticket 엔티티 저장
         Exhibit savedExhibit = exhibitRepository.save(exhibit);
         //Ticket 엔티티 -> TicketDTO 변환
-        return ExhibitDTO.fromEntity(savedExhibit);
+        ExhibitDTO.fromEntity(savedExhibit);
     }
 
     @Transactional
-    public void updateExhibit(String id, ExhibitDTO exhibitDTO) {
-        Exhibit exhibit = exhibitRepository.findByExhibitId(id)
+    public void updateExhibit(Long id, ExhibitDTO exhibitDTO) {
+        Exhibit exhibit = exhibitRepository.findById(exhibitDTO.getExhibitId())
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
 
         // 변경 불가능한 프로퍼티를 무시할 이름 배열 생성
@@ -85,16 +85,14 @@ public class ExhibitService {
         exhibitRepository.save(exhibit);
     }
 
-
-
-    //전시 삭제
+    //전시 삭제 여부 변경
     @Transactional
     public void deleteExhibitById(long exhibitId){
         //exhibit_id로 검색
         Optional<Exhibit> optionalExhibit = exhibitRepository.findById(exhibitId);
 
-        //exhibit이 존재할 경우 deleted 컬럼을 true로 변경
-        optionalExhibit.ifPresent(exhibit -> exhibit.setDeleted(true));
+        //exhibit이 존재할 경우 deleted 컬럼 변경
+        optionalExhibit.ifPresent(Exhibit::setDeleted);
     }
 
 

@@ -7,7 +7,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -27,7 +26,7 @@ public class ProjectManagerService {
    2. DB에 저장
     */
     public boolean addProjectManager(ProjectManagerDTO projectManagerDTO) {
-        Optional<ProjectManager> optionalSpaceRental = projectManagerRepository.findByProjectManagerId(projectManagerDTO.getId());
+        Optional<ProjectManager> optionalSpaceRental = projectManagerRepository.findById(projectManagerDTO.getProjectManagerId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
@@ -42,8 +41,24 @@ public class ProjectManagerService {
     2. 비밀번호와 비교
      */
     public boolean loginProjectManager(String id, String pwd) {
-        Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findByProjectManagerId(id);
+        Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findById(id);
         return optionalProjectManager.isPresent() && optionalProjectManager.get().getPwd().equals(pwd);
+    }
+
+    //프로젝트 매니저 아이디 찾기
+    public String getId(String email) {
+        ProjectManager projectManager = projectManagerRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
+        return projectManager.getId();
+    }
+
+    //프로젝트 매니저 pw 재설정
+    public boolean setPwd(Long projectManagerId, String newPwd) {
+        ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
+                .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
+        //비밀번호 검증
+        projectManager.setPwd(newPwd);
+        return true;
     }
 
     /*
@@ -52,10 +67,9 @@ public class ProjectManagerService {
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public ProjectManagerDTO findById(String id) {
-        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
-                .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
-        return projectManager.toDTO();
+    public Optional<ProjectManagerDTO> findByProjectManagerId(Long id) {
+        return projectManagerRepository.findById(id)
+                .map(ProjectManagerDTO::fromEntity);
     }
 
     /*
@@ -69,8 +83,8 @@ public class ProjectManagerService {
             createAt: 생성 시점은 갱신하지 않음
             businessId: 고유 번호는 그대로 유지
      */
-    public boolean updateProjectManager(String id, ProjectManagerDTO projectManagerDTO) {
-        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
+    public boolean updateProjectManager(Long id, ProjectManagerDTO projectManagerDTO) {
+        ProjectManager projectManager = projectManagerRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
         BeanUtils.copyProperties(projectManagerDTO, projectManager, "createAt", "projectManagerId");
         projectManagerRepository.save(projectManager);
@@ -84,14 +98,13 @@ public class ProjectManagerService {
     2. delete를 true로 변경
         이미 변경했으면 예외처리
      */
-    public boolean deleteProjectManager(String id) {
-        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
+    public boolean deleteProjectManager(Long id) {
+        ProjectManager projectManager = projectManagerRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
         if(projectManager.getDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");
         }
-        projectManager.setDeleted(true);
-        projectManagerRepository.save(projectManager);
+        projectManager.setDeleted();
         return true;
     }
 }

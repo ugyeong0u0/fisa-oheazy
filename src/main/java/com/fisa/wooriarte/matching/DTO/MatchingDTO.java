@@ -2,15 +2,13 @@ package com.fisa.wooriarte.matching.DTO;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.matching.domain.MatchingStatus;
 import com.fisa.wooriarte.matching.domain.SenderType;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-@ToString
 public class MatchingDTO {
     private Long matchingId;
     private MatchingStatus matchingStatus;
@@ -23,14 +21,24 @@ public class MatchingDTO {
 
     public Matching toEntity() {
         return Matching.builder()
-                .matchingId(this.matchingId)
                 .matchingStatus(this.matchingStatus)
                 .receiver(this.receiver)
                 .sender(this.sender)
-                .createAt(this.createAt)
                 .projectId(this.projectId)
                 .spaceId(this.spaceId)
                 .senderType(this.senderType)
                 .build();
     }
+
+    public static MatchingDTO fromEntity(Matching matching) {
+        return MatchingDTO.builder()
+                .matchingStatus(matching.getMatchingStatus())
+                .receiver(matching.getReceiver())
+                .sender(matching.getSender())
+                .projectId(matching.getProjectId())
+                .spaceId(matching.getSpaceId())
+                .senderType(matching.getSenderType())
+                .build();
+    }
+
 }

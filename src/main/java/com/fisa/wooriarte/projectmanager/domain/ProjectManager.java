@@ -1,15 +1,17 @@
 package com.fisa.wooriarte.projectmanager.domain;
 
+import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
+import com.fisa.wooriarte.ticket.domain.Ticket;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -48,18 +50,13 @@ public class ProjectManager {
     @Column(nullable = false)
     private Boolean deleted;
 
-    public ProjectManagerDTO toDTO() {
-        return ProjectManagerDTO.builder()
-                .projectManagerId(this.projectManagerId)
-                .businessNumber(this.businessNumber)
-                .id(this.id)
-                .pwd(this.pwd)
-                .company(this.company)
-                .ceo(this.ceo)
-                .email(this.email)
-                .phone(this.phone)
-                .createAt(this.createAt)
-                .deleted(this.deleted)
-                .build();
+//    // projectItem 엔티티를 참조하는 필드 추가
+//    @OneToMany(mappedBy = "ProjectItem", fetch = FetchType.EAGER)
+//    private List<ProjectItem> projectItem;
+
+    public void setDeleted(){this.deleted=!this.deleted;}
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 }

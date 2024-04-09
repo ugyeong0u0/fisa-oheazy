@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -22,51 +23,54 @@ public class ExhibitController {
         this.exhibitService = exhibitService;
     }
 
-    @GetMapping({"/admin/exhibits", "/exhibits"})
     //모든 전시 출력
-    public List<ExhibitDTO> findAllExhibit() {
-        return exhibitService.findAllExhibit();
+    @GetMapping({"/admin/exhibits", "/exhibits"})
+    public ResponseEntity<List<ExhibitDTO>> findAllExhibits() {
+        List<ExhibitDTO> exhibits = exhibitService.findAllExhibits();
+        return ResponseEntity.ok(exhibits);
     }
 
-    @GetMapping({"/admin/exhibits/{id}", "/exhibits/{id}"})
-    public ExhibitDTO findExhibitById(@PathVariable Long id) {
-        return exhibitService.findExhibitbyId(id).orElse(null);
+    //하나의 전시 출력
+    @GetMapping({"/admin/exhibits/{exhibit-id}", "/exhibits/{exhibit-id}"})
+    public ResponseEntity<ExhibitDTO> findExhibitById(@PathVariable(name = "exhibit-id") Long exhibitId) {
+        Optional<ExhibitDTO> exhibitOptional = exhibitService.findExhibitbyId(exhibitId);
+
+        return exhibitOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/addexhibit")
-    public String addExhibit(@RequestBody ExhibitDTO exhibitDTO) {
-        log.info("addexhibit :: {}",exhibitDTO);
+    //전시 정보 생성 (매칭 성공)
+    @PostMapping("/admin/matchings/{matching-id}/exhibits")
+    public ResponseEntity<String> addExhibit(@PathVariable(name = "matching-id") Long matchingId, @RequestBody ExhibitDTO exhibitDTO) {
         try {
-            exhibitService.addExhibit(exhibitDTO);
-            System.out.println("티켓 생성 완료");
-            return "success";
+            exhibitService.addExhibit(exhibitDTO, matchingId);
+            return ResponseEntity.status(HttpStatus.CREATED).body("전시 생성 완료");
         } catch (Exception e) {
-            System.err.println("티켓 생성 중 오류 발생: " + e.getMessage());
-            return "Failed to create ticket: ";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("전시 생성 중 오류 발생: " + e.getMessage());
         }
     }
 
-    @PatchMapping("/admin/exhibits/{id}")
-    public String updateExhibit(@PathVariable String id, @RequestBody ExhibitDTO exhibitDTO) {
+    //전시 수정
+    @PutMapping("/admin/exhibits/{exhibit-id}")
+    public ResponseEntity<String> updateExhibit(
+            @PathVariable(name = "exhibit-id") Long exhibitId,
+            @RequestBody ExhibitDTO exhibitDTO) {
         try {
-            log.info("editExhibit :: {}", exhibitDTO);
-            exhibitService.updateExhibit(id, exhibitDTO);
-            return "전시 수정 완료";
+            exhibitService.updateExhibit(exhibitId, exhibitDTO);
+            return ResponseEntity.ok("전시 수정 완료");
         } catch (Exception e) {
-            log.error("Error updating space item with id: {}", id, e);
-            return "전시 수정 실패";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("전시 수정 실패: " + e.getMessage());
         }
     }
 
 
-    @DeleteMapping("/exhibit/{id}")
-    public ResponseEntity<String> deleteExhibitById(@PathVariable Long id) {
+    @DeleteMapping("/exhibit/{exhibit-id}")
+    public ResponseEntity<String> deleteExhibit(@PathVariable(name = "exhibit-id") Long exhibitId) {
         try {
-            exhibitService.deleteExhibitById(id);
-            return ResponseEntity.ok("Exhibit with ID " + id + " deleted successfully.");
+            exhibitService.deleteExhibitById(exhibitId);
+            return ResponseEntity.ok("전시가 성공적으로 삭제되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to delete exhibit with ID " + id + ". Error: " + e.getMessage());
+                    .body("전시를 삭제하는 동안 오류가 발생했습니다: " + e.getMessage());
         }
     }
 }
