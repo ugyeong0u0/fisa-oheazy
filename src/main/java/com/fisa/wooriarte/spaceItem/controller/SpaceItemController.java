@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/space-item")
 public class SpaceItemController {
 
     private static final Logger logger = LoggerFactory.getLogger(SpaceItemController.class);
@@ -24,7 +23,7 @@ public class SpaceItemController {
     }
 
     // 모든 공간 아이템 정보 조회
-    @GetMapping("")
+    @GetMapping("/space-item")
     public List<SpaceItemDTO> getAllSpaceItemInfo() throws Exception {
         try {
             return spaceItemService.findAll();
@@ -35,7 +34,7 @@ public class SpaceItemController {
     }
 
     // 공간 아이템 추가
-    @PostMapping("")
+    @PostMapping("/space-item")
     public String addSpaceItem(@RequestBody SpaceItemDTO spaceItemDTO) {
         try {
             spaceItemService.addSpaceItem(spaceItemDTO);
@@ -47,7 +46,7 @@ public class SpaceItemController {
     }
 
     // 공간 아이템 상세 조회
-    @GetMapping("/{space-item-id}")
+    @GetMapping("/space-item/{space-item-id}")
     public Optional<SpaceItemDTO> getSpaceItemInfo(@PathVariable(name = "space-item-id") Long spaceItemId) throws Exception {
         try {
             return spaceItemService.findSpaceItembyId(spaceItemId);
@@ -58,7 +57,7 @@ public class SpaceItemController {
     }
 
     // 공간 아이템 수정
-    @PatchMapping("/{space-item-id}")
+    @PatchMapping("/space-item/{space-item-id}")
     public String updateSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId, @RequestBody SpaceItemDTO spaceItemDTO) {
         try {
             spaceItemService.updateSpaceItem(spaceItemId, spaceItemDTO);
@@ -70,7 +69,7 @@ public class SpaceItemController {
     }
 
     // 공간 아이템 삭제
-    @DeleteMapping("/{space-item-id}")
+    @DeleteMapping("/space-item/{space-item-id}")
     public String deleteSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId) {
         try {
             spaceItemService.deleteSpaceItem(spaceItemId);

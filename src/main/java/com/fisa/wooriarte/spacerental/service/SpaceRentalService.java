@@ -26,7 +26,7 @@ public class SpaceRentalService {
      */
     @Transactional
     public boolean addSpaceRental(SpaceRentalDTO spaceRentalDTO) {
-        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(spaceRentalDTO.getSpaceRentalId());
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(spaceRentalDTO.getId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
@@ -53,8 +53,8 @@ public class SpaceRentalService {
     }
 
     //공간 대여자 pw 재설정
-    public boolean setPwd(Long spaceRentalId, String newPwd) {
-        SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
+    public boolean setPwd(String id, String newPwd) {
+        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
         //비밀번호 검증
         spaceRental.setPwd(newPwd);
@@ -67,8 +67,8 @@ public class SpaceRentalService {
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public SpaceRentalDTO findBySpaceRentalId(Long id) {
-        SpaceRental spaceRental = spaceRentalRepository.findById(id)
+    public SpaceRentalDTO findBySpaceRentalId(Long spaceRentalId) {
+        SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
                     .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
         return SpaceRentalDTO.fromEntity(spaceRental);
     }

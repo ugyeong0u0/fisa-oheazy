@@ -1,13 +1,15 @@
 package com.fisa.wooriarte.spacerental.dto;
 
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class SpaceRentalDTO {
     private Long spaceRentalId;
     private Long businessNumber;

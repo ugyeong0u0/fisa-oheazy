@@ -12,29 +12,20 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 public class ProjectItemDTO {
-
     private Long projectItemId;
-
-    private ProjectManager projectManager;
-
+    private Long projectManagerId;
     private String artistName;
-
     private String intro;
-
     private String phone;
-
     private Boolean approval;
-
     private LocalDateTime startDate;
-
     private LocalDateTime endDate;
-
     private Boolean isDeleted;
 
-    public ProjectItem toEntity() {
+    public ProjectItem toEntity(ProjectManager projectManager) {
         return ProjectItem.builder()
                 .projectItemId(this.projectItemId)
-                .projectManager(this.projectManager)
+                .projectManager(projectManager)
                 .artistName(this.artistName)
                 .intro(this.intro)
                 .phone(this.phone)
@@ -48,7 +39,7 @@ public class ProjectItemDTO {
     public static ProjectItemDTO fromEntity(ProjectItem entity) {
         return ProjectItemDTO.builder()
                 .projectItemId(entity.getProjectItemId())
-                .projectManager(entity.getProjectManager())
+                .projectManagerId(entity.getProjectManager().getProjectManagerId())
                 .artistName(entity.getArtistName())
                 .intro(entity.getIntro())
                 .phone(entity.getPhone())
@@ -57,6 +48,5 @@ public class ProjectItemDTO {
                 .endDate(entity.getEndDate())
                 .isDeleted(entity.getIsDeleted())
                 .build();
-
     }
 }

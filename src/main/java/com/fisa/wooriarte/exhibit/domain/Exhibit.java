@@ -23,7 +23,7 @@ public class Exhibit {
     private Long exhibitId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "matching_id")
     private Matching matching;
 
     @Column(nullable = false, length = 255)

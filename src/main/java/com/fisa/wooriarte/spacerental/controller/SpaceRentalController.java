@@ -4,7 +4,6 @@ import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import com.fisa.wooriarte.spacerental.service.SpaceRentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -43,11 +42,11 @@ public class SpaceRentalController {
     }
 
     // 공간대여자 비밀번호 재설정
-    @PostMapping("/space-rental/set-pw")
+    @PostMapping("/space-rental/set-pwd")
     public String findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
-        Long spaceRentalId = Long.parseLong(pwdInfo.get("space_rental_id"));
+        String id = pwdInfo.get("id");
         String newPwd = pwdInfo.get("new_pwd");
-        if(spaceRentalService.setPwd(spaceRentalId, newPwd))
+        if(spaceRentalService.setPwd(id, newPwd))
             return "success";
         return "fail";
     }

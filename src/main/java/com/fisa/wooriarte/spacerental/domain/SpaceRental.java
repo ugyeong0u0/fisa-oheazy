@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.spacerental.domain;
 
+import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,6 +22,7 @@ import java.time.LocalDateTime;
 public class SpaceRental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private Long spaceRentalId;
 
     @Column(nullable = false, unique = true)
@@ -48,6 +52,9 @@ public class SpaceRental {
 
     @Column(nullable = false)
     private Boolean deleted;
+
+    @OneToMany(mappedBy = "spaceRental", fetch = FetchType.EAGER)
+    private List<SpaceItem> spaceItem;
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;

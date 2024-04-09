@@ -1,16 +1,13 @@
 package com.fisa.wooriarte.projectmanager.DTO;
 
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class ProjectManagerDTO {
     private Long projectManagerId;
     private Long businessNumber;

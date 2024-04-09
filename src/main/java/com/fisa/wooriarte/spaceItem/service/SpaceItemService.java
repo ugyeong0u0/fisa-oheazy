@@ -3,6 +3,7 @@ package com.fisa.wooriarte.spaceItem.service;
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDTO;
 import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import com.fisa.wooriarte.spaceItem.repository.SpaceItemRepository;
+import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,7 +29,9 @@ public class SpaceItemService {
     @Transactional
     public boolean addSpaceItem(SpaceItemDTO spaceItemDTO){
         System.out.println("addSpaceItem");
-        spaceItemRepository.save(spaceItemDTO.toEntity());
+        SpaceRental spaceRental = spaceRentalRepository.findById(spaceItemDTO.getSpaceRentalId())
+                .orElseThrow(() -> new NoSuchElementException("No space Rental"));
+        spaceItemRepository.save(spaceItemDTO.toEntity(spaceRental));
         return true;
     }
 
@@ -58,7 +62,7 @@ public class SpaceItemService {
 
     @Transactional
     public void deleteSpaceItem(Long spaceItemId) throws Exception {
-        SpaceItem spaceItem = spaceItemRepository.findBySpaceIdAndIsDeletedFalse(spaceItemId)
+        SpaceItem spaceItem = spaceItemRepository.findBySpaceItemIdAndIsDeletedFalse(spaceItemId)
                 .orElseThrow(() -> new Exception("spaceItem id: " + spaceItemId + " 는 존재하지 않습니다"));
         spaceItem.updateIsDeleted();
     }

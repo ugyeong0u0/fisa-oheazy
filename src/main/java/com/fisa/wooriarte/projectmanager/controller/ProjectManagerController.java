@@ -54,9 +54,9 @@ public class ProjectManagerController {
     // 공간대여자 비밀번호 재설정
     @PostMapping("/project-managers/set-pwd")
     public String findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
-        Long projectManagerId = Long.parseLong(pwdInfo.get("project_manager_id"));
+        String id = pwdInfo.get("id");
         String newPwd = pwdInfo.get("new_pwd");
-        if(projectManagerService.setPwd(projectManagerId, newPwd))
+        if(projectManagerService.setPwd(id, newPwd))
             return "success";
         return "fail";
     }

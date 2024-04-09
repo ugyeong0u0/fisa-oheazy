@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/project-item")
 public class ProjectItemController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectItemController.class);
@@ -24,7 +23,7 @@ public class ProjectItemController {
     }
 
     // 모든 프로젝트 아이템 정보 조회
-    @GetMapping("")
+    @GetMapping("/project-item")
     public List<ProjectItemDTO> getAllProjectItemInfo() throws Exception {
         try {
             return projectItemService.findAll();
@@ -35,7 +34,7 @@ public class ProjectItemController {
     }
 
     // 프로젝트 아이템 추가
-    @PostMapping("")
+    @PostMapping("/project-item")
     public String addProjectItem(@RequestBody ProjectItemDTO projectItemDTO) {
         try {
             projectItemService.addProjectItem(projectItemDTO);
@@ -47,7 +46,7 @@ public class ProjectItemController {
     }
 
     // 프로젝트 아이템 상세 조회
-    @GetMapping("/{project-item-id}")
+    @GetMapping("/project-item/{project-item-id}")
     public Optional<ProjectItemDTO> getProjectItemInfo(@PathVariable(name = "project-item-id") Long projectItemId) throws Exception {
         try {
             return projectItemService.findByProjectItemId(projectItemId);
@@ -58,7 +57,7 @@ public class ProjectItemController {
     }
 
     // 프로젝트 아이템 수정
-    @PutMapping("/{project-item-id}")
+    @PutMapping("/project-item/{project-item-id}")
     public String updateProjectItem(@PathVariable(name = "project-item-id") Long projectItemId, @RequestBody ProjectItemDTO projectItemDTO) {
         try {
             projectItemService.updateProjectItem(projectItemId, projectItemDTO);
@@ -70,7 +69,7 @@ public class ProjectItemController {
     }
 
     // 프로젝트 아이템 삭제
-    @DeleteMapping("/{project-item-id}")
+    @DeleteMapping("/project-item/{project-item-id}")
     public String deleteProjectItem(@PathVariable(name = "project-item-id") Long projectItemId) {
         try {
             projectItemService.deleteProjectItem(projectItemId);

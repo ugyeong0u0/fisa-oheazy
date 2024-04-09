@@ -26,11 +26,11 @@ public class Ticket {
     private Long ticketId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+    @JoinColumn(name = "exhibit_id")
     private Exhibit exhibit;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(nullable = false)

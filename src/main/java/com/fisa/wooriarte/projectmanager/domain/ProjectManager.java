@@ -2,11 +2,14 @@ package com.fisa.wooriarte.projectmanager.domain;
 
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
-import com.fisa.wooriarte.ticket.domain.Ticket;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,10 +19,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-@ToString
 public class ProjectManager {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private Long projectManagerId;
 
     @Column(nullable = false, unique = true)
@@ -51,12 +54,20 @@ public class ProjectManager {
     private Boolean deleted;
 
     // projectItem 엔티티를 참조하는 필드 추가
-    @OneToMany(mappedBy = "ProjectItem", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "projectManager", fetch = FetchType.EAGER)
     private List<ProjectItem> projectItem;
 
     public void setDeleted(){this.deleted=!this.deleted;}
 
     public void setPwd(String pwd) {
         this.pwd = pwd;
+    }
+
+    public void updateProjectManager(ProjectManagerDTO projectManagerDTO) {
+        this.businessNumber = projectManagerDTO.getBusinessNumber();
+        this.company = projectManagerDTO.getCompany();
+        this.ceo = projectManagerDTO.getCeo();
+        this.email = projectManagerDTO.getEmail();
+        this.phone = projectManagerDTO.getPhone();
     }
 }

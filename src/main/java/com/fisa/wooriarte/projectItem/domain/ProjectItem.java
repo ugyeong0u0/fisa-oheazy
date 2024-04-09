@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.projectItem.domain;
 
+import com.fisa.wooriarte.projectItem.dto.ProjectItemDTO;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +24,7 @@ public class ProjectItem {
     private Long projectItemId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn // 수정 필요
+    @JoinColumn
     private ProjectManager projectManager;
 
     @Column(nullable = false)
@@ -57,6 +58,11 @@ public class ProjectItem {
         this.isDeleted = true;
     }
 
-    public Long getBusinessId() {
+    public void updateProjectItem(ProjectItemDTO projectItemDTO) {
+        this.artistName = projectItemDTO.getArtistName();
+        this.intro = projectItemDTO.getIntro();
+        this.phone = projectItemDTO.getPhone();
+        this.startDate = projectItemDTO.getStartDate();
+        this.endDate = projectItemDTO.getEndDate();
     }
 }

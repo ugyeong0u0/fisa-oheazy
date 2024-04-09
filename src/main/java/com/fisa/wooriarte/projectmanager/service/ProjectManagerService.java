@@ -53,8 +53,8 @@ public class ProjectManagerService {
     }
 
     //프로젝트 매니저 pw 재설정
-    public boolean setPwd(Long projectManagerId, String newPwd) {
-        ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
+    public boolean setPwd(String id, String newPwd) {
+        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
         //비밀번호 검증
         projectManager.setPwd(newPwd);
@@ -67,8 +67,8 @@ public class ProjectManagerService {
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public Optional<ProjectManagerDTO> findByProjectManagerId(Long id) {
-        return projectManagerRepository.findById(id)
+    public Optional<ProjectManagerDTO> findByProjectManagerId(Long projectManagerId) {
+        return projectManagerRepository.findById(projectManagerId)
                 .map(ProjectManagerDTO::fromEntity);
     }
 
@@ -83,10 +83,10 @@ public class ProjectManagerService {
             createAt: 생성 시점은 갱신하지 않음
             businessId: 고유 번호는 그대로 유지
      */
-    public boolean updateProjectManager(Long id, ProjectManagerDTO projectManagerDTO) {
-        ProjectManager projectManager = projectManagerRepository.findById(id)
+    public boolean updateProjectManager(Long projectManagerId, ProjectManagerDTO projectManagerDTO) {
+        ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
-        BeanUtils.copyProperties(projectManagerDTO, projectManager, "createAt", "projectManagerId");
+        projectManager.updateProjectManager(projectManagerDTO);
         projectManagerRepository.save(projectManager);
         return true;
     }
@@ -98,8 +98,8 @@ public class ProjectManagerService {
     2. delete를 true로 변경
         이미 변경했으면 예외처리
      */
-    public boolean deleteProjectManager(Long id) {
-        ProjectManager projectManager = projectManagerRepository.findById(id)
+    public boolean deleteProjectManager(Long projectManagerId) {
+        ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
         if(projectManager.getDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");
