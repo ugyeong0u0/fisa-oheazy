@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -30,7 +29,7 @@ public class UserController {
 
 
     // 이메일 중복 체크를 통해 중복회원 거르기
-    @PostMapping("")
+    @PostMapping("/user")
     //<?> : 제네릭 타입, 모든 종류의 응답 본문 반환할지 나타낸다.
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO)  {
         try {
@@ -91,7 +90,7 @@ public class UserController {
     }
 
     // 유저 개인 정보 수정
-    @PostMapping("/user/{user-id}/info")
+    @PutMapping("/user/{user-id}/info")
     public ResponseEntity<?> updateUserInfo(@PathVariable(name = "user-id") Long userId, @RequestBody UserInfoRequest userInfoRequest) throws Exception {
         try {
 
