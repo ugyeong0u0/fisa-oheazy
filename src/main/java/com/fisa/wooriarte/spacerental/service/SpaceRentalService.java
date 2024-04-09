@@ -26,7 +26,7 @@ public class SpaceRentalService {
      */
     @Transactional
     public boolean addSpaceRental(SpaceRentalDTO spaceRentalDTO) {
-        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(spaceRentalDTO.getId());
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(spaceRentalDTO.getSpaceRentalId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
@@ -41,7 +41,7 @@ public class SpaceRentalService {
     2. 비밀번호와 비교
      */
     public boolean loginSpaceRental(String id, String pwd) {
-        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(id);
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(id);
         return optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd);
     }
 
