@@ -56,4 +56,7 @@ public class ProjectItem {
     public void updateIsDeleted() {
         this.isDeleted = true;
     }
+
+    public Long getBusinessId() {
+    }
 }

@@ -70,4 +70,8 @@ public class ExhibitDTO {
 //                .matching_id((exhibit.getMatching() != null) ? exhibit.getMatching().getId() : null)
                 .build();
     }
+
+    public void setMatchingId(Long matchingId) {
+        this.matchingId=matchingId;
+    }
 }
