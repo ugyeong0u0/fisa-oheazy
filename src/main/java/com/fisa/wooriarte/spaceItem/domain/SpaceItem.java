@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.spaceItem.domain;
 
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDTO;
+import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,11 +22,11 @@ public class SpaceItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    private Long spaceId;
+    private Long spaceItemId;
 
-
-    @JoinColumn // 수정 필요
-    private Long businessId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private SpaceRental spaceRental;
 
     @Column
     private String intro;
@@ -40,7 +41,7 @@ public class SpaceItem {
     private String size;
 
     @Column
-    private boolean parking;
+    private Boolean parking;
 
     @Column
     private int fee;
@@ -49,7 +50,7 @@ public class SpaceItem {
     private String phone;
 
     @Column
-    private boolean approval;
+    private Boolean approval;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -64,26 +65,7 @@ public class SpaceItem {
     private LocalDateTime createdAt;
 
     @Column
-    private boolean isDeleted;
-
-    public SpaceItemDTO toDTO() {
-        return SpaceItemDTO.builder()
-                .spaceId(this.spaceId)
-                .businessId(this.businessId)
-                .intro(this.intro)
-                .hostName(this.hostName)
-                .city(this.city)
-                .size(this.size)
-                .parking(this.parking)
-                .fee(this.fee)
-                .phone(this.phone)
-                .approval(this.approval)
-                .startDate(this.startDate)
-                .endDate(this.endDate)
-                .createdAt(this.createdAt)
-                .isDeleted(this.isDeleted)
-                .build();
-    }
+    private Boolean isDeleted;
 
     public void updateIsDeleted() {
         this.isDeleted = true;

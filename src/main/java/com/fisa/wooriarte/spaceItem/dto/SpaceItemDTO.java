@@ -1,9 +1,12 @@
 package com.fisa.wooriarte.spaceItem.dto;
 
 import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
+import com.fisa.wooriarte.spacerental.domain.SpaceRental;
+import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @NoArgsConstructor
@@ -12,9 +15,9 @@ import java.time.LocalDateTime;
 @ToString
 public class SpaceItemDTO {
 
-    private Long spaceId;
+    private Long spaceItemId;
 
-    private Long businessId;
+    private Long spaceRentalId;
 
     private String intro;
 
@@ -24,13 +27,13 @@ public class SpaceItemDTO {
 
     private String size;
 
-    private boolean parking;
+    private Boolean parking;
 
     private int fee;
 
     private String phone;
 
-    private boolean approval;
+    private Boolean approval;
 
     private LocalDateTime startDate;
 
@@ -38,12 +41,16 @@ public class SpaceItemDTO {
 
     private LocalDateTime createdAt;
 
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
-    public SpaceItem toEntity() {
+    public SpaceItem toEntity(SpaceRentalRepository spaceRentalRepository) {
+        Optional<SpaceRental> optionalSpaceRental = SpaceRentalRepository.findBySpaceRentalId(this.spaceRentalId);
+
+        SpaceRental spaceRental = optionalSpaceRental.orElseThrow(() -> new IllegalArgumentException(""));
+
         return SpaceItem.builder()
-                .spaceId(this.spaceId) // 엔티티의 ID를 설정합니다. 새 엔티티를 생성하는 경우에는 이 필드를 생략할 수도 있습니다.
-                .businessId(this.businessId)
+                .spaceItemId(this.spaceItemId) // 엔티티의 ID를 설정합니다. 새 엔티티를 생성하는 경우에는 이 필드를 생략할 수도 있습니다.
+                .spaceRental(spaceRental)
                 .intro(this.intro)
                 .hostName(this.hostName)
                 .city(this.city)
@@ -58,4 +65,24 @@ public class SpaceItemDTO {
                 .isDeleted(this.isDeleted)
                 .build();
     }
+
+    public static SpaceItemDTO fromEntity(SpaceItem entity) {
+        return SpaceItemDTO.builder()
+                .spaceItemId(entity.getSpaceItemId())
+                .spaceRentalId(entity.getSpaceRentalId()) // SpaceRental 객체의 ID를 추출
+                .intro(entity.getIntro())
+                .hostName(entity.getHostName())
+                .city(entity.getCity())
+                .size(entity.getSize())
+                .parking(entity.getParking())
+                .fee(entity.getFee())
+                .phone(entity.getPhone())
+                .approval(entity.getApproval())
+                .startDate(entity.getStartDate())
+                .endDate(entity.getEndDate())
+                .createdAt(entity.getCreatedAt())
+                .isDeleted(entity.getIsDeleted())
+                .build();
+    }
+
 }
