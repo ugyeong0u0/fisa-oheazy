@@ -53,6 +53,8 @@ public class SpaceRental {
         this.deleted = deleted;
     }
 
+    public void setPwd(String pwd) { this.pwd = pwd; }
+
     public void updateSpaceRental(SpaceRentalDTO spaceRentalDTO) {
         this.businessNumber = spaceRentalDTO.getBusinessNumber();
         this.company = spaceRentalDTO.getCompany();

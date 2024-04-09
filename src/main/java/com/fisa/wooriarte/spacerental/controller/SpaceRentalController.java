@@ -4,6 +4,7 @@ import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import com.fisa.wooriarte.spacerental.service.SpaceRentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -35,7 +36,23 @@ public class SpaceRentalController {
         return "login fail";
     }
 
-    //공간대여자 정보 조회
+    //공간대여자 아이디 찾기
+    @PostMapping("/space-rental/find-id")
+    public String findBusinessId(@RequestBody String email) {
+        return spaceRentalService.getId(email);
+    }
+
+    // 공간대여자 비밀번호 재설정
+    @PostMapping("/space-rental/set-pw")
+    public String findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
+        Long spaceRentalId = Long.parseLong(pwdInfo.get("space_rental_id"));
+        String newPwd = pwdInfo.get("new_pwd");
+        if(spaceRentalService.setPwd(spaceRentalId, newPwd))
+            return "success";
+        return "fail";
+    }
+
+            //공간대여자 정보 조회
     @GetMapping("/space-rental/{space_rental_id}")
     public String getSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId) {
         SpaceRentalDTO spaceRentalDTO = spaceRentalService.findBySpaceRentalId(spaceRentalId);
