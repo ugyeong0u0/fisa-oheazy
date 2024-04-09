@@ -1,18 +1,12 @@
 package com.fisa.wooriarte.projectmanager.DTO;
 
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Getter;
+
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
-@ToString
 public class ProjectManagerDTO {
     private Long projectManagerId;
     private Long businessNumber;
@@ -37,20 +31,15 @@ public class ProjectManagerDTO {
     }
 
     public static ProjectManagerDTO fromEntity(ProjectManager projectManager) {
-        if (projectManager == null) {
-            return null;
-        }
-
-        ProjectManagerDTO dto = new ProjectManagerDTO();
-        dto.setProjectManagerId(projectManager.getProjectManagerId());
-        dto.setBusinessNumber(projectManager.getBusinessNumber());
-        dto.setId(projectManager.getId());
-        dto.setCompany(projectManager.getCompany());
-        dto.setCeo(projectManager.getCeo());
-        dto.setEmail(projectManager.getEmail());
-        dto.setPhone(projectManager.getPhone());
-        dto.setDeleted(projectManager.getDeleted());
-
-        return dto;
+        return ProjectManagerDTO.builder()
+                .projectManagerId(projectManager.getProjectManagerId())
+                .businessNumber(projectManager.getBusinessNumber())
+                .id(projectManager.getId())
+                .company(projectManager.getCompany())
+                .ceo(projectManager.getCeo())
+                .email(projectManager.getEmail())
+                .phone(projectManager.getPhone())
+                .deleted(projectManager.getDeleted())
+                .build();
     }
 }
