@@ -22,7 +22,7 @@ public class ProjectManagerController {
     }
 
     //프로젝트 매니저 회원가입
-    @PostMapping("/project-manager")
+    @PostMapping("/project-managers")
     public ResponseEntity<String> addProjectManager(@RequestBody ProjectManagerDTO projectManagerDTO) {
         boolean added = projectManagerService.addProjectManager(projectManagerDTO);
         if (added) {
@@ -33,7 +33,7 @@ public class ProjectManagerController {
     }
 
     //프로젝트 매니저 로그인
-    @PostMapping("/project-manager/login")
+    @PostMapping("/project-managers/login")
     public ResponseEntity<String> loginProjectManager(@RequestBody Map<String, String> loginInfo) {
         String id = loginInfo.get("id");
         String pwd = loginInfo.get("pwd");
@@ -46,13 +46,13 @@ public class ProjectManagerController {
     }
 
     //공간대여자 아이디 찾기
-    @PostMapping("/project-manager/find-id")
+    @PostMapping("/project-managers/find-id")
     public String findBusinessId(@RequestBody String email) {
         return projectManagerService.getId(email);
     }
 
     // 공간대여자 비밀번호 재설정
-    @PostMapping("/project-manager/set-pw")
+    @PostMapping("/project-managers/set-pwd")
     public String findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
         Long projectManagerId = Long.parseLong(pwdInfo.get("project_manager_id"));
         String newPwd = pwdInfo.get("new_pwd");
@@ -62,14 +62,14 @@ public class ProjectManagerController {
     }
 
     //프로젝트 매니저 정보 조회
-    @GetMapping("/project-manager/{project-manager-id}")
+    @GetMapping("/project-managers/{project-manager-id}")
     public ResponseEntity<ProjectManagerDTO> getProjectManagerInfo(@PathVariable("project-manager-id") Long projectManagerId) {
         Optional<ProjectManagerDTO> projectManageroptional = projectManagerService.findByProjectManagerId(projectManagerId);
         return projectManageroptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     //프로젝트 매니저 정보 갱신
-    @PutMapping("/project-manager/{project-manager-id}")
+    @PutMapping("/project-managers/{project-manager-id}")
     public ResponseEntity<String> updateProjectManagerInfo(
             @PathVariable("project-manager-id") Long projectManagerId,
             @RequestBody ProjectManagerDTO projectManagerDTO) {
@@ -83,7 +83,7 @@ public class ProjectManagerController {
     }
 
     //프로젝트 매니저 삭제(delete를 true로 변경)
-    @DeleteMapping("/project-manager/{project-manager-id}")
+    @DeleteMapping("/project-managers/{project-manager-id}")
     public ResponseEntity<String> deleteProjectManager(@PathVariable("project-manager-id") Long projectManagerId) {
         boolean deleted = projectManagerService.deleteProjectManager(projectManagerId);
         if (deleted) {
