@@ -11,4 +11,6 @@ public interface ProjectManagerRepository extends JpaRepository<ProjectManager, 
 
     @Query(value = "select * from project_manager p where p.id =:id", nativeQuery = true)
     public Optional<ProjectManager> findByProjectManagerId(String id);
+
+    public Optional<ProjectManager> findByEmail(String email);
 }
