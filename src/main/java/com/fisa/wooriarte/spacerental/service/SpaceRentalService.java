@@ -26,7 +26,7 @@ public class SpaceRentalService {
      */
     @Transactional
     public boolean addSpaceRental(SpaceRentalDTO spaceRentalDTO) {
-        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(spaceRentalDTO.getId());
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(spaceRentalDTO.getId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
@@ -41,7 +41,7 @@ public class SpaceRentalService {
     2. 비밀번호와 비교
      */
     public boolean loginSpaceRental(String id, String pwd) {
-        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(id);
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(id);
         return optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd);
     }
 
@@ -51,8 +51,8 @@ public class SpaceRentalService {
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public SpaceRentalDTO findById(Long spaceRentalId) {
-        SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
+    public SpaceRentalDTO findBySpaceRentalId(Long id) {
+        SpaceRental spaceRental = spaceRentalRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
         return SpaceRentalDTO.fromEntity(spaceRental);
     }
