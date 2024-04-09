@@ -17,12 +17,10 @@ public class ProjectManagerDTO {
     private Long projectManagerId;
     private Long businessNumber;
     private String id;
-    private String pwd;
     private String company;
     private String ceo;
     private String email;
     private String phone;
-    private LocalDateTime createAt;
     private Boolean deleted;
 
     public ProjectManager toEntity() {
@@ -30,13 +28,29 @@ public class ProjectManagerDTO {
                 .projectManagerId(this.projectManagerId)
                 .businessNumber(this.businessNumber)
                 .id(this.id)
-                .pwd(this.pwd)
                 .company(this.company)
                 .ceo(this.ceo)
                 .email(this.email)
                 .phone(this.phone)
-                .createAt(this.createAt)
                 .deleted(this.deleted)
                 .build();
+    }
+
+    public static ProjectManagerDTO fromEntity(ProjectManager projectManager) {
+        if (projectManager == null) {
+            return null;
+        }
+
+        ProjectManagerDTO dto = new ProjectManagerDTO();
+        dto.setProjectManagerId(projectManager.getProjectManagerId());
+        dto.setBusinessNumber(projectManager.getBusinessNumber());
+        dto.setId(projectManager.getId());
+        dto.setCompany(projectManager.getCompany());
+        dto.setCeo(projectManager.getCeo());
+        dto.setEmail(projectManager.getEmail());
+        dto.setPhone(projectManager.getPhone());
+        dto.setDeleted(projectManager.getDeleted());
+
+        return dto;
     }
 }
