@@ -27,10 +27,10 @@ public class ProjectItem {
     private Long projectItemId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(nullable = false) // 수정 필요
-    private ProjectManager projectManagerId;
+    @JoinColumn(name = "project_manager_id", nullable = false) // 수정 필요
+    private ProjectManager projectManager;
 
-    @OneToMany(mappedBy = "projectItemId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "projectItem", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Matching> matchings = new ArrayList<>();
 

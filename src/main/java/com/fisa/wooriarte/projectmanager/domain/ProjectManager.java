@@ -26,7 +26,7 @@ public class ProjectManager {
     @Column
     private Long projectManagerId;
 
-    @OneToMany(mappedBy = "projectManagerId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "projectManager", fetch = FetchType.LAZY)
     @Builder.Default
     private List<ProjectItem> projectItems = new ArrayList<>();
 

@@ -29,7 +29,7 @@ public class User {
     @Column
     private String id;
 
-    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Ticket> tickets = new ArrayList<>();
 

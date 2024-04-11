@@ -37,7 +37,7 @@ public class ExhibitDTO {
         Matching matching = optionalMatching.orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + this.matchingId));
         return Exhibit.builder()
                 .exhibitId(this.exhibitId)
-                .matchingId(matching)
+                .matching(matching)
                 .name(this.name)
                 .intro(this.intro)
                 .startDate(this.startDate)

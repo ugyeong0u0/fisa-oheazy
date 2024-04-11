@@ -29,7 +29,7 @@ public class ProjectItemDTO {
     public ProjectItem toEntity(ProjectManager projectManager) {
         return ProjectItem.builder()
                 .projectItemId(this.projectItemId)
-                .projectManagerId(projectManager)
+                .projectManager(projectManager)
                 .artistName(this.artistName)
                 .intro(this.intro)
                 .phone(this.phone)
@@ -43,7 +43,7 @@ public class ProjectItemDTO {
     public static ProjectItemDTO fromEntity(ProjectItem entity) {
         return ProjectItemDTO.builder()
                 .projectItemId(entity.getProjectItemId())
-                .projectManagerId(entity.getProjectManagerId().getProjectManagerId())
+                .projectManagerId(entity.getProjectManager().getProjectManagerId())
                 .artistName(entity.getArtistName())
                 .intro(entity.getIntro())
                 .phone(entity.getPhone())

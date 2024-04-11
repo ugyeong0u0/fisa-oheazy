@@ -26,12 +26,12 @@ public class Ticket {
     private Long ticketId;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private Exhibit exhibitId;
+    @JoinColumn(name = "exhibit_id", nullable = false)
+    private Exhibit exhibit;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private User userId;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private Long amount;
@@ -64,11 +64,11 @@ public class Ticket {
     public void generateTicketNo() {
         StringBuilder ticketNoBuilder = new StringBuilder();
         ticketNoBuilder.append(ticketId).append("-");
-        if (exhibitId != null) {
-            ticketNoBuilder.append(exhibitId).append("-");
+        if (exhibit != null) {
+            ticketNoBuilder.append(exhibit).append("-");
         }
-        if (userId != null) {
-            ticketNoBuilder.append(userId).append("-");
+        if (user != null) {
+            ticketNoBuilder.append(user).append("-");
         }
         ticketNoBuilder.append(date.toString());
 

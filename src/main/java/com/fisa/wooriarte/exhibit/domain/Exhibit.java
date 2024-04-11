@@ -27,10 +27,10 @@ public class Exhibit {
     private Long exhibitId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Matching matchingId;
+    @JoinColumn(name = "matching_id")
+    private Matching matching;
 
-    @OneToMany(mappedBy = "exhibitId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "exhibit", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Ticket> tickets = new ArrayList<>();
 

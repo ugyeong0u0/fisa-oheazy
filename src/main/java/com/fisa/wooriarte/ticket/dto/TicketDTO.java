@@ -38,8 +38,8 @@ public class TicketDTO {
 
         return Ticket.builder()
                 .ticketId(this.ticketId)
-                .exhibitId(exhibit)
-                .userId(user)
+                .exhibit(exhibit)
+                .user(user)
                 .amount(this.amount)
                 .canceled(this.canceled)
                 .ticket_no(this.ticket_no)
@@ -59,8 +59,8 @@ public class TicketDTO {
                 .name(ticket.getName())
                 .email(ticket.getEmail())
                 .phone(ticket.getPhone())
-                .exhibitId(ticket.getExhibitId() != null ? ticket.getExhibitId().getExhibitId() : null)
-                .userId(ticket.getUserId() != null ? ticket.getUserId().getUserId() : null)
+                .exhibitId(ticket.getExhibit() != null ? ticket.getExhibit().getExhibitId() : null)
+                .userId(ticket.getUser() != null ? ticket.getUser().getUserId() : null)
                 .build();
     }
 

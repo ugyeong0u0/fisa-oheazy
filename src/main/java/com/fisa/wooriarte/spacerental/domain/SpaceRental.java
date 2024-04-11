@@ -26,7 +26,7 @@ public class SpaceRental {
     @Column
     private Long spaceRentalId;
 
-    @OneToMany(mappedBy = "spaceRentalId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "spaceRental", fetch = FetchType.LAZY)
     @Builder.Default
     private List<SpaceItem> spaceItems = new ArrayList<>();
 

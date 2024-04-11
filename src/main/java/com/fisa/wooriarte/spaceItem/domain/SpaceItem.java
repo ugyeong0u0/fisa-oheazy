@@ -27,10 +27,10 @@ public class SpaceItem {
     private Long spaceItemId;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private SpaceRental spaceRentalId;
+    @JoinColumn(name = "space_rental_id", nullable = false)
+    private SpaceRental spaceRental;
 
-    @OneToMany(mappedBy = "spaceItemId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "spaceItem", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Matching> matchings = new ArrayList<>();
 

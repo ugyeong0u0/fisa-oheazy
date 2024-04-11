@@ -27,17 +27,17 @@ public class Matching {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long matchingId;
 
-    @OneToMany(mappedBy = "matchingId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "matching", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Exhibit> exhibits = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private SpaceItem spaceItemId;
+    @JoinColumn(name = "space_item_id", nullable = false)
+    private SpaceItem spaceItem;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private ProjectItem projectItemId;
+    @JoinColumn(name = "project_item_id", nullable = false)
+    private ProjectItem projectItem;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
