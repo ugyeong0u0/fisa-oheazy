@@ -43,7 +43,7 @@ public class ExhibitService {
                 .filter(exhibit -> {
                     Date startDate = exhibit.getStartDate();
                     Date endDate = exhibit.getEndDate();
-                    return startDate.before(todayDate) && endDate.after(todayDate) && !exhibit.getDeleted();
+                    return startDate.before(todayDate) && endDate.after(todayDate) && !exhibit.getIsDeleted();
                 })
                 .map(ExhibitDTO::fromEntity)
                 .collect(Collectors.toList());
@@ -92,7 +92,7 @@ public class ExhibitService {
         Optional<Exhibit> optionalExhibit = exhibitRepository.findById(exhibitId);
 
         //exhibit이 존재할 경우 deleted 컬럼 변경
-        optionalExhibit.ifPresent(Exhibit::setDeleted);
+        optionalExhibit.ifPresent(Exhibit::setIsDeleted);
     }
 
 

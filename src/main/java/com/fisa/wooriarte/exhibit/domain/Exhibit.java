@@ -2,7 +2,6 @@ package com.fisa.wooriarte.exhibit.domain;
 
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.ticket.domain.Ticket;
-import com.fisa.wooriarte.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -29,10 +28,11 @@ public class Exhibit {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Matching matching;
+    private Matching matchingId;
 
     @OneToMany(mappedBy = "exhibitId", fetch = FetchType.LAZY)
-    private List<Ticket> ticketList;
+    @Builder.Default
+    private List<Ticket> tickets = new ArrayList<>();
 
     @Column(nullable = false, length = 255)
     private String name;
@@ -64,15 +64,15 @@ public class Exhibit {
     private City city;
 
     @Column(nullable = false)
-    private Boolean deleted;
+    private Boolean isDeleted;
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime date;
 
     //티켓 삭제 deleted 컬럼 변경
-    public void setDeleted() {
-        this.deleted = !this.deleted;
+    public void setIsDeleted() {
+        this.isDeleted = !this.isDeleted;
     }
 
 }

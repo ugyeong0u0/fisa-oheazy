@@ -25,14 +25,6 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    private Exhibit exhibit;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private User user;
-
     @ManyToOne
     @JoinColumn(nullable = false)
     private Exhibit exhibitId;

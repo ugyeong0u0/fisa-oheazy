@@ -62,7 +62,7 @@ public class ProjectItemService {
     public void deleteProjectItem(Long projectItemId) throws Exception {
         ProjectItem projectItem = projectItemRepository.findByProjectItemIdAndIsDeletedFalse(projectItemId)
                 .orElseThrow(() -> new Exception("projectItem id: " + projectItemId + " 는 존재하지 않습니다"));
-        projectItem.updateIsDeleted();
+        projectItem.setIsDeleted();
     }
 
 }

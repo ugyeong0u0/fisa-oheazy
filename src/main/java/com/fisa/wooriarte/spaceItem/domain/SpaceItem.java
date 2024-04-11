@@ -31,7 +31,8 @@ public class SpaceItem {
     private SpaceRental spaceRentalId;
 
     @OneToMany(mappedBy = "spaceItemId", fetch = FetchType.LAZY)
-    private List<Matching> matching;
+    @Builder.Default
+    private List<Matching> matchings = new ArrayList<>();
 
     @Column
     private String intro;
@@ -73,7 +74,7 @@ public class SpaceItem {
     private Boolean isDeleted;
 
 
-    public void updateIsDeleted() {
+    public void setIsDeleted() {
         this.isDeleted = true;
     }
 }

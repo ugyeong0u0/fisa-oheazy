@@ -101,10 +101,10 @@ public class ProjectManagerService {
     public boolean deleteProjectManager(Long projectManagerId) {
         ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
-        if(projectManager.getDeleted()) {
+        if(projectManager.getIsDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");
         }
-        projectManager.setDeleted();
+        projectManager.setIsDeleted();
         return true;
     }
 }

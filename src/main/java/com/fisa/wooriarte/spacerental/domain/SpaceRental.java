@@ -27,7 +27,8 @@ public class SpaceRental {
     private Long spaceRentalId;
 
     @OneToMany(mappedBy = "spaceRentalId", fetch = FetchType.LAZY)
-    private List<SpaceItem> spaceItems;
+    @Builder.Default
+    private List<SpaceItem> spaceItems = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private Long businessNumber;
@@ -55,13 +56,10 @@ public class SpaceRental {
     private LocalDateTime createAt;
 
     @Column(nullable = false)
-    private Boolean deleted;
+    private Boolean isDeleted;
 
-    @OneToMany(mappedBy = "spaceRental", fetch = FetchType.EAGER)
-    private List<SpaceItem> spaceItem;
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void setIsDeleted() {
+        this.isDeleted = !this.isDeleted;
     }
 
     public void setPwd(String pwd) { this.pwd = pwd; }

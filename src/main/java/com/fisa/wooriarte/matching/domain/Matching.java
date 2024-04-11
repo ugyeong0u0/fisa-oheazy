@@ -27,8 +27,9 @@ public class Matching {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long matchingId;
 
-    @OneToMany(mappedBy = "matching", fetch = FetchType.LAZY)
-    private List<Exhibit> exhibits;
+    @OneToMany(mappedBy = "matchingId", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Exhibit> exhibits = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(nullable = false)

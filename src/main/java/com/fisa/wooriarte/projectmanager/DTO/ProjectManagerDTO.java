@@ -16,7 +16,7 @@ public class ProjectManagerDTO {
     private String ceo;
     private String email;
     private String phone;
-    private Boolean deleted;
+    private Boolean isDeleted;
 
     public ProjectManager toEntity() {
         return ProjectManager.builder()
@@ -27,7 +27,7 @@ public class ProjectManagerDTO {
                 .ceo(this.ceo)
                 .email(this.email)
                 .phone(this.phone)
-                .deleted(this.deleted)
+                .isDeleted(this.isDeleted)
                 .build();
     }
 
@@ -40,7 +40,7 @@ public class ProjectManagerDTO {
                 .ceo(projectManager.getCeo())
                 .email(projectManager.getEmail())
                 .phone(projectManager.getPhone())
-                .deleted(projectManager.getDeleted())
+                .isDeleted(projectManager.getIsDeleted())
                 .build();
     }
 }

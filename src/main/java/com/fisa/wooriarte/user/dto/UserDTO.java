@@ -19,7 +19,7 @@ public class UserDTO {
     private String name;
     private String email;
     private String phone;
-    private Boolean deleted;
+    private Boolean isDeleted;
 
 
     public User toEntity(){
@@ -38,7 +38,7 @@ public class UserDTO {
                 .name(user.getName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
-                .deleted(user.getDeleted())
+                .isDeleted(user.getIsDeleted())
                 .build();
     }
 }

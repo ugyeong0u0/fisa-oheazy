@@ -136,9 +136,7 @@ public class UserService {
     public void deleteUser(Long userId){
         //user_id로 검색
         Optional<User> optionalUser = userRepository.findById(userId);
-
-
-        optionalUser.ifPresent(User::setDeleted);
+        optionalUser.ifPresent(User::setIsDeleted);
     }
 }
 

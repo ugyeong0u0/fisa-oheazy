@@ -30,7 +30,8 @@ public class User {
     private String id;
 
     @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
-    private List<Ticket> tickets;
+    @Builder.Default
+    private List<Ticket> tickets = new ArrayList<>();
 
     @NonNull
     @Column
@@ -57,13 +58,13 @@ public class User {
     private LocalDateTime updateAt;
 
     @Column
-    private Boolean deleted;
+    private Boolean isDeleted;
 
 
 
 
-    public void setDeleted(){
-        this.deleted = !this.deleted;
+    public void setIsDeleted(){
+        this.isDeleted = !this.isDeleted;
     }
 
 

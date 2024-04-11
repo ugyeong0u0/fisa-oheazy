@@ -31,7 +31,8 @@ public class ProjectItem {
     private ProjectManager projectManagerId;
 
     @OneToMany(mappedBy = "projectItemId", fetch = FetchType.LAZY)
-    private List<Matching> Matchings;
+    @Builder.Default
+    private List<Matching> matchings = new ArrayList<>();
 
     @Column(nullable = false)
     private String artistName;
@@ -60,7 +61,7 @@ public class ProjectItem {
     @Column(nullable = false)
     private Boolean isDeleted;
 
-    public void updateIsDeleted() {
+    public void setIsDeleted() {
         this.isDeleted = true;
     }
 

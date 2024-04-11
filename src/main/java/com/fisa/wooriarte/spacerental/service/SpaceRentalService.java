@@ -104,10 +104,10 @@ public class SpaceRentalService {
     public boolean deleteSpaceRental(Long spaceRentalId) {
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
-        if(spaceRental.getDeleted()) {
+        if(spaceRental.getIsDeleted()) {
             throw new DataIntegrityViolationException("Already deleted User");
         }
-        spaceRental.setDeleted(true);
+        spaceRental.setIsDeleted();
         spaceRentalRepository.save(spaceRental);
         return true;
     }

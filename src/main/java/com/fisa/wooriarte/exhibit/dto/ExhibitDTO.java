@@ -26,7 +26,7 @@ public class ExhibitDTO {
     private Long price;
     private Long soldAmount;
     private String city;
-    private Boolean deleted;
+    private Boolean isDeleted;
 
 
     public Exhibit toEntity(MatchingRepository matchingRepository){
@@ -37,7 +37,7 @@ public class ExhibitDTO {
         Matching matching = optionalMatching.orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + this.matchingId));
         return Exhibit.builder()
                 .exhibitId(this.exhibitId)
-                .matching(matching)
+                .matchingId(matching)
                 .name(this.name)
                 .intro(this.intro)
                 .startDate(this.startDate)
@@ -47,7 +47,7 @@ public class ExhibitDTO {
                 .price(this.price)
                 .soldAmount(this.soldAmount)
                 .city(City.valueOf(this.city))
-                .deleted(this.deleted)
+                .isDeleted(this.isDeleted)
                 .build();
     }
 
@@ -66,7 +66,7 @@ public class ExhibitDTO {
                 .price(exhibit.getPrice())
                 .soldAmount(exhibit.getSoldAmount())
                 .city(exhibit.getCity().name())
-                .deleted(exhibit.getDeleted())
+                .isDeleted(exhibit.getIsDeleted())
 //                .matching_id((exhibit.getMatching() != null) ? exhibit.getMatching().getId() : null)
                 .build();
     }

@@ -19,7 +19,7 @@ public class SpaceRentalDTO {
     private String ceo;
     private String email;
     private String phone;
-    private Boolean deleted;
+    private Boolean isDeleted;
 
     public SpaceRental toEntity() {
         return SpaceRental.builder()
@@ -30,7 +30,7 @@ public class SpaceRentalDTO {
                 .ceo(this.ceo)
                 .email(this.email)
                 .phone(this.phone)
-                .deleted(this.deleted)
+                .isDeleted(this.isDeleted)
                 .build();
     }
 
@@ -42,7 +42,7 @@ public class SpaceRentalDTO {
                 .ceo(spaceRental.getCeo())
                 .email(spaceRental.getEmail())
                 .phone(spaceRental.getPhone())
-                .deleted(spaceRental.getDeleted())
+                .isDeleted(spaceRental.getIsDeleted())
                 .build();
     }
 }
