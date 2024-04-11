@@ -24,18 +24,15 @@ public class Exhibit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private Long exhibitId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-<<<<<<< HEAD
-    @JoinColumn(name = "matching_id")
+    @JoinColumn
     private Matching matching;
-=======
-    private Matching matchingId;
 
     @OneToMany(mappedBy = "exhibitId", fetch = FetchType.LAZY)
-    private List<Ticket> ticketList = new ArrayList<>();
->>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
+    private List<Ticket> ticketList;
 
     @Column(nullable = false, length = 255)
     private String name;

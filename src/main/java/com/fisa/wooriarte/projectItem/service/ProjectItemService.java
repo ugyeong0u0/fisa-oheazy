@@ -3,10 +3,7 @@ package com.fisa.wooriarte.projectItem.service;
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectItem.dto.ProjectItemDTO;
 import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
-<<<<<<< HEAD
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
-=======
->>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
@@ -32,13 +29,9 @@ public class ProjectItemService {
     @Transactional
     public void addProjectItem(ProjectItemDTO projectItemDTO){
         System.out.println("addProjectItem");
-<<<<<<< HEAD
         ProjectManager projectManager = projectManagerRepository.findById(projectItemDTO.getProjectManagerId())
                 .orElseThrow(() -> new NoSuchElementException("No Project Manager"));
         projectItemRepository.save(projectItemDTO.toEntity(projectManager));
-=======
-        projectItemRepository.save(projectItemDTO.toEntity(projectManagerRepository));
->>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
     }
 
     public List<ProjectItemDTO> findAll() {

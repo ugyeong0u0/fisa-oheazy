@@ -31,7 +31,7 @@ public class SpaceItem {
     private SpaceRental spaceRentalId;
 
     @OneToMany(mappedBy = "spaceItemId", fetch = FetchType.LAZY)
-    private List<Matching> matchings = new ArrayList<>();
+    private List<Matching> matching;
 
     @Column
     private String intro;

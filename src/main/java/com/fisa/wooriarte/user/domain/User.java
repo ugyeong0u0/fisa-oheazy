@@ -30,7 +30,7 @@ public class User {
     private String id;
 
     @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
-    private List<Ticket> tickets = new ArrayList<>();
+    private List<Ticket> tickets;
 
     @NonNull
     @Column

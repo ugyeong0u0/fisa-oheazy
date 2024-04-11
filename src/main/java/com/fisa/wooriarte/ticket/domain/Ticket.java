@@ -25,15 +25,14 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketId;
 
-<<<<<<< HEAD
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "exhibit_id")
+    @JoinColumn
     private Exhibit exhibit;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn
     private User user;
-=======
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private Exhibit exhibitId;
@@ -41,7 +40,6 @@ public class Ticket {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private User userId;
->>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
 
     @Column(nullable = false)
     private Long amount;

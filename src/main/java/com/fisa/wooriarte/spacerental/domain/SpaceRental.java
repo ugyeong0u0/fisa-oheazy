@@ -1,9 +1,5 @@
 package com.fisa.wooriarte.spacerental.domain;
 
-<<<<<<< HEAD
-=======
-import com.fisa.wooriarte.projectItem.domain.ProjectItem;
->>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
 import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import jakarta.persistence.*;
@@ -15,10 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
->>>>>>> 8d6934fd78add816b42eb102737c4fdbd7968a71
 import java.util.List;
 
 @Entity
@@ -34,7 +27,7 @@ public class SpaceRental {
     private Long spaceRentalId;
 
     @OneToMany(mappedBy = "spaceRentalId", fetch = FetchType.LAZY)
-    private List<SpaceItem> spaceItems = new ArrayList<>();
+    private List<SpaceItem> spaceItems;
 
     @Column(nullable = false, unique = true)
     private Long businessNumber;
