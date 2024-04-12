@@ -27,6 +27,7 @@ public class ProjectItemDTO {
     private Boolean isDeleted;
 
     public ProjectItem toEntity(ProjectManager projectManager) {
+
         return ProjectItem.builder()
                 .projectItemId(this.projectItemId)
                 .projectManager(projectManager)

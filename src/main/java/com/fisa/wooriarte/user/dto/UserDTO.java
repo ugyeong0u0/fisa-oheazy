@@ -29,6 +29,7 @@ public class UserDTO {
                 .name(this.name)
                 .email(this.email)
                 .phone(this.phone)
+                .isDeleted(this.isDeleted)
                 .build();
     }
     public static UserDTO fromEntity(User user) {

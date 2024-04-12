@@ -25,17 +25,7 @@ public class TicketDTO {
     private String email;
     private String phone;
 
-    public Ticket toEntity(UserRepository userRepository, ExhibitRepository exhibitRepository) {
-        // 전시를 찾아서 Optional로 받음
-        Optional<Exhibit> optionalExhibit = exhibitRepository.findById(this.exhibitId);
-        // 사용자를 찾아서 Optional로 받음
-        Optional<User> optionalUser = userRepository.findById(this.userId);
-
-        // Optional에서 사용자를 가져오거나 사용자가 존재하지 않으면 예외 발생
-        Exhibit exhibit = optionalExhibit.orElseThrow(() -> new IllegalArgumentException("Exhibit not found with id: " + this.exhibitId));
-        // Optional에서 사용자를 가져오거나 사용자가 존재하지 않으면 예외 발생
-        User user = optionalUser.orElseThrow(() -> new IllegalArgumentException("User not found with id: " + this.userId));
-
+    public Ticket toEntity(User user, Exhibit exhibit) {
         return Ticket.builder()
                 .ticketId(this.ticketId)
                 .exhibit(exhibit)

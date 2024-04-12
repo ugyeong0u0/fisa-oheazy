@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
 //    Optional<User> updateAllById(String id); // 유저 개인정보 수정
 
-    Optional<User> findUserByNameAndEmail(String name, String email); // 유저 이름, 이메일 찾기
+    Optional<User> findByNameAndEmail(String name, String email); // 유저 이름, 이메일 찾기
     Optional<User> findUserByIdAndNameAndEmail(String id, String name, String email); // 유저 이름, 이메일 찾기
 
     @Transactional

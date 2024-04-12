@@ -12,6 +12,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ *
+ */
 @Entity
 @Getter
 @AllArgsConstructor
@@ -26,6 +30,7 @@ public class ProjectItem {
     @Column
     private Long projectItemId;
 
+    // Many : projectManager / One :
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "project_manager_id", nullable = false) // 수정 필요
     private ProjectManager projectManager;

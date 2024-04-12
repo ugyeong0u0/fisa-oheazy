@@ -39,41 +39,51 @@ public class MatchingService {
 
     //공간 대여자가 매칭 신청
     @Transactional
-    public MatchingDTO addMatchingBySpaceRental(Long spaceId, Long projectId) {
-        if(matchingRepository.findByProjectIdAndSpaceId(projectId, spaceId).isPresent()) {
+    public MatchingDTO  addMatchingBySpaceRental(Long spaceItemId, Long projectItemId) {
+
+        SpaceItem spaceItem = spaceItemRepository.findById(spaceItemId).orElseThrow(() -> new NoSuchElementException("해당 공간 아이템 없음"));
+        ProjectItem projectItem = projectItemRepository.findById(projectItemId).orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템 없음"));
+
+        if(matchingRepository.findByProjectItemAndSpaceItem(projectItem, spaceItem).isPresent()) {
                 throw new DataIntegrityViolationException("해당 매칭이 이미 존재합니다");
         }
-        SpaceItem spaceItem = spaceItemRepository.findById(spaceId).orElseThrow(() -> new NoSuchElementException("해당 공간 아이템 없음"));
-        ProjectItem projectItem = projectItemRepository.findById(projectId).orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템 없음"));
-
         Matching matching = Matching.builder()
                 .matchingStatus(MatchingStatus.REQUESTWAITING)
+                .spaceItem(spaceItem)
+                .projectItem(projectItem)
                 .sender(spaceItem.getSpaceItemId())
                 .receiver(projectItem.getProjectItemId())
-                .spaceId(spaceId)
-                .projectId(projectId)
                 .senderType(SenderType.SPACERENTAL)
                 .build();
-
         matchingRepository.save(matching);
         return MatchingDTO.fromEntity(matching);
     }
 
     //프로젝트 매니저가 매칭 신청
+    /**
+     * 프로젝트 매니저가 작가가 선택한 공간과의 매칭 -
+     *  - 작가가 보유하고 있는 프로젝트를 작가가 선택한 공간 id (=공간대여자의 item id)
+     * @param projectItemId : 작가가 보유하고 있는 프로젝트 id
+     * @param spaceItemId : 작가가 선택한 공간 id
+     * @return 작가가 선택한 공간 id 와 공간대여자가 가지고 있는 item id 가 일치하여 해당 공간에 대한 객체가 반환
+     */
     @Transactional
-    public MatchingDTO addMatchingByProjectManager(Long projectId, Long spaceId) {
-        if(matchingRepository.findByProjectIdAndSpaceId(projectId, spaceId).isPresent()) {
+    public MatchingDTO addMatchingByProjectManager(Long projectItemId, Long spaceItemId) {
+
+        SpaceItem spaceItem = spaceItemRepository.findById(spaceItemId).orElseThrow(() -> new NoSuchElementException("해당 공간 아이템 없음"));
+        ProjectItem projectItem = projectItemRepository.findById(projectItemId).orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템 없음"));
+
+        // 신청하려는 작가 item 과 공간대여자의 item이 이미 매칭이 된 대상인가 (=매칭테이블에 있는가)
+        if(matchingRepository.findByProjectItemAndSpaceItem(projectItem, spaceItem).isPresent()) {
             throw new DataIntegrityViolationException("해당 매칭이 이미 존재합니다");
         }
-        SpaceItem spaceItem = spaceItemRepository.findById(spaceId).orElseThrow(() -> new NoSuchElementException("해당 공간 아이템 없음"));
-        ProjectItem projectItem = projectItemRepository.findById(projectId).orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템 없음"));
 
         Matching matching = Matching.builder()
                 .matchingStatus(MatchingStatus.REQUESTWAITING)
-                .sender(spaceItem.getSpaceItemId())
-                .receiver(projectItem.getProjectItemId())
-                .spaceId(spaceId)
-                .projectId(projectId)
+                .spaceItem(spaceItem)
+                .projectItem(projectItem)
+                .sender(projectItem.getProjectItemId())
+                .receiver(spaceItem.getSpaceItemId())
                 .senderType(SenderType.PROJECTMANAGER)
                 .build();
 

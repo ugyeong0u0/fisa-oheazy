@@ -12,6 +12,7 @@ public class ProjectManagerDTO {
     private Long projectManagerId;
     private Long businessNumber;
     private String id;
+    private String pwd;
     private String company;
     private String ceo;
     private String email;
@@ -20,9 +21,9 @@ public class ProjectManagerDTO {
 
     public ProjectManager toEntity() {
         return ProjectManager.builder()
-                .projectManagerId(this.projectManagerId)
                 .businessNumber(this.businessNumber)
                 .id(this.id)
+                .pwd(this.pwd)
                 .company(this.company)
                 .ceo(this.ceo)
                 .email(this.email)

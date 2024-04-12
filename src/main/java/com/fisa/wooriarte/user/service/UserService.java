@@ -1,12 +1,11 @@
 package com.fisa.wooriarte.user.service;
 
-import com.fisa.wooriarte.exception.MessageException;
-import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.dto.UserDTO;
 import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
 import com.fisa.wooriarte.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -115,7 +114,7 @@ public class UserService {
 
     // 유저 아이디 찾기
     public String findUserId(String name, String email)  {
-        User userInfo = userRepository.findUserByNameAndEmail(name, email)
+        User userInfo = userRepository.findByNameAndEmail(name, email)
                 .orElseThrow(() -> new NoSuchElementException("유저 아이디를 찾을 수 없습니다.")); //객체 없으면 에러던지기
 
         return userInfo.getId(); //아이디 던저주기
@@ -135,8 +134,13 @@ public class UserService {
     @Transactional
     public void deleteUser(Long userId){
         //user_id로 검색
-        Optional<User> optionalUser = userRepository.findById(userId);
-        optionalUser.ifPresent(User::setIsDeleted);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("d"));
+        if(user.getIsDeleted()) {
+            throw new DataIntegrityViolationException("Already deleted User");
+        }
+        user.setIsDeleted();
+        userRepository.save(user);
     }
 }
 

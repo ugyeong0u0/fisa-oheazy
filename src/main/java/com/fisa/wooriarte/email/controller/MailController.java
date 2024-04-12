@@ -1,4 +1,4 @@
-package com.fisa.wooriarte.email.Controller;
+package com.fisa.wooriarte.email.controller;
 
 import com.fisa.wooriarte.email.dto.EmailCheckDTO;
 import com.fisa.wooriarte.email.dto.EmailRequestDTO;

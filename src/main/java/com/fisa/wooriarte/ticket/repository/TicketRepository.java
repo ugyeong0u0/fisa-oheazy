@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket,Long> {
 
-    List<Ticket> findByUserIdAndStatusAndCanceled(User user, boolean status, boolean canceled);
+    List<Ticket> findByUserAndStatusAndCanceled(User user, boolean status, boolean canceled);
 //    List<Ticket> findAllByUserAndStatusAndCanceled(Long userId, boolean status, boolean canceled);
 
 }

@@ -36,6 +36,7 @@ public class SpaceRentalDTO {
 
     public static SpaceRentalDTO fromEntity(SpaceRental spaceRental) {
         return SpaceRentalDTO.builder()
+                .spaceRentalId(spaceRental.getSpaceRentalId())
                 .businessNumber(spaceRental.getBusinessNumber())
                 .id(spaceRental.getId())
                 .company(spaceRental.getCompany())

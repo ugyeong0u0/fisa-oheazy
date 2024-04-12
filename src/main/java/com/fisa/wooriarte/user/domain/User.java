@@ -1,7 +1,6 @@
 package com.fisa.wooriarte.user.domain;
 
 import com.fisa.wooriarte.ticket.domain.Ticket;
-import com.fisa.wooriarte.user.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -59,9 +58,6 @@ public class User {
 
     @Column
     private Boolean isDeleted;
-
-
-
 
     public void setIsDeleted(){
         this.isDeleted = !this.isDeleted;

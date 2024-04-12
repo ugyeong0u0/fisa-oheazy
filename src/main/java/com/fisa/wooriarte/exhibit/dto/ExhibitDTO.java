@@ -57,6 +57,7 @@ public class ExhibitDTO {
         }
         return ExhibitDTO.builder()
                 .exhibitId(exhibit.getExhibitId())
+                .matchingId(exhibit.getMatching().getMatchingId())
                 .name(exhibit.getName())
                 .intro(exhibit.getIntro())
                 .startDate(exhibit.getStartDate())

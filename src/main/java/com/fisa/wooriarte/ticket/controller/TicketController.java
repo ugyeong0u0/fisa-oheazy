@@ -24,10 +24,7 @@ public class TicketController {
 
     //결제 완료 -> 티켓 생성
     @PostMapping("/exhibits/{exhibit-id}/payments/{user-id}")
-    public ResponseEntity<String> addTicket(
-            @RequestBody TicketDTO ticketDTO,
-            @PathVariable(name = "exhibit-id") long exhibitId,
-            @PathVariable(name = "user-id") long userId) {
+    public ResponseEntity<String> addTicket(@RequestBody TicketDTO ticketDTO, @PathVariable(name = "exhibit-id") long exhibitId, @PathVariable(name = "user-id") long userId) {
         // 이름, 이메일, 연락처 값이 누락되었는지 확인
         if (ticketDTO.getName() == null || ticketDTO.getEmail() == null || ticketDTO.getPhone() == null) {
             throw new IllegalArgumentException("이름, 이메일, 연락처는 필수 값입니다.");
@@ -52,7 +49,7 @@ public class TicketController {
     }
 
     // 티켓 취소
-    @DeleteMapping("/user/{ticket-id}")
+    @DeleteMapping("/user/ticket/{ticket-id}")
     public ResponseEntity<String> deleteTicket(@PathVariable(name = "ticket-id") long ticketId) {
         try {
             ticketService.deleteTicketById(ticketId);

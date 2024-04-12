@@ -51,9 +51,7 @@ public class ExhibitController {
 
     //전시 수정
     @PutMapping("/admin/exhibits/{exhibit-id}")
-    public ResponseEntity<String> updateExhibit(
-            @PathVariable(name = "exhibit-id") Long exhibitId,
-            @RequestBody ExhibitDTO exhibitDTO) {
+    public ResponseEntity<String> updateExhibit(@PathVariable(name = "exhibit-id") Long exhibitId, @RequestBody ExhibitDTO exhibitDTO) {
         try {
             exhibitService.updateExhibit(exhibitId, exhibitDTO);
             return ResponseEntity.ok("전시 수정 완료");

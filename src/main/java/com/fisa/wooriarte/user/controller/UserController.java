@@ -138,6 +138,16 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/user/{user-id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("user-id") Long userId){
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok().body("유저 삭제 성공");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("유저 삭제 실패");
+        }
+    }
+
 
 
 

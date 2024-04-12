@@ -5,6 +5,7 @@ import com.fisa.wooriarte.exhibit.dto.ExhibitDTO;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.matching.repository.MatchingRepository;
+import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,17 +72,10 @@ public class ExhibitService {
     }
 
     @Transactional
-    public void updateExhibit(Long id, ExhibitDTO exhibitDTO) {
-        Exhibit exhibit = exhibitRepository.findById(exhibitDTO.getExhibitId())
+    public void updateExhibit(Long exhibitId, ExhibitDTO exhibitDTO) {
+        Exhibit exhibit = exhibitRepository.findById(exhibitId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
-
-        // 변경 불가능한 프로퍼티를 무시할 이름 배열 생성
-        String[] ignoreProperties = {"artistName", "hostName", "exhibitId", "soldAmount", "date"};
-
-        // BeanUtils를 사용하여 DTO의 내용을 엔티티에 복사
-        BeanUtils.copyProperties(exhibitDTO, exhibit, ignoreProperties);
-
-        // 변경된 엔티티 저장
+        exhibit.updateExhibit(exhibitDTO);
         exhibitRepository.save(exhibit);
     }
 

@@ -3,6 +3,7 @@ package com.fisa.wooriarte.projectmanager.service;
 import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,6 +26,7 @@ public class ProjectManagerService {
        발견시 예외 처리
    2. DB에 저장
     */
+    @Transactional
     public boolean addProjectManager(ProjectManagerDTO projectManagerDTO) {
         Optional<ProjectManager> optionalSpaceRental = projectManagerRepository.findByProjectManagerId(projectManagerDTO.getId());
         if (optionalSpaceRental.isPresent()) {
@@ -49,6 +51,8 @@ public class ProjectManagerService {
     public String getId(String email) {
         ProjectManager projectManager = projectManagerRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
+        System.out.println("*****************");
+        System.out.println(projectManager);
         return projectManager.getId();
     }
 
@@ -58,6 +62,7 @@ public class ProjectManagerService {
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
         //비밀번호 검증
         projectManager.setPwd(newPwd);
+        projectManagerRepository.save(projectManager);
         return true;
     }
 
@@ -83,6 +88,7 @@ public class ProjectManagerService {
             createAt: 생성 시점은 갱신하지 않음
             businessId: 고유 번호는 그대로 유지
      */
+    @Transactional
     public boolean updateProjectManager(Long projectManagerId, ProjectManagerDTO projectManagerDTO) {
         ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
@@ -98,6 +104,8 @@ public class ProjectManagerService {
     2. delete를 true로 변경
         이미 변경했으면 예외처리
      */
+
+    @Transactional
     public boolean deleteProjectManager(Long projectManagerId) {
         ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
@@ -105,6 +113,7 @@ public class ProjectManagerService {
             throw new DataIntegrityViolationException("Already deleted User");
         }
         projectManager.setIsDeleted();
+        projectManagerRepository.save(projectManager);
         return true;
     }
 }

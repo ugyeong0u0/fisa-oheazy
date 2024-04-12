@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.exhibit.domain;
 
+import com.fisa.wooriarte.exhibit.dto.ExhibitDTO;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.ticket.domain.Ticket;
 import jakarta.persistence.*;
@@ -75,4 +76,12 @@ public class Exhibit {
         this.isDeleted = !this.isDeleted;
     }
 
+    public void updateExhibit(ExhibitDTO exhibitDTO) {
+        this.name = exhibitDTO.getName();
+        this.intro  = exhibitDTO.getIntro();
+        this.startDate = exhibitDTO.getStartDate();
+        this.endDate = exhibitDTO.getEndDate();
+        this.price  = exhibitDTO.getPrice();
+        this.city = City.valueOf(exhibitDTO.getCity());
+    }
 }

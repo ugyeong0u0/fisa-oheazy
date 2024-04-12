@@ -57,7 +57,7 @@ public class SpaceItemController {
     }
 
     // 공간 아이템 수정
-    @PatchMapping("/space-item/{space-item-id}")
+    @PutMapping("/space-item/{space-item-id}")
     public String updateSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId, @RequestBody SpaceItemDTO spaceItemDTO) {
         try {
             spaceItemService.updateSpaceItem(spaceItemId, spaceItemDTO);

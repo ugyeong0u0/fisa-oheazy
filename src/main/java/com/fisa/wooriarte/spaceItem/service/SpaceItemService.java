@@ -52,13 +52,11 @@ public class SpaceItemService {
     public void updateSpaceItem(Long spaceItemId, SpaceItemDTO spaceItemDTO) {
         System.out.println("updateSpaceItem");
         // 기존 엔티티를 찾고, 있으면 업데이트
-        spaceItemRepository.findById(spaceItemId).ifPresent(existingItem -> {
-            // DTO에서 엔티티로 프로퍼티 복사, "id", "createdAt" 등 변경되면 안되는 필드는 제외
-            BeanUtils.copyProperties(spaceItemDTO, existingItem, "id", "createdAt");
-            // 변경된 엔티티 저장
-            spaceItemRepository.save(existingItem);
-        });
-    }
+        SpaceItem spaceItem = spaceItemRepository.findById(spaceItemId)
+                .orElseThrow(() -> new NoSuchElementException(""));
+        spaceItem.updateSpaceItem(spaceItemDTO);
+        spaceItemRepository.save(spaceItem);
+        };
 
     @Transactional
     public void deleteSpaceItem(Long spaceItemId) throws Exception {
@@ -66,5 +64,5 @@ public class SpaceItemService {
                 .orElseThrow(() -> new Exception("spaceItem id: " + spaceItemId + " 는 존재하지 않습니다"));
         spaceItem.setIsDeleted();
     }
-
 }
+

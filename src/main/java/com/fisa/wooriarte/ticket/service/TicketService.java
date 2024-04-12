@@ -41,11 +41,11 @@ public class TicketService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
         if (status) {
-            tickets = ticketRepository.findByUserIdAndStatusAndCanceled(user, true, false);
+            tickets = ticketRepository.findByUserAndStatusAndCanceled(user, true, false);
             log.info("UsedTicket :: " + String.valueOf(tickets.toString()));
             System.out.println(tickets.toString());
         } else {
-            tickets = ticketRepository.findByUserIdAndStatusAndCanceled(user,false, false);
+            tickets = ticketRepository.findByUserAndStatusAndCanceled(user,false, false);
             log.info("UnusedTicket :: " + String.valueOf(tickets.toString()));
             System.out.println(tickets.toString());
         }
@@ -55,6 +55,7 @@ public class TicketService {
     }
 
     //새로운 ticket 생성
+    @Transactional
     public void addTicket(TicketDTO ticketDTO, long userId, long exhibitId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
@@ -64,11 +65,11 @@ public class TicketService {
         ticketDTO.setUserId(user.getUserId());
         ticketDTO.setExhibitId(exhibit.getExhibitId());
         //TicketDTO -> 엔티티 변환
-        Ticket ticket = ticketDTO.toEntity(userRepository, exhibitRepository);
+        Ticket ticket = ticketDTO.toEntity(user, exhibit);
         //Ticket 엔티티 저장
-        Ticket savedTicket = ticketRepository.save(ticket);
-        //Ticket 엔티티 -> TicketDTO 변환
-        TicketDTO.fromEntity(savedTicket);
+        ticketRepository.save(ticket);
+//        //Ticket 엔티티 -> TicketDTO 변환
+//        TicketDTO.fromEntity(savedTicket);
     }
 
     //티켓 취소 메소드

@@ -60,19 +60,19 @@ public class Ticket {
 
 
     // PrePersist 메서드: 엔티티가 영구 저장되기 전에 자동으로 호출됨
-    @PrePersist
     public void generateTicketNo() {
         StringBuilder ticketNoBuilder = new StringBuilder();
         ticketNoBuilder.append(ticketId).append("-");
-        if (exhibit != null) {
-            ticketNoBuilder.append(exhibit).append("-");
-        }
-        if (user != null) {
-            ticketNoBuilder.append(user).append("-");
-        }
-        ticketNoBuilder.append(date.toString());
+//        if (exhibit != null) {
+//            ticketNoBuilder.append(exhibit).append("-");
+//        }
+//        if (user != null) {
+//            ticketNoBuilder.append(user).append("-");
+//        }
+//        ticketNoBuilder.append(date.toString());
 
         this.ticket_no = ticketNoBuilder.toString();
+        System.out.println(ticket_no);
     }
 
     //티켓 취소 canceled 컬럼 변경
