@@ -35,6 +35,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' //aws 의존성 추가
 //	// security
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 //	implementation 'org.testng:testng:7.1.0'
@@ -44,6 +45,7 @@ dependencies {
 //	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 //	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
