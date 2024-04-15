@@ -1,5 +1,7 @@
 package com.fisa.wooriarte.exhibit.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fisa.wooriarte.exhibit.dto.ExhibitDTO;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.ticket.domain.Ticket;
@@ -69,7 +71,7 @@ public class Exhibit {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime date;
+    private LocalDateTime createAt;
 
     //티켓 삭제 deleted 컬럼 변경
     public void setIsDeleted() {

@@ -31,6 +31,8 @@ public class TicketController {
         }
 
         try {
+            String ticketNo = ticketService.generateTicketNumber();
+            ticketDTO.setTicketNo(ticketNo);
             ticketService.addTicket(ticketDTO, userId, exhibitId);
             return ResponseEntity.ok("티켓 생성 완료");
         } catch (Exception e) {
@@ -42,7 +44,7 @@ public class TicketController {
     @GetMapping("/user/{user-id}/bookings/{status}")
     public ResponseEntity<List<TicketDTO>> getTicketsByUserIdAndStatus(
             @PathVariable(name = "user-id") long userId,
-            @RequestParam(required = false, defaultValue = "false") boolean status) {
+            @PathVariable boolean status) {
 
         List<TicketDTO> tickets = ticketService.getTicketsByUserIdAndStatus(userId, status);
         return ResponseEntity.ok(tickets);

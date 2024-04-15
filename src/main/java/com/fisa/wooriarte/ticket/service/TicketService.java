@@ -12,8 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,18 +40,18 @@ public class TicketService {
     // 사용 여부에 따라 티켓 리스트를 가져오는 메서드
     public List<TicketDTO> getTicketsByUserIdAndStatus(long userId, boolean status) {
         List<Ticket> tickets;
-        log.info("userId :: " + String.valueOf(userId));
+        log.info("userId :: " + userId);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 
         if (status) {
             tickets = ticketRepository.findByUserAndStatusAndCanceled(user, true, false);
-            log.info("UsedTicket :: " + String.valueOf(tickets.toString()));
-            System.out.println(tickets.toString());
+            log.info("UsedTicket :: " + tickets);
+            System.out.println(tickets);
         } else {
             tickets = ticketRepository.findByUserAndStatusAndCanceled(user,false, false);
-            log.info("UnusedTicket :: " + String.valueOf(tickets.toString()));
-            System.out.println(tickets.toString());
+            log.info("UnusedTicket :: " + tickets);
+            System.out.println(tickets);
         }
         return tickets.stream()
                 .map(TicketDTO::fromEntity)
@@ -100,5 +104,22 @@ public class TicketService {
         } else {
             return false; // 티켓이 존재하지 않는 경우
         }
+    }
+
+    public String generateTicketNumber() {
+        // 현재 날짜를 년월일 6자리 형식(YYMMDD)으로 변환
+        String datePart = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
+
+        // 6자리 난수 생성을 위한 StringBuilder
+        StringBuilder randomPart = new StringBuilder(6);
+
+        for (int i = 0; i < 6; i++) {
+            // 0부터 9까지의 숫자 중 하나를 랜덤하게 선택하여 추가
+            int num = ThreadLocalRandom.current().nextInt(0, 10);
+            randomPart.append(num);
+        }
+
+        // 년월일 부분과 난수 부분을 합쳐 최종 티켓 번호 생성
+        return datePart + randomPart;
     }
 }

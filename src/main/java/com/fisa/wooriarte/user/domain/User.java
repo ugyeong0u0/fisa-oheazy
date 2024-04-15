@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fisa.wooriarte.ticket.domain.Ticket;
 import jakarta.persistence.*;
 import lombok.*;

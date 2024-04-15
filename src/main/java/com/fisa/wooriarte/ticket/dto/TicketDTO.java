@@ -1,13 +1,9 @@
 package com.fisa.wooriarte.ticket.dto;
 
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
-import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
 import com.fisa.wooriarte.ticket.domain.Ticket;
 import com.fisa.wooriarte.user.domain.User;
-import com.fisa.wooriarte.user.repository.UserRepository;
 import lombok.*;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 
 @Getter
@@ -19,7 +15,7 @@ public class TicketDTO {
     private Long userId;
     private Long amount;
     private Boolean canceled;
-    private String ticket_no;
+    private String ticketNo;
     private Boolean status;
     private String name;
     private String email;
@@ -32,7 +28,7 @@ public class TicketDTO {
                 .user(user)
                 .amount(this.amount)
                 .canceled(this.canceled)
-                .ticket_no(this.ticket_no)
+                .ticketNo(this.ticketNo)
                 .status(this.status)
                 .name(this.name)
                 .email(this.email)
@@ -42,9 +38,10 @@ public class TicketDTO {
 
     public static TicketDTO fromEntity(Ticket ticket) {
         return TicketDTO.builder()
+                .ticketId(ticket.getTicketId())
                 .amount(ticket.getAmount())
                 .canceled(ticket.getCanceled())
-                .ticket_no(ticket.getTicket_no())
+                .ticketNo(ticket.getTicketNo())
                 .status(ticket.getStatus())
                 .name(ticket.getName())
                 .email(ticket.getEmail())
@@ -61,4 +58,6 @@ public class TicketDTO {
     public void setExhibitId(Long exhibitId) {
         this.exhibitId=exhibitId;
     }
+
+    public void setTicketNo(String ticketNo) {this.ticketNo=ticketNo;}
 }

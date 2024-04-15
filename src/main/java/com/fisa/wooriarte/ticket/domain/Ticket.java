@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.ticket.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.user.domain.User;
 import jakarta.persistence.*;
@@ -16,7 +17,6 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-@ToString
 @DynamicUpdate
 
 public class Ticket {
@@ -25,7 +25,7 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exhibit_id", nullable = false)
     private Exhibit exhibit;
 
@@ -44,7 +44,7 @@ public class Ticket {
     private Boolean canceled;
 
     @Column(nullable = false)
-    private String ticket_no;
+    private String ticketNo;
 
     @Column(nullable = false)
     private Boolean status;
@@ -59,21 +59,21 @@ public class Ticket {
     private String phone;
 
 
-    // PrePersist 메서드: 엔티티가 영구 저장되기 전에 자동으로 호출됨
-    public void generateTicketNo() {
-        StringBuilder ticketNoBuilder = new StringBuilder();
-        ticketNoBuilder.append(ticketId).append("-");
-//        if (exhibit != null) {
-//            ticketNoBuilder.append(exhibit).append("-");
-//        }
-//        if (user != null) {
-//            ticketNoBuilder.append(user).append("-");
-//        }
-//        ticketNoBuilder.append(date.toString());
-
-        this.ticket_no = ticketNoBuilder.toString();
-        System.out.println(ticket_no);
-    }
+//    // PrePersist 메서드: 엔티티가 영구 저장되기 전에 자동으로 호출됨
+//    public void generateTicketNo() {
+//        StringBuilder ticketNoBuilder = new StringBuilder();
+//        ticketNoBuilder.append(ticketId).append("-");
+////        if (exhibit != null) {
+////            ticketNoBuilder.append(exhibit).append("-");
+////        }
+////        if (user != null) {
+////            ticketNoBuilder.append(user).append("-");
+////        }
+////        ticketNoBuilder.append(date.toString());
+//
+//        this.ticketNo = ticketNoBuilder.toString();
+//        System.out.println(ticketNo);
+//    }
 
     //티켓 취소 canceled 컬럼 변경
     public void setCanceled() {
