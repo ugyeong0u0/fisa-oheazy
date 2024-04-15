@@ -78,4 +78,25 @@ public class ProjectPhotoController {
         List<ProjectPhotoDTO> photos = projectPhotoService.getPhotosByProjectItemId(projectItemId);
         return new ResponseEntity<>(photos, HttpStatus.OK);
     }
+
+    /**
+     * 5. 프로젝트 사진 수정 - S3, DB
+     * @param projectItemId : 프로젝트 아이템 ID
+     * @param multipartFileList : 수정할 사진 파일 리스트
+     * @return
+     * @throws IOException
+     */
+    @PutMapping(path = "/{project-item-id}/edit-project-photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> editPhotos(@PathVariable("project-item-id") Long projectItemId, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFileList) throws IOException {
+        if (multipartFileList == null) {
+            return ResponseEntity.badRequest().body("No files provided");
+        } else {
+            // 먼저 해당 프로젝트 아이템의 모든 사진 삭제
+            projectPhotoService.deleteAllPhotos(projectItemId);
+
+            // 새로운 사진 파일 추가
+            return projectPhotoService.addPhoto(multipartFileList, projectItemId);
+        }
+    }
+
 }
