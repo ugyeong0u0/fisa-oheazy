@@ -79,4 +79,25 @@ public class SpacePhotoController {
         List<SpacePhotoDTO> photos = spacePhotoService.getPhotosBySpaceItemId(spaceItemId);
         return new ResponseEntity<>(photos, HttpStatus.OK);
     }
+
+    /**
+     * 5. 공간 사진 수정 - S3, DB
+     * @param spaceItemId : 공간 아이템 ID
+     * @param multipartFileList : 수정할 사진 파일 리스트
+     * @return
+     * @throws IOException
+     */
+    @PutMapping(path = "/{space-item-id}/edit-space-photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> editPhotos(@PathVariable("space-item-id") Long spaceItemId, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFileList) throws IOException {
+        if (multipartFileList == null) {
+            return ResponseEntity.badRequest().body("No files provided");
+        } else {
+            // 먼저 해당 공간 아이템의 모든 사진 삭제
+            spacePhotoService.deleteAllPhotos(spaceItemId);
+
+            // 새로운 사진 파일 추가
+            return spacePhotoService.addPhotos(multipartFileList, spaceItemId);
+        }
+    }
+
 }
