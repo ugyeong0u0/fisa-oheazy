@@ -31,7 +31,6 @@ public class SpacePhotoController {
      */
     @PostMapping(path = "/{space-item-id}/add-space-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addPhotos(@PathVariable("space-item-id") Long spaceItemId, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFileList) throws IOException {
-        System.out.println(spaceItemId);
         if (multipartFileList == null) {
             return ResponseEntity.badRequest().body("No files provided");
         } else {
@@ -41,7 +40,7 @@ public class SpacePhotoController {
 
     /**
      * 2. 사진 개별 삭제 - S3, DB
-     * @param photoIds
+     * @param photoIds : 삭제할 photoIds
      * @return
      */
     @DeleteMapping("/delete-space-photo")
@@ -56,7 +55,7 @@ public class SpacePhotoController {
 
     /**
      * 3. spaceItemId에 해당하는 모든 사진 삭제 - S3, DB
-     * @param spaceItemId
+     * @param spaceItemId : 삭제할 사진을 가지고 있는 spaceItemId
      * @return
      */
     @DeleteMapping("/{space-item-id}/delete-all-space-photo")
@@ -71,7 +70,7 @@ public class SpacePhotoController {
 
     /**
      *  4. SpaceItemId에 해당하는 모든 사진 출력
-     * @param spaceItemId
+     * @param spaceItemId : 출력할 사진을 가지고 있는 spaceItemId
      * @return photos 객체 정보 출력
      */
     @GetMapping("/{space-item-id}/space-photos")
@@ -81,9 +80,9 @@ public class SpacePhotoController {
     }
 
     /**
-     * 5. 공간 사진 수정 - S3, DB
-     * @param spaceItemId : 공간 아이템 ID
-     * @param multipartFileList : 수정할 사진 파일 리스트
+     * 5. 공간 사진 수정 - S3, DB : 해당 공간의 사진 데이터 삭제 후 덮어씌우기
+     * @param spaceItemId : 수정할 spaceItemId
+     * @param multipartFileList : 수정에서 삽입될 사진 파일 리스트
      * @return
      * @throws IOException
      */
@@ -99,5 +98,4 @@ public class SpacePhotoController {
             return spacePhotoService.addPhotos(multipartFileList, spaceItemId);
         }
     }
-
 }

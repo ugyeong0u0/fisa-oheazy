@@ -78,6 +78,7 @@ public class Exhibit {
         this.isDeleted = !this.isDeleted;
     }
 
+    //전시 정보 수정
     public void updateExhibit(ExhibitDTO exhibitDTO) {
         this.name = exhibitDTO.getName();
         this.intro  = exhibitDTO.getIntro();

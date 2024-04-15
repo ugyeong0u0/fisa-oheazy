@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.projectphoto.domain;
 
+import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,10 +23,9 @@ public class ProjectPhoto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long projectPhotoId;
 
-    @Column
-    private Long projectItemId;
-//    @JoinColumn
-//    private ProjectItem projectItem;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "projectItem_id", nullable = false)
+    private ProjectItem projectItem;
 
     // S3 키 값
     @Column(nullable = false)

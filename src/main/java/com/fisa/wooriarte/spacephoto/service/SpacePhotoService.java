@@ -1,5 +1,7 @@
 package com.fisa.wooriarte.spacephoto.service;
 
+import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
+import com.fisa.wooriarte.spaceItem.repository.SpaceItemRepository;
 import com.fisa.wooriarte.spacephoto.domain.SpacePhoto;
 import com.fisa.wooriarte.spacephoto.dto.SpacePhotoDTO;
 import com.fisa.wooriarte.spacephoto.repository.SpacePhotoRepository;
@@ -19,10 +21,12 @@ import java.util.stream.Collectors;
 public class SpacePhotoService {
     private final S3Service s3Service;
     private final SpacePhotoRepository spacePhotoRepository;
+    private final SpaceItemRepository spaceItemRepository;
 
-    public SpacePhotoService(S3Service s3Service, SpacePhotoRepository spacePhotoRepository) {
+    public SpacePhotoService(S3Service s3Service, SpacePhotoRepository spacePhotoRepository, SpaceItemRepository spaceItemRepository) {
         this.s3Service = s3Service;
         this.spacePhotoRepository = spacePhotoRepository;
+        this.spaceItemRepository = spaceItemRepository;
     }
 
     /**
@@ -53,7 +57,7 @@ public class SpacePhotoService {
                     .build();
 
             // SpacePhotoDTO를 엔티티로 변환하여 저장
-            SpacePhoto spacePhoto = spacePhotoDTO.toEntity();
+            SpacePhoto spacePhoto = spacePhotoDTO.toEntity(spaceItemRepository);
             spacePhotoRepository.save(spacePhoto);
         }
         return ResponseEntity.ok().build();
@@ -87,7 +91,8 @@ public class SpacePhotoService {
      * @throws IllegalArgumentException 주어진 SpaceItem ID에 해당하는 사진이 없는 경우 예외 발생
      */
     public void deleteAllPhotos(Long spaceItemId) {
-        List<SpacePhoto> photos = spacePhotoRepository.findBySpaceItemId(spaceItemId);
+        Optional<SpaceItem> spaceItem = spaceItemRepository.findById(spaceItemId);
+        List<SpacePhoto> photos = spacePhotoRepository.findBySpaceItem(spaceItem);
         if (photos.isEmpty()) {
             throw new IllegalArgumentException("No photos found with space item ID: " + spaceItemId);
         }
@@ -106,13 +111,17 @@ public class SpacePhotoService {
 
 
     /**
-     * 4. DB에서 입력한 SpaceItemId에 해당하는 keyname을 이용하여 S3 사진을 검색하는 메서드
+     * 4. DB에서 입력한 SpaceItemId에 해당하는 S3 사진을 검색하는 메서드
      * @param spaceItemId : 검색할 사진이 저장된 DB의 SpaceItemId
      * @return : Optional을 통해 검색된 사진을 반환
      */
     public List<SpacePhotoDTO> getPhotosBySpaceItemId(Long spaceItemId) {
-        List<SpacePhoto> spacePhotos = spacePhotoRepository.findBySpaceItemId(spaceItemId);
-        return spacePhotos.stream()
+        Optional<SpaceItem> spaceItem = spaceItemRepository.findById(spaceItemId);
+        List<SpacePhoto> photos = spacePhotoRepository.findBySpaceItem(spaceItem);
+        if (photos.isEmpty()) {
+            throw new IllegalArgumentException("No photos found with space item ID: " + spaceItemId);
+        }
+        return photos.stream()
                 .map(SpacePhotoDTO::fromEntity)
                 .collect(Collectors.toList());
     }

@@ -2,8 +2,10 @@ package com.fisa.wooriarte.spaceItem.domain;
 
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDTO;
+import com.fisa.wooriarte.spacephoto.domain.SpacePhoto;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
+import com.fisa.wooriarte.ticket.domain.Ticket;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -34,6 +36,9 @@ public class SpaceItem {
     @OneToMany(mappedBy = "spaceItem", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Matching> matchings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "spaceItem", fetch = FetchType.LAZY)
+    private List<SpacePhoto> spacePhoto = new ArrayList<>();
 
     @Column
     private String intro;

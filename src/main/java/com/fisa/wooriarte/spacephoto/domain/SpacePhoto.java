@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.spacephoto.domain;
 
+import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,10 +23,9 @@ public class SpacePhoto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long spacePhotoId;
 
-    @Column
-    private Long spaceItemId;
-//    @JoinColumn
-//    private SpaceItem spaceItem;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "spaceItem_id", nullable = false)
+    private SpaceItem spaceItem;
 
     // S3 키 값
     @Column(nullable = false)

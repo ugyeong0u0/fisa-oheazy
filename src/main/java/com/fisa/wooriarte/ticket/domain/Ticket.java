@@ -43,7 +43,7 @@ public class Ticket {
     @Column(nullable = false)
     private Boolean canceled;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String ticketNo;
 
     @Column(nullable = false)
@@ -57,23 +57,6 @@ public class Ticket {
 
     @Column(nullable = false)
     private String phone;
-
-
-//    // PrePersist 메서드: 엔티티가 영구 저장되기 전에 자동으로 호출됨
-//    public void generateTicketNo() {
-//        StringBuilder ticketNoBuilder = new StringBuilder();
-//        ticketNoBuilder.append(ticketId).append("-");
-////        if (exhibit != null) {
-////            ticketNoBuilder.append(exhibit).append("-");
-////        }
-////        if (user != null) {
-////            ticketNoBuilder.append(user).append("-");
-////        }
-////        ticketNoBuilder.append(date.toString());
-//
-//        this.ticketNo = ticketNoBuilder.toString();
-//        System.out.println(ticketNo);
-//    }
 
     //티켓 취소 canceled 컬럼 변경
     public void setCanceled() {

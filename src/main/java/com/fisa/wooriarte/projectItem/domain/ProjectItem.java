@@ -3,6 +3,7 @@ package com.fisa.wooriarte.projectItem.domain;
 import com.fisa.wooriarte.projectItem.dto.ProjectItemDTO;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
+import com.fisa.wooriarte.projectphoto.domain.ProjectPhoto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -38,6 +39,10 @@ public class ProjectItem {
     @OneToMany(mappedBy = "projectItem", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Matching> matchings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "projectItem", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<ProjectPhoto> projectPhotos = new ArrayList<>();
 
     @Column(nullable = false)
     private String artistName;
