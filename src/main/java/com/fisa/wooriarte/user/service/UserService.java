@@ -1,11 +1,16 @@
 package com.fisa.wooriarte.user.service;
 
+import com.fisa.wooriarte.jwt.JwtTokenProvider;
+import com.fisa.wooriarte.jwt.JwtToken;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.dto.UserDTO;
 import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
 import com.fisa.wooriarte.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +22,14 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
     @Autowired
-    public UserService (UserRepository userRepository){
+    public UserService (UserRepository userRepository, JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder){
         this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
     //Spring Security를 사용하여 비밀번호를 인코딩하고 비교하기 위해 PasswordEncoder 의존성 추가
@@ -49,6 +59,8 @@ public class UserService {
             System.out.println("회원가입 불가능 (아이디 중복");
             return false;
         }
+
+        userEntity.addRole("USER");
 
         userRepository.save(userEntity);
         System.out.println("회원가입 가능");
@@ -88,6 +100,27 @@ public class UserService {
     public boolean loginUser(String id, String pwd) {
         Optional<User> optionalUser = userRepository.findUserById(id);
         return optionalUser.isPresent() && optionalUser.get().getPwd().equals(pwd);
+    }
+
+    @Transactional
+    public JwtToken login(String id, String pwd) {
+        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, pwd);
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        } catch (Exception e) {
+            e.printStackTrace(); // 예외를 로깅
+            throw e; // 필요한 경우, 예외를 다시 던져 처리할 수 있습니다.
+        }
+
+        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+        return jwtToken;
     }
 
     
