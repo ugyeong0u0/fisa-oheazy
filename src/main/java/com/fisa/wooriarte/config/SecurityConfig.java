@@ -27,8 +27,16 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/jwtlogin").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/user/jwtlogin").permitAll()
+                .requestMatchers("/project-managers/jwtlogin").permitAll()
+                .requestMatchers("/space-rentals/jwtlogin").permitAll()
+                .requestMatchers("/user/**", "/ticket").hasRole("USER") // 여러 경로에 대해 같은 역할을 지정할 수 있습니다.
+                .requestMatchers("/exhibit/**").hasAnyRole("USER", "SPACE_RENTAL", "PROJECT_MANAGER") // 수정: hasAnyRole 사용
+                .requestMatchers("/matching/**").hasAnyRole("SPACE_RENTAL", "PROJECT_MANAGER")
+                .requestMatchers("/project-managers/**").hasRole("PROJECT_MANAGER")
+                .requestMatchers("/project-item/**", "/space-item/**").hasAnyRole("PROJECT_MANAGER", "SPACE_RENTAL") // 수정: hasAnyRole 사용
+                .requestMatchers("/space-rentals/**").hasRole("SPACE_RENTAL")
+                .requestMatchers("/email", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),

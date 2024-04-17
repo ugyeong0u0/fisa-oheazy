@@ -1,7 +1,9 @@
 package com.fisa.wooriarte.projectmanager.controller;
 
+import com.fisa.wooriarte.jwt.JwtToken;
 import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
 import com.fisa.wooriarte.projectmanager.service.ProjectManagerService;
+import com.fisa.wooriarte.user.dto.request.UserLoginRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("project-managers")
 public class ProjectManagerController {
 
     private final ProjectManagerService projectManagerService;
@@ -22,7 +25,7 @@ public class ProjectManagerController {
     }
 
     //프로젝트 매니저 회원가입
-    @PostMapping("/project-managers")
+    @PostMapping("")
     public ResponseEntity<String> addProjectManager(@RequestBody ProjectManagerDTO projectManagerDTO) {
         boolean added = projectManagerService.addProjectManager(projectManagerDTO);
         if (added) {
@@ -33,7 +36,7 @@ public class ProjectManagerController {
     }
 
     //프로젝트 매니저 로그인
-    @PostMapping("/project-managers/login")
+    @PostMapping("/login")
     public ResponseEntity<String> loginProjectManager(@RequestBody Map<String, String> loginInfo) {
         String id = loginInfo.get("id");
         String pwd = loginInfo.get("pwd");
@@ -45,14 +48,21 @@ public class ProjectManagerController {
         }
     }
 
+    @PostMapping("/jwtlogin")
+    public JwtToken login(@RequestBody UserLoginRequestDTO userLoginRequestDTO) {
+        String id = userLoginRequestDTO.getId();
+        String pwd = userLoginRequestDTO.getPwd();
+        return projectManagerService.login(id, pwd);
+    }
+
     //공간대여자 아이디 찾기
-    @PostMapping("/project-managers/find-id")
+    @PostMapping("/find-id")
     public String findBusinessId(@RequestBody String email) {
         return projectManagerService.getId(email);
     }
 
     // 공간대여자 비밀번호 재설정
-    @PostMapping("/project-managers/set-pwd")
+    @PostMapping("/set-pwd")
     public String findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
         String id = pwdInfo.get("id");
         String newPwd = pwdInfo.get("new_pwd");
@@ -62,14 +72,14 @@ public class ProjectManagerController {
     }
 
     //프로젝트 매니저 정보 조회
-    @GetMapping("/project-managers/{project-manager-id}")
+    @GetMapping("/{project-manager-id}")
     public ResponseEntity<ProjectManagerDTO> getProjectManagerInfo(@PathVariable("project-manager-id") Long projectManagerId) {
         Optional<ProjectManagerDTO> projectManageroptional = projectManagerService.findByProjectManagerId(projectManagerId);
         return projectManageroptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     //프로젝트 매니저 정보 갱신
-    @PutMapping("/project-managers/{project-manager-id}")
+    @PutMapping("/{project-manager-id}")
     public ResponseEntity<String> updateProjectManagerInfo(
             @PathVariable("project-manager-id") Long projectManagerId,
             @RequestBody ProjectManagerDTO projectManagerDTO) {
@@ -83,7 +93,7 @@ public class ProjectManagerController {
     }
 
     //프로젝트 매니저 삭제(delete를 true로 변경)
-    @DeleteMapping("/project-managers/{project-manager-id}")
+    @DeleteMapping("/{project-manager-id}")
     public ResponseEntity<String> deleteProjectManager(@PathVariable("project-manager-id") Long projectManagerId) {
         boolean deleted = projectManagerService.deleteProjectManager(projectManagerId);
         if (deleted) {

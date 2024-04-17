@@ -56,7 +56,7 @@ public class UserService {
 
         Optional<User> userId = userRepository.findUserById(userEntity.getId());
         if (userId.isPresent()) {
-            System.out.println("회원가입 불가능 (아이디 중복");
+            System.out.println("회원가입 불가능 (아이디 중복)");
             return false;
         }
 

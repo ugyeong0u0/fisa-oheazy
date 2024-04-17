@@ -46,6 +46,9 @@ public class User implements UserDetails {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
+    public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
@@ -87,7 +90,7 @@ public class User implements UserDetails {
         this.roles.add(role);
     }
 
-
+    //UserDetails 상속으로 인한 메서드들
     @Override
     public String getPassword() {
         return pwd;

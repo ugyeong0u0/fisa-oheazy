@@ -1,12 +1,18 @@
 package com.fisa.wooriarte.projectmanager.service;
 
+import com.fisa.wooriarte.jwt.JwtToken;
+import com.fisa.wooriarte.jwt.JwtTokenProvider;
 import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
+import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -15,10 +21,14 @@ import java.util.Optional;
 public class ProjectManagerService {
 
     private final ProjectManagerRepository projectManagerRepository;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public ProjectManagerService(ProjectManagerRepository projectManagerRepository) {
+    public ProjectManagerService(ProjectManagerRepository projectManagerRepository, AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider) {
         this.projectManagerRepository = projectManagerRepository;
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
     /*
    프로젝트 매니저 추가
@@ -28,11 +38,13 @@ public class ProjectManagerService {
     */
     @Transactional
     public boolean addProjectManager(ProjectManagerDTO projectManagerDTO) {
-        Optional<ProjectManager> optionalSpaceRental = projectManagerRepository.findByProjectManagerId(projectManagerDTO.getId());
-        if (optionalSpaceRental.isPresent()) {
+        Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findById(projectManagerDTO.getId());
+        if (optionalProjectManager.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
-        projectManagerRepository.save(projectManagerDTO.toEntity());
+        ProjectManager projectManager = projectManagerDTO.toEntity();
+        projectManager.addRole("PROJECT_MANAGER");
+        projectManagerRepository.save(projectManager);
         return true;
     }
 
@@ -43,8 +55,32 @@ public class ProjectManagerService {
     2. 비밀번호와 비교
      */
     public boolean loginProjectManager(String id, String pwd) {
-        Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findByProjectManagerId(id);
+        Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findById(id);
         return optionalProjectManager.isPresent() && optionalProjectManager.get().getPwd().equals(pwd);
+    }
+
+    @Transactional
+    public JwtToken login(String id, String pwd) {
+        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, pwd);
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+
+        Authentication authentication = null;
+        try {
+            System.out.println("***111");
+            authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            System.out.println("***222");
+        } catch (Exception e) {
+            e.printStackTrace(); // 예외를 로깅
+            throw e; // 필요한 경우, 예외를 다시 던져 처리할 수 있습니다.
+        }
+        System.out.println("***333");
+        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+        System.out.println("***444");
+        return jwtToken;
     }
 
     //프로젝트 매니저 아이디 찾기
@@ -58,7 +94,7 @@ public class ProjectManagerService {
 
     //프로젝트 매니저 pw 재설정
     public boolean setPwd(String id, String newPwd) {
-        ProjectManager projectManager = projectManagerRepository.findByProjectManagerId(id)
+        ProjectManager projectManager = projectManagerRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
         //비밀번호 검증
         projectManager.setPwd(newPwd);

@@ -1,7 +1,9 @@
 package com.fisa.wooriarte.spacerental.controller;
 
+import com.fisa.wooriarte.jwt.JwtToken;
 import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import com.fisa.wooriarte.spacerental.service.SpaceRentalService;
+import com.fisa.wooriarte.user.dto.request.UserLoginRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
+@RequestMapping("/space-rentals")
 public class SpaceRentalController {
     private final SpaceRentalService spaceRentalService;
 
@@ -18,7 +21,7 @@ public class SpaceRentalController {
     }
 
     //공간대여자 회원가입
-    @PostMapping("/space-rental")
+    @PostMapping("")
     public String addSpaceRental(@RequestBody SpaceRentalDTO spaceRentalDTO) {
         if(spaceRentalService.addSpaceRental(spaceRentalDTO))
             return "success";
@@ -26,13 +29,20 @@ public class SpaceRentalController {
     }
 
     //공간대여자 로그인
-    @PostMapping("/space-rental/login")
+    @PostMapping("/login")
     public String loginSpaceRental(@RequestBody Map<String, String> loginInfo) {
         String id = loginInfo.get("id");
         String pwd = loginInfo.get("pwd");
         if(spaceRentalService.loginSpaceRental(id, pwd))
             return "login success";
         return "login fail";
+    }
+
+    @PostMapping("/jwtlogin")
+    public JwtToken login(@RequestBody UserLoginRequestDTO userLoginRequestDTO) {
+        String id = userLoginRequestDTO.getId();
+        String pwd = userLoginRequestDTO.getPwd();
+        return spaceRentalService.login(id, pwd);
     }
 
     //공간대여자 아이디 찾기
