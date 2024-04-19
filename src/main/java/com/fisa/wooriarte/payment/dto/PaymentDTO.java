@@ -13,22 +13,16 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PaymentDTO {
     private Long paymentId;
+    private String orderNumber;
     private String method;
     private Long amount;
-    private Long approvalNumber;
+    private String approvalNumber;
     private PaymentStatus status;
 
-    public Payment toEntity() {
-        return Payment.builder()
-                .method(this.method)
-                .amount(this.amount)
-                .status(this.status)
-                .build();
-    }
-
-    public PaymentDTO fromEntity(Payment payment) {
+    public static PaymentDTO fromEntity(Payment payment) {
         return PaymentDTO.builder()
                 .paymentId(payment.getPaymentId())
+                .orderNumber(payment.getOrderNumber())
                 .method(payment.getMethod())
                 .amount(payment.getAmount())
                 .approvalNumber(payment.getApprovalNumber())

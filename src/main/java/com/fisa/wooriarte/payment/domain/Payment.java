@@ -19,18 +19,22 @@ import java.time.LocalDateTime;
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Payment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false, unique = true)
+    private String orderNumber;
+
+    @Column
     private String method;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Long amount;
 
     @Column
-    private Long approvalNumber;
+    private String approvalNumber;
 
     @Column(nullable = false, updatable = false)
     @CreatedDate
@@ -43,8 +47,11 @@ public class Payment {
     @Column(nullable = false)
     private PaymentStatus status;
 
-    public void updatePayment(PaymentDTO paymentDTO) {
-        this.approvalNumber = paymentDTO.getApprovalNumber();
-        this.status = paymentDTO.getStatus();
+    public void updatePayment(String method, String approvalNumber, PaymentStatus status) {
+        this.method = method;
+        this.approvalNumber = approvalNumber;
+        this.status = status;
     }
+
+    public void setStatus(PaymentStatus status) {this.status = status;}
 }
