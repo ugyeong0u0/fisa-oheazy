@@ -1,9 +1,9 @@
 package com.fisa.wooriarte.projectmanager.controller;
 
 import com.fisa.wooriarte.jwt.JwtToken;
-import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
+import com.fisa.wooriarte.projectmanager.dto.ProjectManagerDto;
 import com.fisa.wooriarte.projectmanager.service.ProjectManagerService;
-import com.fisa.wooriarte.user.dto.request.UserLoginRequestDTO;
+import com.fisa.wooriarte.user.dto.request.UserLoginRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ public class ProjectManagerController {
 
     //프로젝트 매니저 회원가입
     @PostMapping("")
-    public ResponseEntity<String> addProjectManager(@RequestBody ProjectManagerDTO projectManagerDTO) {
+    public ResponseEntity<String> addProjectManager(@RequestBody ProjectManagerDto projectManagerDTO) {
         boolean added = projectManagerService.addProjectManager(projectManagerDTO);
         if (added) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Project manager added successfully.");
@@ -49,7 +49,7 @@ public class ProjectManagerController {
     }
 
     @PostMapping("/jwtlogin")
-    public JwtToken login(@RequestBody UserLoginRequestDTO userLoginRequestDTO) {
+    public JwtToken login(@RequestBody UserLoginRequestDto userLoginRequestDTO) {
         String id = userLoginRequestDTO.getId();
         String pwd = userLoginRequestDTO.getPwd();
         return projectManagerService.login(id, pwd);
@@ -73,8 +73,8 @@ public class ProjectManagerController {
 
     //프로젝트 매니저 정보 조회
     @GetMapping("/{project-manager-id}")
-    public ResponseEntity<ProjectManagerDTO> getProjectManagerInfo(@PathVariable("project-manager-id") Long projectManagerId) {
-        Optional<ProjectManagerDTO> projectManageroptional = projectManagerService.findByProjectManagerId(projectManagerId);
+    public ResponseEntity<ProjectManagerDto> getProjectManagerInfo(@PathVariable("project-manager-id") Long projectManagerId) {
+        Optional<ProjectManagerDto> projectManageroptional = projectManagerService.findByProjectManagerId(projectManagerId);
         return projectManageroptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -82,7 +82,7 @@ public class ProjectManagerController {
     @PutMapping("/{project-manager-id}")
     public ResponseEntity<String> updateProjectManagerInfo(
             @PathVariable("project-manager-id") Long projectManagerId,
-            @RequestBody ProjectManagerDTO projectManagerDTO) {
+            @RequestBody ProjectManagerDto projectManagerDTO) {
 
         boolean updated = projectManagerService.updateProjectManager(projectManagerId, projectManagerDTO);
         if (updated) {

@@ -2,12 +2,10 @@ package com.fisa.wooriarte.projectmanager.service;
 
 import com.fisa.wooriarte.jwt.JwtToken;
 import com.fisa.wooriarte.jwt.JwtTokenProvider;
-import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
+import com.fisa.wooriarte.projectmanager.dto.ProjectManagerDto;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
-import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,7 +35,7 @@ public class ProjectManagerService {
    2. DB에 저장
     */
     @Transactional
-    public boolean addProjectManager(ProjectManagerDTO projectManagerDTO) {
+    public boolean addProjectManager(ProjectManagerDto projectManagerDTO) {
         Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findById(projectManagerDTO.getId());
         if (optionalProjectManager.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
@@ -108,9 +106,9 @@ public class ProjectManagerService {
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public Optional<ProjectManagerDTO> findByProjectManagerId(Long projectManagerId) {
+    public Optional<ProjectManagerDto> findByProjectManagerId(Long projectManagerId) {
         return projectManagerRepository.findById(projectManagerId)
-                .map(ProjectManagerDTO::fromEntity);
+                .map(ProjectManagerDto::fromEntity);
     }
 
     /*
@@ -125,7 +123,7 @@ public class ProjectManagerService {
             businessId: 고유 번호는 그대로 유지
      */
     @Transactional
-    public boolean updateProjectManager(Long projectManagerId, ProjectManagerDTO projectManagerDTO) {
+    public boolean updateProjectManager(Long projectManagerId, ProjectManagerDto projectManagerDTO) {
         ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
         projectManager.updateProjectManager(projectManagerDTO);

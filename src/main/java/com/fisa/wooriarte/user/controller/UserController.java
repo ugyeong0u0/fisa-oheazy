@@ -2,9 +2,9 @@ package com.fisa.wooriarte.user.controller;
 
 
 import com.fisa.wooriarte.jwt.JwtToken;
-import com.fisa.wooriarte.user.dto.UserDTO;
-import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
-import com.fisa.wooriarte.user.dto.request.UserLoginRequestDTO;
+import com.fisa.wooriarte.user.dto.UserDto;
+import com.fisa.wooriarte.user.dto.request.UserInfoRequestDto;
+import com.fisa.wooriarte.user.dto.request.UserLoginRequestDto;
 import com.fisa.wooriarte.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class UserController {
     // 이메일 중복 체크를 통해 중복회원 거르기
     @PostMapping("")
     //<?> : 제네릭 타입, 모든 종류의 응답 본문 반환할지 나타낸다.
-    public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO)  {
+    public ResponseEntity<?> addUser(@RequestBody UserDto userDTO)  {
         try {
             boolean result = userService.addUser(userDTO);
             if (result) { //result 값이 true -> 회원가입 성공
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping("/jwtlogin")
-    public JwtToken login(@RequestBody UserLoginRequestDTO userLoginRequestDTO) {
+    public JwtToken login(@RequestBody UserLoginRequestDto userLoginRequestDTO) {
         String id = userLoginRequestDTO.getId();
         String pwd = userLoginRequestDTO.getPwd();
         return userService.login(id, pwd);
@@ -68,7 +68,7 @@ public class UserController {
 
     // 유저 마이페이지 수정하기 위한 -> 비밀번호 검증
     @PostMapping("/{user-id}/verify-pwd")
-    public ResponseEntity<?> verifyPassword(@PathVariable(name = "user-id") Long userId, @RequestBody UserDTO userDTO)  {
+    public ResponseEntity<?> verifyPassword(@PathVariable(name = "user-id") Long userId, @RequestBody UserDto userDTO)  {
 
         try {
             if (userService.verifyPassword(userId, userDTO.getPwd())) {
@@ -87,7 +87,7 @@ public class UserController {
     public ResponseEntity<?> getUserInfo(@PathVariable(name = "user-id") Long userId){
         try {
 
-            UserDTO userInfo = userService.getMyUser(userId);
+            UserDto userInfo = userService.getMyUser(userId);
             return ResponseEntity.ok(userInfo);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("요청값 오류 혹은 찾을 수 없음");
@@ -96,9 +96,9 @@ public class UserController {
 
     // 유저 개인 정보 수정
     @PutMapping("/{user-id}/info")
-    public ResponseEntity<?> updateUserInfo(@PathVariable(name = "user-id") Long userId, @RequestBody UserInfoRequest userInfoRequest) throws Exception {
+    public ResponseEntity<?> updateUserInfo(@PathVariable(name = "user-id") Long userId, @RequestBody UserInfoRequestDto userInfoRequestDto) throws Exception {
         try {
-            Boolean result = userService.updateMyUser(userId, userInfoRequest);
+            Boolean result = userService.updateMyUser(userId, userInfoRequestDto);
             if (result) return ResponseEntity.ok("수정 성공");
             else return ResponseEntity.badRequest().body("수정실패");
 
@@ -110,7 +110,7 @@ public class UserController {
 
     //유저 아이디 찾기
     @PostMapping("/find-id")
-    public ResponseEntity<?> findUserId(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> findUserId(@RequestBody UserDto userDTO) {
         String name = userDTO.getName();
         String email = userDTO.getEmail();
 
@@ -128,7 +128,7 @@ public class UserController {
     //클라이언트가 저송한
     //비밀번호 찾기
     @PostMapping("/find-pw")
-    public ResponseEntity<?> findUserPw(@RequestBody UserDTO userDTO ) {
+    public ResponseEntity<?> findUserPw(@RequestBody UserDto userDTO ) {
         String id = userDTO.getId();
         String name = userDTO.getName();
         String email = userDTO.getEmail();

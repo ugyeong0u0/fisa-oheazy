@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.email.service;
 
-import com.fisa.wooriarte.email.util.RedisUtil;
+import com.fisa.wooriarte.redis.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -16,16 +16,16 @@ public class MailSendService {
     private JavaMailSender mailSender;
     private int authNumber;
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisService redisService;
 
     public boolean CheckAuthNum(String email,String authNum){
-        System.out.println(redisUtil);
-        System.out.println(redisUtil.getData(authNum));
+        System.out.println(redisService);
+        System.out.println(redisService.getData(authNum));
 
-        if(redisUtil.getData(authNum)==null){
+        if(redisService.getData(authNum)==null){
             return false;
         }
-        else if(redisUtil.getData(authNum).equals(email)){
+        else if(redisService.getData(authNum).equals(email)){
             return true;
         }
         else{
@@ -75,7 +75,7 @@ public class MailSendService {
             // 이러한 경우 MessagingException이 발생
             e.printStackTrace();//e.printStackTrace()는 예외를 기본 오류 스트림에 출력하는 메서드
         }
-        redisUtil.setDataExpire(Integer.toString(authNumber),toMail,60*3L);
+        redisService.setDataExpire(Integer.toString(authNumber),toMail,60*3L);
 
     }
 

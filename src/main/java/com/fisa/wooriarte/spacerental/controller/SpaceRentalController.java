@@ -1,9 +1,9 @@
 package com.fisa.wooriarte.spacerental.controller;
 
 import com.fisa.wooriarte.jwt.JwtToken;
-import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
+import com.fisa.wooriarte.spacerental.dto.SpaceRentalDto;
 import com.fisa.wooriarte.spacerental.service.SpaceRentalService;
-import com.fisa.wooriarte.user.dto.request.UserLoginRequestDTO;
+import com.fisa.wooriarte.user.dto.request.UserLoginRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ public class SpaceRentalController {
 
     //공간대여자 회원가입
     @PostMapping("")
-    public String addSpaceRental(@RequestBody SpaceRentalDTO spaceRentalDTO) {
+    public String addSpaceRental(@RequestBody SpaceRentalDto spaceRentalDTO) {
         if(spaceRentalService.addSpaceRental(spaceRentalDTO))
             return "success";
         return "fail";
@@ -39,7 +39,7 @@ public class SpaceRentalController {
     }
 
     @PostMapping("/jwtlogin")
-    public JwtToken login(@RequestBody UserLoginRequestDTO userLoginRequestDTO) {
+    public JwtToken login(@RequestBody UserLoginRequestDto userLoginRequestDTO) {
         String id = userLoginRequestDTO.getId();
         String pwd = userLoginRequestDTO.getPwd();
         return spaceRentalService.login(id, pwd);
@@ -64,13 +64,13 @@ public class SpaceRentalController {
             //공간대여자 정보 조회
     @GetMapping("/space-rental/{space_rental_id}")
     public String getSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId) {
-        SpaceRentalDTO spaceRentalDTO = spaceRentalService.findBySpaceRentalId(spaceRentalId);
+        SpaceRentalDto spaceRentalDTO = spaceRentalService.findBySpaceRentalId(spaceRentalId);
         return spaceRentalDTO.toString();
     }
 
     //공간대여자 정보 갱신
     @PutMapping("/space-rental/{space_rental_id}")
-    public String updateSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId, @RequestBody SpaceRentalDTO spaceRentalDTO) {
+    public String updateSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId, @RequestBody SpaceRentalDto spaceRentalDTO) {
         if(spaceRentalService.updateSpaceRental(spaceRentalId, spaceRentalDTO))
             return "success";
         return "fail";

@@ -1,7 +1,7 @@
 package com.fisa.wooriarte.matching.controller;
 
-import com.fisa.wooriarte.matching.DTO.MatchingDTO;
-import com.fisa.wooriarte.matching.DTO.MatchingStatusDTO;
+import com.fisa.wooriarte.matching.dto.MatchingDto;
+import com.fisa.wooriarte.matching.dto.MatchingStatusDto;
 import com.fisa.wooriarte.matching.domain.MatchingStatus;
 import com.fisa.wooriarte.matching.service.MatchingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +26,13 @@ public class MatchingController {
     }
 
     @GetMapping("/admin/matchings/{matching-id}")
-    public MatchingDTO getMatching(@PathVariable(value = "matching-id") Long matchingId) {
+    public MatchingDto getMatching(@PathVariable(value = "matching-id") Long matchingId) {
         return matchingService.getMatching(matchingId);
     }
 
     // 매칭 수정 (매칭에서는 상태만 수정가능)
     @PatchMapping("/admin/matchings/{matching-id}")
-    public String updateMatching(@PathVariable(value = "matching-id") Long matchingId, @RequestBody MatchingStatusDTO matchingStatusDTO) {
+    public String updateMatching(@PathVariable(value = "matching-id") Long matchingId, @RequestBody MatchingStatusDto matchingStatusDTO) {
         MatchingStatus matchingStatus = matchingStatusDTO.getMatchingStatus();
         if(matchingService.updateMatching(matchingId, matchingStatus))
             return "success";
@@ -64,37 +64,37 @@ public class MatchingController {
 
     // 공간 대여자 대기중인 매칭 조회
     @GetMapping("/space-rental/{space-rental-id}/waitings")
-    public List<MatchingDTO> findSpaceRentalWaitingMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
+    public List<MatchingDto> findSpaceRentalWaitingMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
         return matchingService.findSpaceRentalWaitingMatching(spaceRentalId);
     }
 
     // 공간 대여자 받은 매칭 조회
     @GetMapping("/space-rental/{space-rental-id}/offers")
-    public List<MatchingDTO> findSpaceRentalOfferMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
+    public List<MatchingDto> findSpaceRentalOfferMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
         return matchingService.findSpaceRentalOfferMatching(spaceRentalId);
     }
 
     // 공간 대여자 상사된 매칭 조회
     @GetMapping("/space-rental/{space-rental-id}/success")
-    public List<MatchingDTO> findSpaceRentalSuccessMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
+    public List<MatchingDto> findSpaceRentalSuccessMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
         return matchingService.findSpaceRentalSuccessMatching(spaceRentalId);
     }
 
     // 프로젝트 매니저 대기중인 매칭 조회
     @GetMapping("/project-managers/{project-manager-id}/waitings")
-    public List<MatchingDTO> findProjectManagerWaitingMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
+    public List<MatchingDto> findProjectManagerWaitingMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
         return matchingService.findProjectManagerWaitingMatching(projectManagerId);
     }
 
     // 프로젝트 매니저 받은 매칭 조회
     @GetMapping("/project-managers/{project-manager-id}/offers")
-    public List<MatchingDTO> findProjectManagerOfferMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
+    public List<MatchingDto> findProjectManagerOfferMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
         return matchingService.findProjectManagerOfferMatching(projectManagerId);
     }
 
     // 프로젝트 매니저 성사된 매칭 조회
     @GetMapping("/project-managers/{project-manager-id}/success")
-    public List<MatchingDTO> findProjectManagerSuccessMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
+    public List<MatchingDto> findProjectManagerSuccessMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
         return matchingService.findProjectManagerSuccessMatching(projectManagerId);
     }
 }

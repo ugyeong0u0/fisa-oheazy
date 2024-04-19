@@ -4,15 +4,13 @@ package com.fisa.wooriarte.user.dto;
 import com.fisa.wooriarte.user.domain.User;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
 @Builder
-public class UserDTO {
+public class UserDto {
     private Long userId;
     private String id;
     private String pwd;
@@ -32,8 +30,8 @@ public class UserDTO {
                 .isDeleted(this.isDeleted)
                 .build();
     }
-    public static UserDTO fromEntity(User user) {
-        return UserDTO.builder()
+    public static UserDto fromEntity(User user) {
+        return UserDto.builder()
                 .userId(user.getUserId())
                 .id(user.getId())
                 .name(user.getName())

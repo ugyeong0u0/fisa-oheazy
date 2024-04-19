@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.ticket.controller;
 
-import com.fisa.wooriarte.ticket.dto.TicketDTO;
+import com.fisa.wooriarte.ticket.dto.TicketDto;
 import com.fisa.wooriarte.ticket.service.TicketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class TicketController {
 
     //결제 완료 -> 티켓 생성
     @PostMapping("/exhibits/{exhibit-id}/payments/{user-id}")
-    public ResponseEntity<String> addTicket(@RequestBody TicketDTO ticketDTO, @PathVariable(name = "exhibit-id") long exhibitId, @PathVariable(name = "user-id") long userId) {
+    public ResponseEntity<String> addTicket(@RequestBody TicketDto ticketDTO, @PathVariable(name = "exhibit-id") long exhibitId, @PathVariable(name = "user-id") long userId) {
         // 이름, 이메일, 연락처 값이 누락되었는지 확인
         if (ticketDTO.getName() == null || ticketDTO.getEmail() == null || ticketDTO.getPhone() == null) {
             throw new IllegalArgumentException("이름, 이메일, 연락처는 필수 값입니다.");
@@ -42,11 +42,11 @@ public class TicketController {
 
     // status에 따라 ticket list 출력 : 관람 예정 / 관람 완료
     @GetMapping("/user/{user-id}/bookings/{status}")
-    public ResponseEntity<List<TicketDTO>> getTicketsByUserIdAndStatus(
+    public ResponseEntity<List<TicketDto>> getTicketsByUserIdAndStatus(
             @PathVariable(name = "user-id") long userId,
             @PathVariable boolean status) {
 
-        List<TicketDTO> tickets = ticketService.getTicketsByUserIdAndStatus(userId, status);
+        List<TicketDto> tickets = ticketService.getTicketsByUserIdAndStatus(userId, status);
         return ResponseEntity.ok(tickets);
     }
 

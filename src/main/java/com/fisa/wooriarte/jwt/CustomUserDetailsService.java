@@ -4,9 +4,9 @@ import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
+import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.repository.UserRepository;
-import com.fisa.wooriarte.user.domain.User; // 이 부분을 추가하세요
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final ProjectManagerRepository projectManagerRepository;
     private final SpaceRentalRepository spaceRentalRepository;
 
+    @Autowired
     public CustomUserDetailsService(
             PasswordEncoder passwordEncoder,
             UserRepository userRepository,
@@ -74,7 +74,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             authorities = manager.getRoles().stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
-            System.out.println("### 111");
             System.out.println(authorities);
         } else if (user instanceof SpaceRental) {
             SpaceRental rental = (SpaceRental) user;

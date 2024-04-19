@@ -1,7 +1,7 @@
 package com.fisa.wooriarte.spacerental.domain;
 
 import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
-import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
+import com.fisa.wooriarte.spacerental.dto.SpaceRentalDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -80,7 +80,7 @@ public class SpaceRental implements UserDetails {
 
     public void setPwd(String pwd) { this.pwd = pwd; }
 
-    public void updateSpaceRental(SpaceRentalDTO spaceRentalDTO) {
+    public void updateSpaceRental(SpaceRentalDto spaceRentalDTO) {
         this.businessNumber = spaceRentalDTO.getBusinessNumber();
         this.company = spaceRentalDTO.getCompany();
         this.ceo = spaceRentalDTO.getCeo();

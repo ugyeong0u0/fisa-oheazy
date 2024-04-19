@@ -1,4 +1,4 @@
-package com.fisa.wooriarte.projectmanager.DTO;
+package com.fisa.wooriarte.projectmanager.dto;
 
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import lombok.*;
@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ProjectManagerDTO {
+public class ProjectManagerDto {
     private Long projectManagerId;
     private Long businessNumber;
     private String id;
@@ -32,8 +32,8 @@ public class ProjectManagerDTO {
                 .build();
     }
 
-    public static ProjectManagerDTO fromEntity(ProjectManager projectManager) {
-        return ProjectManagerDTO.builder()
+    public static ProjectManagerDto fromEntity(ProjectManager projectManager) {
+        return ProjectManagerDto.builder()
                 .projectManagerId(projectManager.getProjectManagerId())
                 .businessNumber(projectManager.getBusinessNumber())
                 .id(projectManager.getId())

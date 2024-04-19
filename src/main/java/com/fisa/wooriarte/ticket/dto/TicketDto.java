@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Builder
 @ToString
-public class TicketDTO {
+public class TicketDto {
     private Long ticketId;
     private Long exhibitId;
     private Long userId;
@@ -36,8 +36,8 @@ public class TicketDTO {
                 .build();
     }
 
-    public static TicketDTO fromEntity(Ticket ticket) {
-        return TicketDTO.builder()
+    public static TicketDto fromEntity(Ticket ticket) {
+        return TicketDto.builder()
                 .ticketId(ticket.getTicketId())
                 .amount(ticket.getAmount())
                 .canceled(ticket.getCanceled())

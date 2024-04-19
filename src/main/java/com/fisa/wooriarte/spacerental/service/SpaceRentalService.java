@@ -1,10 +1,9 @@
 package com.fisa.wooriarte.spacerental.service;
 
-import ch.qos.logback.core.Context;
 import com.fisa.wooriarte.jwt.JwtToken;
 import com.fisa.wooriarte.jwt.JwtTokenProvider;
 import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
-import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
+import com.fisa.wooriarte.spacerental.dto.SpaceRentalDto;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -35,7 +34,7 @@ public class SpaceRentalService {
     2. DB에 저장
      */
     @Transactional
-    public boolean addSpaceRental(SpaceRentalDTO spaceRentalDTO) {
+    public boolean addSpaceRental(SpaceRentalDto spaceRentalDTO) {
         Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(spaceRentalDTO.getId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
@@ -101,10 +100,10 @@ public class SpaceRentalService {
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public SpaceRentalDTO findBySpaceRentalId(Long spaceRentalId) {
+    public SpaceRentalDto findBySpaceRentalId(Long spaceRentalId) {
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
                     .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
-        return SpaceRentalDTO.fromEntity(spaceRental);
+        return SpaceRentalDto.fromEntity(spaceRental);
     }
 
     /*
@@ -119,7 +118,7 @@ public class SpaceRentalService {
             businessId: 고유 번호는 그대로 유지
      */
     @Transactional
-    public boolean updateSpaceRental(Long spaceRentalId, SpaceRentalDTO spaceRentalDTO) {
+    public boolean updateSpaceRental(Long spaceRentalId, SpaceRentalDto spaceRentalDTO) {
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
         spaceRental.updateSpaceRental(spaceRentalDTO);

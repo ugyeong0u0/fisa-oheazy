@@ -1,4 +1,4 @@
-package com.fisa.wooriarte.email.config;
+package com.fisa.wooriarte.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

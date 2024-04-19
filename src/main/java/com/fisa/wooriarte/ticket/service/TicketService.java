@@ -3,7 +3,7 @@ package com.fisa.wooriarte.ticket.service;
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
 import com.fisa.wooriarte.ticket.domain.Ticket;
-import com.fisa.wooriarte.ticket.dto.TicketDTO;
+import com.fisa.wooriarte.ticket.dto.TicketDto;
 import com.fisa.wooriarte.ticket.repository.TicketRepository;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.repository.UserRepository;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,7 +37,7 @@ public class TicketService {
     }
 
     // 사용 여부에 따라 티켓 리스트를 가져오는 메서드
-    public List<TicketDTO> getTicketsByUserIdAndStatus(long userId, boolean status) {
+    public List<TicketDto> getTicketsByUserIdAndStatus(long userId, boolean status) {
         List<Ticket> tickets;
         log.info("userId :: " + userId);
         User user = userRepository.findById(userId)
@@ -54,13 +53,13 @@ public class TicketService {
             System.out.println(tickets);
         }
         return tickets.stream()
-                .map(TicketDTO::fromEntity)
+                .map(TicketDto::fromEntity)
                 .collect(Collectors.toList());
     }
 
     //새로운 ticket 생성
     @Transactional
-    public void addTicket(TicketDTO ticketDTO, long userId, long exhibitId) {
+    public void addTicket(TicketDto ticketDTO, long userId, long exhibitId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
         Exhibit exhibit = exhibitRepository.findById(exhibitId)

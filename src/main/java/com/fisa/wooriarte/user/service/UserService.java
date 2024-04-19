@@ -3,8 +3,8 @@ package com.fisa.wooriarte.user.service;
 import com.fisa.wooriarte.jwt.JwtTokenProvider;
 import com.fisa.wooriarte.jwt.JwtToken;
 import com.fisa.wooriarte.user.domain.User;
-import com.fisa.wooriarte.user.dto.UserDTO;
-import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
+import com.fisa.wooriarte.user.dto.UserDto;
+import com.fisa.wooriarte.user.dto.request.UserInfoRequestDto;
 import com.fisa.wooriarte.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -43,7 +43,7 @@ public class UserService {
 
 
     //회원가입 로직 boolean으로 반환
-    public boolean addUser(UserDTO userDTO) {
+    public boolean addUser(UserDto userDTO) {
         //userDTO.toEntity 를 User userEntity로 변환한 이유는
         //클라이언트로부터 받은 데이터를 db에 저장하기 위함
         User userEntity = userDTO.toEntity();
@@ -84,11 +84,11 @@ public class UserService {
 
 
     // 유저 개인 정보 단건 조회
-    public UserDTO getMyUser(Long userId) {
+    public UserDto getMyUser(Long userId) {
         try {
             final User user = userRepository.findById(userId)
                     .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
-            return UserDTO.fromEntity(user);
+            return UserDto.fromEntity(user);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -125,18 +125,18 @@ public class UserService {
 
     
     // 유저 개인 정보 수정
-    public Boolean updateMyUser(Long id, UserInfoRequest userInfoRequest) {
+    public Boolean updateMyUser(Long id, UserInfoRequestDto userInfoRequestDto) {
         try {
             // 이메일 중복 확인
-            Optional<User> userEmail = userRepository.findUserByEmail(userInfoRequest.getEmail());
+            Optional<User> userEmail = userRepository.findUserByEmail(userInfoRequestDto.getEmail());
             if (userEmail.isPresent()) {
                 System.out.println("수정 불가능(이메일 중복)");
                 return false;
             }
 
             // 이메일이 중복되지 않은 경우, 엔터티 업데이트
-            final int result = userRepository.updateAllById(id, userInfoRequest.getId(),
-                    userInfoRequest.getPwd(), userInfoRequest.getName(), userInfoRequest.getEmail(), userInfoRequest.getPhone());
+            final int result = userRepository.updateAllById(id, userInfoRequestDto.getId(),
+                    userInfoRequestDto.getPwd(), userInfoRequestDto.getName(), userInfoRequestDto.getEmail(), userInfoRequestDto.getPhone());
             System.out.println("변경된 엔터티 개수" + result);
             return true;
 

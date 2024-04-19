@@ -1,12 +1,11 @@
 package com.fisa.wooriarte.spaceItem.service;
 
-import com.fisa.wooriarte.spaceItem.dto.SpaceItemDTO;
+import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
 import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import com.fisa.wooriarte.spaceItem.repository.SpaceItemRepository;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,7 @@ public class SpaceItemService {
     }
 
     @Transactional
-    public boolean addSpaceItem(SpaceItemDTO spaceItemDTO){
+    public boolean addSpaceItem(SpaceItemDto spaceItemDTO){
         System.out.println("addSpaceItem");
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceItemDTO.getSpaceRentalId())
                 .orElseThrow(() -> new NoSuchElementException("No space Rental"));
@@ -35,21 +34,21 @@ public class SpaceItemService {
         return true;
     }
 
-    public List<SpaceItemDTO> findAll() {
+    public List<SpaceItemDto> findAll() {
         System.out.println("findAll");
         return spaceItemRepository.findAll().stream()
-                .map(SpaceItemDTO::fromEntity) // 람다식을 사용하여 각 SpaceItem 엔티티를 SpaceItemDTO로 변환
+                .map(SpaceItemDto::fromEntity) // 람다식을 사용하여 각 SpaceItem 엔티티를 SpaceItemDTO로 변환
                 .collect(Collectors.toList());
     }
 
-    public Optional<SpaceItemDTO> findSpaceItembyId(Long spaceItemId) {
+    public Optional<SpaceItemDto> findSpaceItembyId(Long spaceItemId) {
         System.out.println("findSpaceItemById");
         return spaceItemRepository.findById(spaceItemId)
-                .map(SpaceItemDTO::fromEntity);
+                .map(SpaceItemDto::fromEntity);
 
     }
     @Transactional
-    public void updateSpaceItem(Long spaceItemId, SpaceItemDTO spaceItemDTO) {
+    public void updateSpaceItem(Long spaceItemId, SpaceItemDto spaceItemDTO) {
         System.out.println("updateSpaceItem");
         // 기존 엔티티를 찾고, 있으면 업데이트
         SpaceItem spaceItem = spaceItemRepository.findById(spaceItemId)

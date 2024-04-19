@@ -1,4 +1,4 @@
-package com.fisa.wooriarte.matching.DTO;
+package com.fisa.wooriarte.matching.dto;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.matching.domain.MatchingStatus;
 import com.fisa.wooriarte.matching.domain.SenderType;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 @Builder
-public class MatchingDTO {
+public class MatchingDto {
     private Long matchingId;
     private MatchingStatus matchingStatus;
     private Long spaceItemId;
@@ -33,8 +33,8 @@ public class MatchingDTO {
                 .build();
     }
 
-    public static MatchingDTO fromEntity(Matching matching) {
-        return MatchingDTO.builder()
+    public static MatchingDto fromEntity(Matching matching) {
+        return MatchingDto.builder()
                 .matchingId(matching.getMatchingId())
                 .matchingStatus(matching.getMatchingStatus())
                 .spaceItemId(matching.getSpaceItem().getSpaceItemId())

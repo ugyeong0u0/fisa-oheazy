@@ -1,7 +1,7 @@
 package com.fisa.wooriarte.projectmanager.domain;
 
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
-import com.fisa.wooriarte.projectmanager.DTO.ProjectManagerDTO;
+import com.fisa.wooriarte.projectmanager.dto.ProjectManagerDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -83,7 +83,7 @@ public class ProjectManager implements UserDetails {
         this.pwd = pwd;
     }
 
-    public void updateProjectManager(ProjectManagerDTO projectManagerDTO) {
+    public void updateProjectManager(ProjectManagerDto projectManagerDTO) {
         this.businessNumber = projectManagerDTO.getBusinessNumber();
         this.company = projectManagerDTO.getCompany();
         this.ceo = projectManagerDTO.getCeo();

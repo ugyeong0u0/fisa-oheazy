@@ -1,9 +1,8 @@
 package com.fisa.wooriarte.spaceItem.domain;
 
 import com.fisa.wooriarte.matching.domain.Matching;
-import com.fisa.wooriarte.spaceItem.dto.SpaceItemDTO;
+import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
-import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -79,7 +78,7 @@ public class SpaceItem {
         this.isDeleted = true;
     }
 
-    public void updateSpaceItem(SpaceItemDTO spaceItemDTO) {
+    public void updateSpaceItem(SpaceItemDto spaceItemDTO) {
         this.intro = spaceItemDTO.getIntro();
         this.hostName = spaceItemDTO.getHostName();
         this.city = spaceItemDTO.getCity();

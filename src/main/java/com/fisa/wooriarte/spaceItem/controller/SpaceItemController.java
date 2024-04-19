@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.spaceItem.controller;
 
-import com.fisa.wooriarte.spaceItem.dto.SpaceItemDTO;
+import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
 import com.fisa.wooriarte.spaceItem.service.SpaceItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class SpaceItemController {
 
     // 모든 공간 아이템 정보 조회
     @GetMapping("/space-item")
-    public List<SpaceItemDTO> getAllSpaceItemInfo() throws Exception {
+    public List<SpaceItemDto> getAllSpaceItemInfo() throws Exception {
         try {
             return spaceItemService.findAll();
         } catch (Exception e) {
@@ -35,7 +35,7 @@ public class SpaceItemController {
 
     // 공간 아이템 추가
     @PostMapping("/space-item")
-    public String addSpaceItem(@RequestBody SpaceItemDTO spaceItemDTO) {
+    public String addSpaceItem(@RequestBody SpaceItemDto spaceItemDTO) {
         try {
             spaceItemService.addSpaceItem(spaceItemDTO);
             return "등록 완료";
@@ -47,7 +47,7 @@ public class SpaceItemController {
 
     // 공간 아이템 상세 조회
     @GetMapping("/space-item/{space-item-id}")
-    public Optional<SpaceItemDTO> getSpaceItemInfo(@PathVariable(name = "space-item-id") Long spaceItemId) throws Exception {
+    public Optional<SpaceItemDto> getSpaceItemInfo(@PathVariable(name = "space-item-id") Long spaceItemId) throws Exception {
         try {
             return spaceItemService.findSpaceItembyId(spaceItemId);
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class SpaceItemController {
 
     // 공간 아이템 수정
     @PutMapping("/space-item/{space-item-id}")
-    public String updateSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId, @RequestBody SpaceItemDTO spaceItemDTO) {
+    public String updateSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId, @RequestBody SpaceItemDto spaceItemDTO) {
         try {
             spaceItemService.updateSpaceItem(spaceItemId, spaceItemDTO);
             return "공간 아이템 수정 완료";

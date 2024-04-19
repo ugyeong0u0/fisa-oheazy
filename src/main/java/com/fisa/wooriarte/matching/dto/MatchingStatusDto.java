@@ -1,8 +1,8 @@
-package com.fisa.wooriarte.matching.DTO;
+package com.fisa.wooriarte.matching.dto;
 
 import com.fisa.wooriarte.matching.domain.MatchingStatus;
 
-public class MatchingStatusDTO {
+public class MatchingStatusDto {
     private MatchingStatus matchingStatus;
 
     // getter와 setter
