@@ -4,17 +4,15 @@ import com.fisa.wooriarte.exhibit.domain.City;
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.matching.repository.MatchingRepository;
-import com.fisa.wooriarte.user.domain.User;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
 
 @Getter
 @Builder
-public class ExhibitDTO {
+public class ExhibitDto {
     private Long exhibitId;
     private Long matchingId;
     private String name;
@@ -51,11 +49,11 @@ public class ExhibitDTO {
                 .build();
     }
 
-    public static ExhibitDTO fromEntity(Exhibit exhibit) {
+    public static ExhibitDto fromEntity(Exhibit exhibit) {
         if (exhibit == null) {
             return null;
         }
-        return ExhibitDTO.builder()
+        return ExhibitDto.builder()
                 .exhibitId(exhibit.getExhibitId())
                 .matchingId(exhibit.getMatching().getMatchingId())
                 .name(exhibit.getName())

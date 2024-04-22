@@ -1,13 +1,11 @@
 package com.fisa.wooriarte.exhibit.service;
 
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
-import com.fisa.wooriarte.exhibit.dto.ExhibitDTO;
+import com.fisa.wooriarte.exhibit.dto.ExhibitDto;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.matching.repository.MatchingRepository;
-import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,11 +32,12 @@ public class ExhibitService {
         this.matchingRepository = matchingRepository;
     }
 
+
     /**
      * 1. 현재 진행 중인 전시데이터 목록 출력
      * @return
      */
-    public List<ExhibitDTO> findAllExhibits() {
+    public List<ExhibitDto> findAllExhibits() {
         System.out.println("findAllExhibits");
         //오늘 날짜를 받아옴
         LocalDate today = LocalDate.now();
@@ -51,7 +50,7 @@ public class ExhibitService {
                     Date endDate = exhibit.getEndDate();
                     return startDate.before(todayDate) && endDate.after(todayDate) && !exhibit.getIsDeleted();
                 })
-                .map(ExhibitDTO::fromEntity)
+                .map(ExhibitDto::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -60,10 +59,11 @@ public class ExhibitService {
      * @param ExhibitId
      * @return
      */
-    public Optional<ExhibitDTO> findExhibitbyId(Long ExhibitId) {
+    public Optional<ExhibitDto> findExhibitbyId(Long ExhibitId) {
+
         System.out.println("findExhibitItemById");
         return exhibitRepository.findById(ExhibitId)
-                .map(ExhibitDTO::fromEntity);
+                .map(ExhibitDto::fromEntity);
     }
 
     /**
@@ -71,7 +71,8 @@ public class ExhibitService {
      * @param exhibitDTO : 입력된 전시 데이터
      * @param matchingId : 성사된 matchingId
      */
-    public void addExhibit(ExhibitDTO exhibitDTO, Long matchingId) {
+    public void addExhibit(ExhibitDto exhibitDTO, Long matchingId) {
+
         Matching matching = matchingRepository.findById(matchingId)
                 .orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + matchingId));
         // ExhibitDTO에 사용자 정보 설정
@@ -81,7 +82,7 @@ public class ExhibitService {
         //Ticket 엔티티 저장
         Exhibit savedExhibit = exhibitRepository.save(exhibit);
         //Ticket 엔티티 -> TicketDTO 변환
-        ExhibitDTO.fromEntity(savedExhibit);
+        ExhibitDto.fromEntity(savedExhibit);
     }
 
     /**
@@ -90,7 +91,7 @@ public class ExhibitService {
      * @param exhibitDTO : 수정할 전시 데이터
      */
     @Transactional
-    public void updateExhibit(Long exhibitId, ExhibitDTO exhibitDTO) {
+    public void updateExhibit(Long exhibitId, ExhibitDto exhibitDTO) {
         Exhibit exhibit = exhibitRepository.findById(exhibitId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
         exhibit.updateExhibit(exhibitDTO);

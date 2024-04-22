@@ -1,12 +1,17 @@
 package com.fisa.wooriarte.user.service;
 
+import com.fisa.wooriarte.jwt.JwtTokenProvider;
+import com.fisa.wooriarte.jwt.JwtToken;
 import com.fisa.wooriarte.user.domain.User;
-import com.fisa.wooriarte.user.dto.UserDTO;
-import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
+import com.fisa.wooriarte.user.dto.UserDto;
+import com.fisa.wooriarte.user.dto.request.UserInfoRequestDto;
 import com.fisa.wooriarte.user.repository.UserRepository;
 import org.antlr.v4.runtime.atn.SemanticContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Sinks;
@@ -20,9 +25,14 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
     @Autowired
-    public UserService (UserRepository userRepository){
+    public UserService (UserRepository userRepository, JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder){
         this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
     //Spring Security를 사용하여 비밀번호를 인코딩하고 비교하기 위해 PasswordEncoder 의존성 추가
@@ -35,12 +45,12 @@ public class UserService {
 //    ----------------------------------------------------
 
 
-    //회원가입
+    // 회원가입
     // 로직 boolean으로 반환
-    public boolean addUser(UserDTO userDTO) {
+    public boolean addUser(UserDto userDto) {
         //userDTO.toEntity 를 User userEntity로 변환한 이유는
         //클라이언트로부터 받은 데이터를 db에 저장하기 위함
-        User userEntity = userDTO.toEntity();
+        User userEntity = userDto.toEntity();
 
         Optional<User> userEmail = userRepository.findUserByEmail(userEntity.getEmail());
 
@@ -53,6 +63,8 @@ public class UserService {
         if (userId.isPresent()&&!userEmail.get().getIsDeleted()) {
             throw new IllegalStateException("회원가입 불가능 (아이디 중복)");
         }
+
+        userEntity.addRole("USER");
 
         userRepository.save(userEntity);
         System.out.println("회원가입 가능");
@@ -76,11 +88,11 @@ public class UserService {
 
 
     // 유저 개인 정보 단건 조회
-    public UserDTO getMyUser(Long userId) {
+    public UserDto getMyUser(Long userId) {
         try {
             final User user = userRepository.findById(userId)
                     .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
-            return UserDTO.fromEntity(user);
+            return UserDto.fromEntity(user);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -97,42 +109,46 @@ public class UserService {
             return userdto;
         } else {
             throw new IllegalAccessException("로그인 실패: 아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
+    }
 
-        }}
+    @Transactional
+    public JwtToken login(String id, String pwd) {
+        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, pwd);
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
 
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        } catch (Exception e) {
+            e.printStackTrace(); // 예외를 로깅
+            throw e; // 필요한 경우, 예외를 다시 던져 처리할 수 있습니다.
+        }
 
-        // 유저 개인 정보 수정
-        public Boolean updateMyUser (Long id, UserInfoRequest userInfoRequest){
-            try {
-
-                Optional<User> optionalUser = userRepository.findAllByUserId(id);
-
-                if (!optionalUser.isPresent()) { // 유저 존재 확인
-                    throw new IllegalStateException("없는 유저입니다."); // 사용자가 존재하지 않으면 예외 발생
-                }
-
-                // 이메일 중복 확인
-                Optional<User> userEmail = userRepository.findUserByEmail(userInfoRequest.getEmail());
-                if (userEmail.isPresent()) {
-                    System.out.println("수정 불가능(이메일 중복)");
-                    return false;
-                }
-
-                // 이메일이 중복되지 않은 경우, 엔터티 업데이트
-                final int result = userRepository.updateAllById(id, userInfoRequest.getId(),
-                        userInfoRequest.getPwd(), userInfoRequest.getName(), userInfoRequest.getEmail(), userInfoRequest.getPhone());
-                System.out.println("변경된 엔터티 개수" + result);
-                return true;
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+        return jwtToken;
+    }
+    
+    // 유저 개인 정보 수정
+    public Boolean updateMyUser(Long id, UserInfoRequestDto userInfoRequestDto) {
+        try {
+            // 이메일 중복 확인
+            Optional<User> userEmail = userRepository.findUserByEmail(userInfoRequestDto.getEmail());
+            if (userEmail.isPresent()) {
+                System.out.println("수정 불가능(이메일 중복)");
+                return false;
             }
         }
 
-        // 유저 아이디 찾기
-        public String findUserId (String name, String email){
-            User userInfo = userRepository.findByNameAndEmail(name, email)
-                    .orElseThrow(() -> new NoSuchElementException("유저 아이디를 찾을 수 없습니다.")); //객체 없으면 에러던지기
+            // 이메일이 중복되지 않은 경우, 엔터티 업데이트
+            final int result = userRepository.updateAllById(id, userInfoRequestDto.getId(),
+                    userInfoRequestDto.getPwd(), userInfoRequestDto.getName(), userInfoRequestDto.getEmail(), userInfoRequestDto.getPhone());
+            System.out.println("변경된 엔터티 개수" + result);
+            return true;
 
             return userInfo.getId(); //아이디 던저주기
         }

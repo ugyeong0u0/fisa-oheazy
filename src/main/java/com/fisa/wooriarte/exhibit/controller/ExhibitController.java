@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.exhibit.controller;
 
-import com.fisa.wooriarte.exhibit.dto.ExhibitDTO;
+import com.fisa.wooriarte.exhibit.dto.ExhibitDto;
 import com.fisa.wooriarte.exhibit.service.ExhibitService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ public class ExhibitController {
      * @return
      */
     @GetMapping({"/admin/exhibits", "/exhibits"})
-    public ResponseEntity<List<ExhibitDTO>> findAllExhibits() {
-        List<ExhibitDTO> exhibits = exhibitService.findAllExhibits();
+    public ResponseEntity<List<ExhibitDto>> findAllExhibits() {
+        List<ExhibitDto> exhibits = exhibitService.findAllExhibits();
         return ResponseEntity.ok(exhibits);
     }
 
@@ -39,8 +39,8 @@ public class ExhibitController {
      * @return
      */
     @GetMapping({"/admin/exhibits/{exhibit-id}", "/exhibits/{exhibit-id}"})
-    public ResponseEntity<ExhibitDTO> findExhibitById(@PathVariable(name = "exhibit-id") Long exhibitId) {
-        Optional<ExhibitDTO> exhibitOptional = exhibitService.findExhibitbyId(exhibitId);
+    public ResponseEntity<ExhibitDto> findExhibitById(@PathVariable(name = "exhibit-id") Long exhibitId) {
+        Optional<ExhibitDto> exhibitOptional = exhibitService.findExhibitbyId(exhibitId);
 
         return exhibitOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -52,7 +52,7 @@ public class ExhibitController {
      * @return
      */
     @PostMapping("/admin/matchings/{matching-id}/exhibits")
-    public ResponseEntity<String> addExhibit(@PathVariable(name = "matching-id") Long matchingId, @RequestBody ExhibitDTO exhibitDTO) {
+    public ResponseEntity<String> addExhibit(@PathVariable(name = "matching-id") Long matchingId, @RequestBody ExhibitDto exhibitDTO) {
         try {
             exhibitService.addExhibit(exhibitDTO, matchingId);
             return ResponseEntity.status(HttpStatus.CREATED).body("전시 생성 완료");
@@ -68,7 +68,7 @@ public class ExhibitController {
      * @return
      */
     @PutMapping("/admin/exhibits/{exhibit-id}")
-    public ResponseEntity<String> updateExhibit(@PathVariable(name = "exhibit-id") Long exhibitId, @RequestBody ExhibitDTO exhibitDTO) {
+    public ResponseEntity<String> updateExhibit(@PathVariable(name = "exhibit-id") Long exhibitId, @RequestBody ExhibitDto exhibitDTO) {
         try {
             exhibitService.updateExhibit(exhibitId, exhibitDTO);
             return ResponseEntity.ok("전시 수정 완료");

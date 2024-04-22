@@ -5,15 +5,17 @@ import com.fisa.wooriarte.projectItem.service.ProjectItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class ProjectItemController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProjectItemController.class);
+    private static final Logger log = LoggerFactory.getLogger(ProjectItemController.class);
 
     private final ProjectItemService projectItemService;
 
@@ -22,67 +24,59 @@ public class ProjectItemController {
         this.projectItemService = projectItemService;
     }
 
-    // 모든 프로젝트 아이템 정보 조회
     @GetMapping("/project-item")
-    public List<ProjectItemDTO> getAllProjectItemInfo() throws Exception {
+    public ResponseEntity<?> getAllProjectItemInfo() {
         try {
-            return projectItemService.findAll();
+            List<ProjectItemDTO> items = projectItemService.findAll();
+            return ResponseEntity.ok(items);
         } catch (Exception e) {
-            logger.error("Error retrieving all project items", e);
-            throw new Exception("프로젝트 아이템 정보를 가져오지 못했습니다.");
+            log.error("Failed to retrieve all project items", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve project item information."));
         }
     }
 
-    // 프로젝트 아이템 추가
     @PostMapping("/project-item")
-    public String addProjectItem(@RequestBody ProjectItemDTO projectItemDTO) {
+    public ResponseEntity<?> addProjectItem(@RequestBody ProjectItemDTO projectItemDTO) {
         try {
             projectItemService.addProjectItem(projectItemDTO);
-            return "등록 완료";
+            return ResponseEntity.ok(Map.of("message", "Project item successfully added."));
         } catch (Exception e) {
-            logger.error("Error adding project item", e);
-            return "등록 실패";
+            log.error("Failed to add project item", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to add project item."));
         }
     }
 
-    // 프로젝트 아이템 상세 조회
     @GetMapping("/project-item/{project-item-id}")
-    public Optional<ProjectItemDTO> getProjectItemInfo(@PathVariable(name = "project-item-id") Long projectItemId) throws Exception {
+    public ResponseEntity<?> getProjectItemInfo(@PathVariable(name = "project-item-id") Long projectItemId) {
         try {
-            return projectItemService.findByProjectItemId(projectItemId);
+            return projectItemService.findByProjectItemId(projectItemId)
+                    .map(item -> ResponseEntity.ok(item))
+                    .orElseGet(() -> ResponseEntity.notFound().build());
         } catch (Exception e) {
-            logger.error("Error retrieving project item with id: {}", projectItemId, e);
-            throw new Exception("프로젝트 아이템 상세정보를 가져오지 못했습니다.");
+            log.error("Failed to retrieve project item with id: {}", projectItemId, e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve project item details."));
         }
     }
 
-    // 프로젝트 아이템 수정
     @PutMapping("/project-item/{project-item-id}")
-    public String updateProjectItem(@PathVariable(name = "project-item-id") Long projectItemId, @RequestBody ProjectItemDTO projectItemDTO) {
+    public ResponseEntity<?> updateProjectItem(@PathVariable(name = "project-item-id") Long projectItemId, @RequestBody ProjectItemDTO projectItemDTO) {
         try {
             projectItemService.updateProjectItem(projectItemId, projectItemDTO);
-            return "프로젝트 아이템 수정 완료";
+            return ResponseEntity.ok(Map.of("message", "Project item successfully updated."));
         } catch (Exception e) {
-            logger.error("Error updating project item with id: {}", projectItemId, e);
-            return "프로젝트 아이템 수정 실패";
+            log.error("Failed to update project item with id: {}", projectItemId, e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to update project item."));
         }
     }
 
-    // 프로젝트 아이템 삭제
     @DeleteMapping("/project-item/{project-item-id}")
-    public String deleteProjectItem(@PathVariable(name = "project-item-id") Long projectItemId) {
+    public ResponseEntity<?> deleteProjectItem(@PathVariable(name = "project-item-id") Long projectItemId) {
         try {
             projectItemService.deleteProjectItem(projectItemId);
-            return "프로젝트 아이템 삭제 성공";
+            return ResponseEntity.ok(Map.of("message", "Project item successfully deleted."));
         } catch (Exception e) {
-            logger.error("Error deleting project item with id: {}", projectItemId, e);
-            return "프로젝트 아이템 삭제 실패";
+            log.error("Failed to delete project item with id: {}", projectItemId, e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to delete project item."));
         }
     }
-
-//    @PostMapping("/{project-item-id}/request")
-//    public String requestProjectMatching() {
-//        logger.info("Request project matching");
-//        return "";
-//    }
 }

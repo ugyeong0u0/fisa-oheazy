@@ -1,13 +1,10 @@
 package com.fisa.wooriarte.user.controller;
 
-
-import com.fisa.wooriarte.ErrorMessage;
-import com.fisa.wooriarte.user.domain.User;
-import com.fisa.wooriarte.user.dto.UserDTO;
-import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
+import com.fisa.wooriarte.jwt.JwtToken;
+import com.fisa.wooriarte.user.dto.UserDto;
+import com.fisa.wooriarte.user.dto.request.UserInfoRequestDto;
+import com.fisa.wooriarte.user.dto.request.UserLoginRequestDto;
 import com.fisa.wooriarte.user.service.UserService;
-import org.apache.coyote.Response;
-import org.hibernate.annotations.Fetch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +19,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -41,10 +39,9 @@ public class UserController {
      * @return
      */
     // 이메일 중복 체크를 통해 중복회원 거르기
-    @PostMapping("/user")
+    @PostMapping("")
     //<?> : 제네릭 타입, 모든 종류의 응답 본문 반환할지 나타낸다.
-    public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO) {
-
+    public ResponseEntity<?> addUser(@RequestBody UserDto userDTO)  {
         try {
             boolean result = userService.addUser(userDTO);
             if (result) { //result 값이 true -> 회원가입 성공
@@ -94,12 +91,12 @@ public class UserController {
 
     }
 
-//    //유저 로그인한 상태 -> mypage버튼 클릭스 비밀번호 검증 화면 띄우기
-//    @GetMapping("/user/{id}")
-//    public String showMyPage() {
-//        return "페이지";
-//    }
-
+    @PostMapping("/jwtlogin")
+    public JwtToken login(@RequestBody UserLoginRequestDto userLoginRequestDTO) {
+        String id = userLoginRequestDTO.getId();
+        String pwd = userLoginRequestDTO.getPwd();
+        return userService.login(id, pwd);
+    }
 
     /**
      * 유저 비밀번호 검증
@@ -107,11 +104,11 @@ public class UserController {
      * @return
      */
     // 유저 마이페이지 수정하기 위한 -> 비밀번호 검증
-    @PostMapping("/user/{user-id}/verify-pwd")
-    public ResponseEntity<?> verifyPassword(@PathVariable(name = "user-id") Long userId, @RequestBody UserDTO userDTO) {
+    @PostMapping("/{user-id}/verify-pwd")
+    public ResponseEntity<?> verifyPassword(@PathVariable(name = "user-id") Long userId, @RequestBody UserDto userDto)  {
 
         try {
-            if (userService.verifyPassword(userId, userDTO.getPwd())) {
+            if (userService.verifyPassword(userId, userDto.getPwd())) {
                 return new ResponseEntity<>("비밀번호 인증 성공", HttpStatus.OK);
             } else {
                 errorMessage.setMsg("비밀번호 틀림");
@@ -126,14 +123,12 @@ public class UserController {
 
     }
 
-    /**
-     * 유저 개인 정보 조회
-     *
-     */
-    @GetMapping("/user/{user-id}/info")
-    public ResponseEntity<?> getUserInfo(@PathVariable(name = "user-id") Long userId) {
+    // 유저 개인 정보 조회
+    @GetMapping("/{user-id}/info")
+    public ResponseEntity<?> getUserInfo(@PathVariable(name = "user-id") Long userId){
         try {
-            UserDTO userInfo = userService.getMyUser(userId);
+
+            UserDto userInfo = userService.getMyUser(userId);
             return ResponseEntity.ok(userInfo);
         } catch (Exception e) {
             errorMessage.setMsg(e.getMessage());
@@ -149,11 +144,10 @@ public class UserController {
      * @return
      * @throws Exception
      */
-
-    @PutMapping("/user/{user-id}/info")
-    public ResponseEntity<?> updateUserInfo(@PathVariable(name = "user-id") Long userId, @RequestBody UserInfoRequest userInfoRequest) throws Exception {
+    @PutMapping("/{user-id}/info")
+    public ResponseEntity<?> updateUserInfo(@PathVariable(name = "user-id") Long userId, @RequestBody UserInfoRequestDto userInfoRequestDto) throws Exception {
         try {
-            Boolean result = userService.updateMyUser(userId, userInfoRequest);
+            Boolean result = userService.updateMyUser(userId, userInfoRequestDto);
             if (result) return ResponseEntity.ok("수정 성공");
             else return ResponseEntity.badRequest().body("수정 실패");
 
@@ -170,14 +164,14 @@ public class UserController {
 
     /**
      * 유저 아이디 찾기
-     * @param userDTO
+     * @param userDto
      * @return
      */
-    @PostMapping("/user/find-id")
-    public ResponseEntity<?> findUserId(@RequestBody UserDTO userDTO) {
+    @PostMapping("/find-id")
+    public ResponseEntity<?> findUserId(@RequestBody UserDto userDto) {
 
-        String name = userDTO.getName();
-        String email = userDTO.getEmail();
+        String name = userDto.getName();
+        String email = userDto.getEmail();
 
         try {
             String userId = userService.findUserId(name, email);
@@ -193,15 +187,31 @@ public class UserController {
         }
     }
 
+    //클라이언트가 저송한
+    //비밀번호 찾기
+    @PostMapping("/find-pw")
+    public ResponseEntity<?> findUserPw(@RequestBody UserDto userDTO ) {
+        String id = userDTO.getId();
+        String name = userDTO.getName();
+        String email = userDTO.getEmail();
 
+        try {
+            String userPw = userService.findUserPw(id,name, email);
+            return ResponseEntity.ok().body("찾은 비밀번호 : " + userPw);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body("입력한 아이디, 이름과 이메일을 다시 확인해주세요.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
+        }
+    }
 
     /**
      * 유저 삭제하기
      * @param userId
      * @return
      */
-    @DeleteMapping("/user/{user-id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("user-id") Long userId) {
+    @DeleteMapping("/{user-id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("user-id") Long userId){
         try {
             userService.deleteUser(userId);
             return ResponseEntity.ok().body("유저 삭제 성공");

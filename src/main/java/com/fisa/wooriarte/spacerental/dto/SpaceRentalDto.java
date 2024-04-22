@@ -3,14 +3,12 @@ package com.fisa.wooriarte.spacerental.dto;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SpaceRentalDTO {
+public class SpaceRentalDto {
     private Long spaceRentalId;
     private Long businessNumber;
     private String id;
@@ -34,8 +32,8 @@ public class SpaceRentalDTO {
                 .build();
     }
 
-    public static SpaceRentalDTO fromEntity(SpaceRental spaceRental) {
-        return SpaceRentalDTO.builder()
+    public static SpaceRentalDto fromEntity(SpaceRental spaceRental) {
+        return SpaceRentalDto.builder()
                 .spaceRentalId(spaceRental.getSpaceRentalId())
                 .businessNumber(spaceRental.getBusinessNumber())
                 .id(spaceRental.getId())

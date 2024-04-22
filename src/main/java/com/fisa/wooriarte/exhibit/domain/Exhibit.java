@@ -1,8 +1,6 @@
 package com.fisa.wooriarte.exhibit.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fisa.wooriarte.exhibit.dto.ExhibitDTO;
+import com.fisa.wooriarte.exhibit.dto.ExhibitDto;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.ticket.domain.Ticket;
 import jakarta.persistence.*;
@@ -78,8 +76,8 @@ public class Exhibit {
         this.isDeleted = !this.isDeleted;
     }
 
-    //전시 정보 수정
-    public void updateExhibit(ExhibitDTO exhibitDTO) {
+    public void updateExhibit(ExhibitDto exhibitDTO) {
+
         this.name = exhibitDTO.getName();
         this.intro  = exhibitDTO.getIntro();
         this.startDate = exhibitDTO.getStartDate();

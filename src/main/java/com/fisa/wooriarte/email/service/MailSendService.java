@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.email.service;
 
-import com.fisa.wooriarte.email.util.RedisUtil;
+import com.fisa.wooriarte.redis.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

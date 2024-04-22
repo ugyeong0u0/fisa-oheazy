@@ -1,10 +1,15 @@
 package com.fisa.wooriarte.spacerental.service;
 
+import com.fisa.wooriarte.jwt.JwtToken;
+import com.fisa.wooriarte.jwt.JwtTokenProvider;
 import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
-import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
+import com.fisa.wooriarte.spacerental.dto.SpaceRentalDto;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.NoSuchElementException;
@@ -13,10 +18,14 @@ import java.util.Optional;
 @Service
 public class SpaceRentalService {
     private final SpaceRentalRepository spaceRentalRepository;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public SpaceRentalService(SpaceRentalRepository spaceRentalRepository) {
+    public SpaceRentalService(SpaceRentalRepository spaceRentalRepository, AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider) {
         this.spaceRentalRepository = spaceRentalRepository;
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
     /*
     공간대여자 추가
@@ -25,12 +34,15 @@ public class SpaceRentalService {
     2. DB에 저장
      */
     @Transactional
-    public boolean addSpaceRental(SpaceRentalDTO spaceRentalDTO) {
-        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(spaceRentalDTO.getId());
+    public boolean addSpaceRental(SpaceRentalDto spaceRentalDTO) {
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(spaceRentalDTO.getId());
         if (optionalSpaceRental.isPresent()) {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
-        spaceRentalRepository.save(spaceRentalDTO.toEntity());
+
+        SpaceRental spaceRental = spaceRentalDTO.toEntity();
+        spaceRental.addRole("SPACE_RENTAL");
+        spaceRentalRepository.save(spaceRental);
         return true;
     }
 
@@ -40,14 +52,30 @@ public class SpaceRentalService {
         없으면 예외 처리
     2. 비밀번호와 비교
      */
-    public SpaceRentalDTO loginSpaceRental(String id, String pwd) throws Exception {
-        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(id);
-        if(optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd)){
-             return SpaceRentalDTO.fromEntity(optionalSpaceRental.get());
-        }else{
-            throw  new Exception("로그인 불가 ");
+    public boolean loginSpaceRental(String id, String pwd) {
+        Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(id);
+        return optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd);
+    }
+
+    @Transactional
+    public JwtToken login(String id, String pwd) {
+        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
+        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, pwd);
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
+        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        } catch (Exception e) {
+            e.printStackTrace(); // 예외를 로깅
+            throw e; // 필요한 경우, 예외를 다시 던져 처리할 수 있습니다.
         }
 
+        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+        return jwtToken;
     }
 
     //공간 대여자 아이디 찾기
@@ -59,7 +87,7 @@ public class SpaceRentalService {
 
     //공간 대여자 pw 재설정
     public boolean setPwd(String id, String newPwd) {
-        SpaceRental spaceRental = spaceRentalRepository.findBySpaceRentalId(id)
+        SpaceRental spaceRental = spaceRentalRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
         //비밀번호 검증
         spaceRental.setPwd(newPwd);
@@ -72,10 +100,10 @@ public class SpaceRentalService {
         없으면 예외 처리
     2. DTO로 변환 후 반환
      */
-    public SpaceRentalDTO findBySpaceRentalId(Long spaceRentalId) {
+    public SpaceRentalDto findBySpaceRentalId(Long spaceRentalId) {
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
                     .orElseThrow(() -> new NoSuchElementException("Fail to search info. No one uses that ID"));
-        return SpaceRentalDTO.fromEntity(spaceRental);
+        return SpaceRentalDto.fromEntity(spaceRental);
     }
 
     /*
@@ -90,7 +118,7 @@ public class SpaceRentalService {
             businessId: 고유 번호는 그대로 유지
      */
     @Transactional
-    public boolean updateSpaceRental(Long spaceRentalId, SpaceRentalDTO spaceRentalDTO) {
+    public boolean updateSpaceRental(Long spaceRentalId, SpaceRentalDto spaceRentalDTO) {
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
                 .orElseThrow(() -> new NoSuchElementException("Fail to update. No one uses that ID"));
         spaceRental.updateSpaceRental(spaceRentalDTO);

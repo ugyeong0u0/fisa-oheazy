@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @ToString
-public class SpaceItemDTO {
+public class SpaceItemDto {
 
     private Long spaceItemId;
 
@@ -59,8 +59,8 @@ public class SpaceItemDTO {
                 .build();
     }
 
-    public static SpaceItemDTO fromEntity(SpaceItem entity) {
-        return SpaceItemDTO.builder()
+    public static SpaceItemDto fromEntity(SpaceItem entity) {
+        return SpaceItemDto.builder()
                 .spaceItemId(entity.getSpaceItemId())
                 .spaceRentalId(entity.getSpaceRental().getSpaceRentalId()) // SpaceRental 객체의 ID를 추출
                 .intro(entity.getIntro())
