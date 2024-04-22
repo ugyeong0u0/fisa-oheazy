@@ -193,30 +193,7 @@ public class UserController {
         }
     }
 
-    /**
-     * 유저 비밀번호 찾기
-     * @param userDTO
-     * @return
-     */
-    @PostMapping("/user/find-pw")
-    public ResponseEntity<?> findUserPw(@RequestBody UserDTO userDTO) {
-        String id = userDTO.getId();
-        String name = userDTO.getName();
-        String email = userDTO.getEmail();
 
-        try {
-            String userPw = userService.findUserPw(id, name, email);
-            return ResponseEntity.ok().body(userPw);
-        } catch (NoSuchElementException e) {
-            errorMessage.setMsg(e.getMessage());
-            errorMessage.setErrorCode(HttpStatus.BAD_REQUEST.value());
-            return ResponseEntity.badRequest().body(errorMessage);
-        } catch (Exception e) {
-            errorMessage.setMsg("서버 오류 발생");
-            errorMessage.setErrorCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
-        }
-    }
 
     /**
      * 유저 삭제하기
