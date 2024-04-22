@@ -4,10 +4,12 @@ import com.fisa.wooriarte.spacerental.dto.SpaceRentalDTO;
 import com.fisa.wooriarte.spacerental.service.SpaceRentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
+@CrossOrigin(origins = "*",allowedHeaders = "*")
 @RestController
 public class SpaceRentalController {
     private final SpaceRentalService spaceRentalService;
@@ -27,15 +29,20 @@ public class SpaceRentalController {
 
     //공간대여자 로그인
     @PostMapping("/space-rental/login")
-    public String loginSpaceRental(@RequestBody Map<String, String> loginInfo) {
+    public ResponseEntity<?> loginSpaceRental(@RequestBody Map<String, String> loginInfo) {
         String id = loginInfo.get("id");
         String pwd = loginInfo.get("pwd");
-        if(spaceRentalService.loginSpaceRental(id, pwd))
-            return "login success";
-        return "login fail";
+        try{
+        SpaceRentalDTO resultDTO= spaceRentalService.loginSpaceRental(id, pwd);
+        return ResponseEntity.status(HttpStatus.OK).body(resultDTO.getSpaceRentalId());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 불가 ");
+        }
+
     }
 
     //공간대여자 아이디 찾기
+    // 이메일로 찾음
     @PostMapping("/space-rental/find-id")
     public String findBusinessId(@RequestBody String email) {
         return spaceRentalService.getId(email);
@@ -51,11 +58,12 @@ public class SpaceRentalController {
         return "fail";
     }
 
-            //공간대여자 정보 조회
+    // 공간대여자 정보 조회
     @GetMapping("/space-rental/{space_rental_id}")
-    public String getSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId) {
+    public ResponseEntity<?> getSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId) {
         SpaceRentalDTO spaceRentalDTO = spaceRentalService.findBySpaceRentalId(spaceRentalId);
-        return spaceRentalDTO.toString();
+        return ResponseEntity.ok().body(spaceRentalDTO);
+
     }
 
     //공간대여자 정보 갱신
@@ -66,7 +74,7 @@ public class SpaceRentalController {
         return "fail";
     }
 
-    //공간대여자 삭제(delete를 true로 변경)
+    //공간대여자 탈퇴(delete를 true로 변경)
     @DeleteMapping("/space-rental/{space_rental_id}")
     public String deleteSpaceRental(@PathVariable("space_rental_id") Long spaceRentalId) {
         if(spaceRentalService.deleteSpaceRental(spaceRentalId))

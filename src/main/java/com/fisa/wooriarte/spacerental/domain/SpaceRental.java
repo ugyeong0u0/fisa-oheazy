@@ -70,5 +70,7 @@ public class SpaceRental {
         this.ceo = spaceRentalDTO.getCeo();
         this.email = spaceRentalDTO.getEmail();
         this.phone = spaceRentalDTO.getPhone();
+        this.id = spaceRentalDTO.getId();
+        this.pwd = spaceRentalDTO.getPwd();
     }
 }

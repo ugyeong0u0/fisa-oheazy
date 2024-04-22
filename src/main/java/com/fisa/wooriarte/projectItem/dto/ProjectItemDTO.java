@@ -25,6 +25,7 @@ public class ProjectItemDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Boolean isDeleted;
+    private String city;
 
     public ProjectItem toEntity(ProjectManager projectManager) {
 
@@ -38,6 +39,7 @@ public class ProjectItemDTO {
                 .startDate(this.startDate)
                 .endDate(this.endDate)
                 .isDeleted(this.isDeleted)
+                .city(this.city)
                 .build();
     }
 
@@ -52,6 +54,7 @@ public class ProjectItemDTO {
                 .startDate(entity.getStartDate())
                 .endDate(entity.getEndDate())
                 .isDeleted(entity.getIsDeleted())
+                .city(entity.getCity())
                 .build();
     }
 }

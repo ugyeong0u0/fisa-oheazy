@@ -36,7 +36,7 @@ public class UserController {
 
     /**
      * 유저 회원가입
-     *
+     * 회원 삭제 소프트딜리트라 email 중복확인때 isDeleted도 봐야함
      * @param userDTO
      * @return
      */

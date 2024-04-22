@@ -7,10 +7,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class ProjectManagerController {
 
@@ -34,15 +36,18 @@ public class ProjectManagerController {
 
     //프로젝트 매니저 로그인
     @PostMapping("/project-managers/login")
-    public ResponseEntity<String> loginProjectManager(@RequestBody Map<String, String> loginInfo) {
+    public ResponseEntity<?> loginProjectManager(@RequestBody Map<String, String> loginInfo) {
         String id = loginInfo.get("id");
         String pwd = loginInfo.get("pwd");
-        boolean loggedIn = projectManagerService.loginProjectManager(id, pwd);
-        if (loggedIn) {
-            return ResponseEntity.ok("Login success.");
-        } else {
+        try {
+            ProjectManagerDTO resultDTO = projectManagerService.loginProjectManager(id, pwd);
+            return ResponseEntity.status(HttpStatus.OK).body(resultDTO.getProjectManagerId());
+
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed. Invalid credentials.");
+
         }
+
     }
 
     //공간대여자 아이디 찾기
@@ -56,7 +61,7 @@ public class ProjectManagerController {
     public String findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
         String id = pwdInfo.get("id");
         String newPwd = pwdInfo.get("new_pwd");
-        if(projectManagerService.setPwd(id, newPwd))
+        if (projectManagerService.setPwd(id, newPwd))
             return "success";
         return "fail";
     }
@@ -72,7 +77,7 @@ public class ProjectManagerController {
     @PutMapping("/project-managers/{project-manager-id}")
     public ResponseEntity<String> updateProjectManagerInfo(
             @PathVariable("project-manager-id") Long projectManagerId,
-            @RequestBody ProjectManagerDTO projectManagerDTO) {
+            @RequestBody ProjectManagerDTO projectManagerDTO) { // todo request 따로 빼기
 
         boolean updated = projectManagerService.updateProjectManager(projectManagerId, projectManagerDTO);
         if (updated) {

@@ -44,12 +44,13 @@ public class UserService {
 
         Optional<User> userEmail = userRepository.findUserByEmail(userEntity.getEmail());
 
-        if (userEmail.isPresent()) {
+        if (userEmail.isPresent() && !userEmail.get().getIsDeleted()) {
+            System.out.println("유저 삭제여부:" +userEmail.get().getIsDeleted());
             throw new IllegalStateException("회원가입 불가능(이메일 중복)");
         }
 
         Optional<User> userId = userRepository.findUserById(userEntity.getId());
-        if (userId.isPresent()) {
+        if (userId.isPresent()&&!userEmail.get().getIsDeleted()) {
             throw new IllegalStateException("회원가입 불가능 (아이디 중복)");
         }
 

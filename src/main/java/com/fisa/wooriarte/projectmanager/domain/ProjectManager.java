@@ -73,5 +73,7 @@ public class ProjectManager {
         this.ceo = projectManagerDTO.getCeo();
         this.email = projectManagerDTO.getEmail();
         this.phone = projectManagerDTO.getPhone();
+        this.pwd=projectManagerDTO.getPwd();
+        this.id = projectManagerDTO.getId();
     }
 }

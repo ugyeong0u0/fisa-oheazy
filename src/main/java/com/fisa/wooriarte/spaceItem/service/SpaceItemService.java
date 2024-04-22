@@ -29,6 +29,7 @@ public class SpaceItemService {
     @Transactional
     public boolean addSpaceItem(SpaceItemDTO spaceItemDTO){
         System.out.println("addSpaceItem");
+        // 공간대여자가 있을 경우에 생성
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceItemDTO.getSpaceRentalId())
                 .orElseThrow(() -> new NoSuchElementException("No space Rental"));
         spaceItemRepository.save(spaceItemDTO.toEntity(spaceRental));

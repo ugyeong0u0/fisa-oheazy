@@ -40,9 +40,14 @@ public class SpaceRentalService {
         없으면 예외 처리
     2. 비밀번호와 비교
      */
-    public boolean loginSpaceRental(String id, String pwd) {
+    public SpaceRentalDTO loginSpaceRental(String id, String pwd) throws Exception {
         Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findBySpaceRentalId(id);
-        return optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd);
+        if(optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd)){
+             return SpaceRentalDTO.fromEntity(optionalSpaceRental.get());
+        }else{
+            throw  new Exception("로그인 불가 ");
+        }
+
     }
 
     //공간 대여자 아이디 찾기
