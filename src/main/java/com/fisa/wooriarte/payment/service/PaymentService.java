@@ -71,6 +71,7 @@ public class PaymentService {
         }
     }
 
+    @Transactional
     public boolean cancelPayment(String impUid) {
         Payment payment = paymentRepository.findByApprovalNumber(impUid)
                 .orElseThrow(() -> new NoSuchElementException("승인번호 오류"));
@@ -88,6 +89,7 @@ public class PaymentService {
         return true;
     }
 
+    @Transactional
     public boolean verifyPayment(String impUid) {
         com.siot.IamportRestClient.response.Payment iamPayment = null;
         try {
@@ -107,6 +109,7 @@ public class PaymentService {
         return true;
     }
 
+    @Transactional
     public boolean removePayment(String orderNumber) {
         Payment payment = paymentRepository.findByOrderNumber(orderNumber)
                 .orElseThrow(() -> new NoSuchElementException("주문번호 오류"));
