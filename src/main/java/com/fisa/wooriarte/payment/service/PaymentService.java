@@ -96,8 +96,8 @@ public class PaymentService {
             throw new RuntimeException(e);
         }
         Payment payment = paymentRepository.findByOrderNumber(iamPayment.getMerchantUid())
-                .orElseThrow(() -> new NoSuchElementException("승인번호 오류"));
-        if(payment.getStatus() != PaymentStatus.PROGRESSING || !payment.getAmount().equals(iamPayment.getAmount().longValue())) {
+                .orElseThrow(() -> new NoSuchElementException("주문번호 오류"));
+        if(!iamPayment.getStatus().equals("paid") || payment.getStatus() != PaymentStatus.PROGRESSING || payment.getAmount() != iamPayment.getAmount().longValue()) {
             payment.updatePayment(iamPayment.getPayMethod(), impUid, PaymentStatus.WRONGPAYMENT);
             paymentRepository.save(payment);
             return false;
