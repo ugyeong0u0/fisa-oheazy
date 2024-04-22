@@ -1,7 +1,7 @@
 package com.fisa.wooriarte.user.repository;
 
 import com.fisa.wooriarte.user.domain.User;
-import com.fisa.wooriarte.user.dto.request.UserInfoRequest;
+import com.fisa.wooriarte.user.dto.request.UserInfoRequestDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

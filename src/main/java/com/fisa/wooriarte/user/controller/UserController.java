@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.user.controller;
 
+import com.fisa.wooriarte.ErrorMessage;
 import com.fisa.wooriarte.jwt.JwtToken;
 import com.fisa.wooriarte.user.dto.UserDto;
 import com.fisa.wooriarte.user.dto.request.UserInfoRequestDto;
@@ -13,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import java.util.Map;
-import java.util.Optional;
 
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 @RestController
@@ -73,7 +71,7 @@ public class UserController {
     public ResponseEntity<?> loginUser(@RequestBody Map<String, String> loginInfo) {
         String id = loginInfo.get("id");
         String pwd = loginInfo.get("pwd");
-        UserDTO userDto = null;
+        UserDto userDto = null;
 
         try {
             userDto = userService.loginUser(id, pwd);
@@ -128,7 +126,7 @@ public class UserController {
     public ResponseEntity<?> getUserInfo(@PathVariable(name = "user-id") Long userId){
         try {
 
-            UserDto userInfo = userService.getMyUser(userId);
+            UserDto userInfo = userService.getUserInfo(userId);
             return ResponseEntity.ok(userInfo);
         } catch (Exception e) {
             errorMessage.setMsg(e.getMessage());
@@ -140,7 +138,7 @@ public class UserController {
     /**
      * 유저 개인 정보 수정
      * @param userId
-     * @param userInfoRequest
+     * @param userInfoRequestDto
      * @return
      * @throws Exception
      */

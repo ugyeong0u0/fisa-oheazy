@@ -2,6 +2,7 @@ package com.fisa.wooriarte.spaceItem.domain;
 
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
+import com.fisa.wooriarte.spacephoto.domain.SpacePhoto;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import jakarta.persistence.*;
 import lombok.*;
