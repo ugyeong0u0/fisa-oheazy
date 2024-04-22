@@ -24,7 +24,6 @@ public class SwaggerConfig {
                 .info(apiInfo());
     }
 
-
     private Info apiInfo() {
         return new Info()
                 .title("API Test") // API의 제목

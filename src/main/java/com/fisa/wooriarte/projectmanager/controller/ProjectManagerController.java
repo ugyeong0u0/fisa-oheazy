@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/project-managers")
 public class ProjectManagerController {
@@ -60,6 +61,7 @@ public class ProjectManagerController {
             log.error("Exception occurred while logging in project manager: ", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Login failed due to an exception."));
         }
+
     }
 
     @PostMapping("/jwtlogin")

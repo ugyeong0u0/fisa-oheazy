@@ -15,16 +15,16 @@ public interface MatchingRepository extends JpaRepository<Matching, Long> {
     List<Matching> findByReceiverAndMatchingStatusAndSenderType(Long receiver, MatchingStatus matchingStatus, SenderType senderType);
     Optional<Matching> findByProjectItemAndSpaceItem(ProjectItem projectItem, SpaceItem spaceItem);
 
-    @Query(value = "select * from matching m where m.sender=:id and m.sender_type = 'SPACERENTAL' and (m.status = 'WAITING' or m.status = 'PREPARING' or m.status = 'FINISH')", nativeQuery = true)
+    @Query(value = "select * from matching m where m.sender=:id and m.sender_type = 'SPACERENTAL' and (m.matching_status = 'WAITING' or m.matching_status = 'PREPARING' or m.matching_status = 'FINISH')", nativeQuery = true)
     List<Matching> findSuccessMatchingSenderSpaceRental(Long id);
 
-    @Query(value = "select * from matching m where m.receiver=:id and m.sender_type = 'PROJECTMANAGER' and (m.status = 'WAITING' or m.status = 'PREPARING' or m.status = 'FINISH')", nativeQuery = true)
+    @Query(value = "select * from matching m where m.receiver=:id and m.sender_type = 'PROJECTMANAGER' and (m.matching_status = 'WAITING' or m.matching_status = 'PREPARING' or m.matching_status = 'FINISH')", nativeQuery = true)
     List<Matching> findSuccessMatchingReceiverSpaceRental(Long id);
 
-    @Query(value = "select * from matching m where m.sender=:id and m.sender_type = 'PROJECTMANAGER' and (m.status = 'WAITING' or m.status = 'PREPARING' or m.status = 'FINISH')", nativeQuery = true)
+    @Query(value = "select * from matching m where m.sender=:id and m.sender_type = 'PROJECTMANAGER' and (m.matching_status = 'WAITING' or m.matching_status = 'PREPARING' or m.matching_status = 'FINISH')", nativeQuery = true)
     List<Matching> findSuccessMatchingSenderProjectManager(Long id);
 
-    @Query(value = "select * from matching m where m.receiver=:id and m.sender_type = 'SPACERENTAL' and (m.status = 'WAITING' or m.status = 'PREPARING' or m.status = 'FINISH')", nativeQuery = true)
+    @Query(value = "select * from matching m where m.receiver=:id and m.sender_type = 'SPACERENTAL' and (m.matching_status = 'WAITING' or m.matching_status = 'PREPARING' or m.matching_status = 'FINISH')", nativeQuery = true)
     List<Matching> findSuccessMatchingReceiverProjectManager(Long id);
 
 }

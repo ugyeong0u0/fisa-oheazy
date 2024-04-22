@@ -47,6 +47,11 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 }
 
+allprojects {
+	repositories {
+		maven { url 'https://jitpack.io' }
+	}
+}
 tasks.named('test') {
 	useJUnitPlatform()
 }

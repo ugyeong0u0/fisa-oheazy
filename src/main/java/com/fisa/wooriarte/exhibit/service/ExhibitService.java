@@ -32,12 +32,18 @@ public class ExhibitService {
         this.matchingRepository = matchingRepository;
     }
 
-    //현재 진행 중인 전시데이터 목록 출력
+
+    /**
+     * 1. 현재 진행 중인 전시데이터 목록 출력
+     * @return
+     */
     public List<ExhibitDto> findAllExhibits() {
         System.out.println("findAllExhibits");
+        //오늘 날짜를 받아옴
         LocalDate today = LocalDate.now();
         Date todayDate = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
+        //오늘 날짜와 전시 시작날짜, 전시 끝 날짜를 비교해서 사이 값만 출력
         return exhibitRepository.findAll().stream()
                 .filter(exhibit -> {
                     Date startDate = exhibit.getStartDate();
@@ -48,19 +54,29 @@ public class ExhibitService {
                 .collect(Collectors.toList());
     }
 
-    //전시 1개 출력
+    /**
+     * 2. 전시 1개 출력
+     * @param ExhibitId
+     * @return
+     */
     public Optional<ExhibitDto> findExhibitbyId(Long ExhibitId) {
+
         System.out.println("findExhibitItemById");
         return exhibitRepository.findById(ExhibitId)
                 .map(ExhibitDto::fromEntity);
     }
 
-    //전시 생성
+    /**
+     * 3. 전시 생성
+     * @param exhibitDTO : 입력된 전시 데이터
+     * @param matchingId : 성사된 matchingId
+     */
     public void addExhibit(ExhibitDto exhibitDTO, Long matchingId) {
+
         Matching matching = matchingRepository.findById(matchingId)
                 .orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + matchingId));
         // ExhibitDTO에 사용자 정보 설정
-        exhibitDTO.setMatchingId(matching.getMatchingId());
+//        exhibitDTO.setMatchingId(matching.getMatchingId());
         //TicketDTO -> 엔티티 변환
         Exhibit exhibit = exhibitDTO.toEntity(matchingRepository);
         //Ticket 엔티티 저장
@@ -69,6 +85,11 @@ public class ExhibitService {
         ExhibitDto.fromEntity(savedExhibit);
     }
 
+    /**
+     * 4. 전시 정보 수정
+     * @param exhibitId : 수정할 exhibitId
+     * @param exhibitDTO : 수정할 전시 데이터
+     */
     @Transactional
     public void updateExhibit(Long exhibitId, ExhibitDto exhibitDTO) {
         Exhibit exhibit = exhibitRepository.findById(exhibitId)
@@ -77,7 +98,10 @@ public class ExhibitService {
         exhibitRepository.save(exhibit);
     }
 
-    //전시 삭제 여부 변경
+    /**
+     * 5. 전시 삭제 여부 변경
+     * @param exhibitId
+     */
     @Transactional
     public void deleteExhibitById(long exhibitId){
         //exhibit_id로 검색

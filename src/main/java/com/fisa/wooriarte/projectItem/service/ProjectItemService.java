@@ -26,6 +26,7 @@ public class ProjectItemService {
         this.projectManagerRepository = projectManagerRepository;
     }
 
+    // 프로젝트 추가
     @Transactional
     public void addProjectItem(ProjectItemDTO projectItemDTO){
         System.out.println("addProjectItem");
@@ -34,6 +35,7 @@ public class ProjectItemService {
         projectItemRepository.save(projectItemDTO.toEntity(projectManager));
     }
 
+    // 프로젝트 아이템 전체 조회
     public List<ProjectItemDTO> findAll() {
         System.out.println("findAll");
         return projectItemRepository.findAll().stream()
@@ -41,6 +43,7 @@ public class ProjectItemService {
                 .collect(Collectors.toList());
     }
 
+    // 프로젝트 아이템 조회
     public Optional<ProjectItemDTO> findByProjectItemId(Long projectItemId) {
         System.out.println("findByProjectItemId");
         return projectItemRepository.findById(projectItemId)

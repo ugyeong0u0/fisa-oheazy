@@ -34,6 +34,9 @@ public class SpaceItem {
     @Builder.Default
     private List<Matching> matchings = new ArrayList<>();
 
+    @OneToMany(mappedBy = "spaceItem", fetch = FetchType.LAZY)
+    private List<SpacePhoto> spacePhoto = new ArrayList<>();
+
     @Column
     private String intro;
 

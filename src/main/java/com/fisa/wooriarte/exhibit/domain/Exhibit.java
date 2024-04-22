@@ -77,6 +77,7 @@ public class Exhibit {
     }
 
     public void updateExhibit(ExhibitDto exhibitDTO) {
+
         this.name = exhibitDTO.getName();
         this.intro  = exhibitDTO.getIntro();
         this.startDate = exhibitDTO.getStartDate();

@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
+@CrossOrigin(origins = "*",allowedHeaders = "*")
 @RestController
 @RequestMapping("/space-rentals")
 public class SpaceRentalController {
@@ -132,7 +132,6 @@ public class SpaceRentalController {
             return ResponseEntity.badRequest().body(Map.of("message", "Error occurred while updating space rental information"));
         }
     }
-
 
     // 공간대여자 삭제
     @DeleteMapping("/{space_rental_id}")

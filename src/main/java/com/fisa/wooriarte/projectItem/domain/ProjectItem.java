@@ -3,6 +3,7 @@ package com.fisa.wooriarte.projectItem.domain;
 import com.fisa.wooriarte.projectItem.dto.ProjectItemDTO;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
+import com.fisa.wooriarte.projectphoto.domain.ProjectPhoto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -39,6 +40,10 @@ public class ProjectItem {
     @Builder.Default
     private List<Matching> matchings = new ArrayList<>();
 
+    @OneToMany(mappedBy = "projectItem", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<ProjectPhoto> projectPhotos = new ArrayList<>();
+
     @Column(nullable = false)
     private String artistName;
 
@@ -66,6 +71,9 @@ public class ProjectItem {
     @Column(nullable = false)
     private Boolean isDeleted;
 
+    @Column(nullable = false)
+    private String city;
+
     public void setIsDeleted() {
         this.isDeleted = true;
     }
@@ -77,5 +85,7 @@ public class ProjectItem {
         this.phone = projectItemDTO.getPhone();
         this.startDate = projectItemDTO.getStartDate();
         this.endDate = projectItemDTO.getEndDate();
+        this.city = projectItemDTO.getCity();
+
     }
 }
