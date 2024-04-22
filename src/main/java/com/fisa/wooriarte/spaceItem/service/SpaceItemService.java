@@ -41,7 +41,7 @@ public class SpaceItemService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<SpaceItemDto> findSpaceItembyId(Long spaceItemId) {
+    public Optional<SpaceItemDto> findSpaceItemById(Long spaceItemId) {
         System.out.println("findSpaceItemById");
         return spaceItemRepository.findById(spaceItemId)
                 .map(SpaceItemDto::fromEntity);

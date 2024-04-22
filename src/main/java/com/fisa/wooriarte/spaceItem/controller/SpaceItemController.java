@@ -5,15 +5,16 @@ import com.fisa.wooriarte.spaceItem.service.SpaceItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 public class SpaceItemController {
 
-    private static final Logger logger = LoggerFactory.getLogger(SpaceItemController.class);
+    private static final Logger log = LoggerFactory.getLogger(SpaceItemController.class);
 
     private final SpaceItemService spaceItemService;
 
@@ -22,68 +23,64 @@ public class SpaceItemController {
         this.spaceItemService = spaceItemService;
     }
 
-    // 모든 공간 아이템 정보 조회
+    // Retrieve all space items information
     @GetMapping("/space-item")
-    public List<SpaceItemDto> getAllSpaceItemInfo() throws Exception {
+    public ResponseEntity<?> getAllSpaceItemInfo() {
         try {
-            return spaceItemService.findAll();
+            List<SpaceItemDto> items = spaceItemService.findAll();
+            return ResponseEntity.ok(items);
         } catch (Exception e) {
-            logger.error("Error retrieving all space items", e);
-            throw new Exception("공간 아이템 정보를 가져오지 못했습니다.");
+            log.error("Error retrieving all space items", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve space item information."));
         }
     }
 
-    // 공간 아이템 추가
+    // Add a space item
     @PostMapping("/space-item")
-    public String addSpaceItem(@RequestBody SpaceItemDto spaceItemDTO) {
+    public ResponseEntity<?> addSpaceItem(@RequestBody SpaceItemDto spaceItemDTO) {
         try {
             spaceItemService.addSpaceItem(spaceItemDTO);
-            return "등록 완료";
+            return ResponseEntity.ok(Map.of("message", "Space item successfully added."));
         } catch (Exception e) {
-            logger.error("Error adding space item", e);
-            return "등록 실패";
+            log.error("Error adding space item", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to add space item."));
         }
     }
 
-    // 공간 아이템 상세 조회
+    // Retrieve detail of a space item
     @GetMapping("/space-item/{space-item-id}")
-    public Optional<SpaceItemDto> getSpaceItemInfo(@PathVariable(name = "space-item-id") Long spaceItemId) throws Exception {
+    public ResponseEntity<?> getSpaceItemInfo(@PathVariable(name = "space-item-id") Long spaceItemId) {
         try {
-            return spaceItemService.findSpaceItembyId(spaceItemId);
+            return spaceItemService.findSpaceItemById(spaceItemId)
+                    .map(item -> ResponseEntity.ok(item))
+                    .orElseGet(() -> ResponseEntity.notFound().build());
         } catch (Exception e) {
-            logger.error("Error retrieving space item with id: {}", spaceItemId, e);
-            throw new Exception("공간 아이템 상세정보를 가져오지 못했습니다.");
+            log.error("Error retrieving space item with id: {}", spaceItemId, e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve space item details."));
         }
     }
 
-    // 공간 아이템 수정
+    // Update a space item
     @PutMapping("/space-item/{space-item-id}")
-    public String updateSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId, @RequestBody SpaceItemDto spaceItemDTO) {
+    public ResponseEntity<?> updateSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId, @RequestBody SpaceItemDto spaceItemDTO) {
         try {
             spaceItemService.updateSpaceItem(spaceItemId, spaceItemDTO);
-            return "공간 아이템 수정 완료";
+            return ResponseEntity.ok(Map.of("message", "Space item successfully updated."));
         } catch (Exception e) {
-            logger.error("Error updating space item with id: {}", spaceItemId, e);
-            return "공간 아이템 수정 실패";
+            log.error("Error updating space item with id: {}", spaceItemId, e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to update space item."));
         }
     }
 
-    // 공간 아이템 삭제
+    // Delete a space item
     @DeleteMapping("/space-item/{space-item-id}")
-    public String deleteSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId) {
+    public ResponseEntity<?> deleteSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId) {
         try {
             spaceItemService.deleteSpaceItem(spaceItemId);
-            return "공간 아이템 삭제 성공";
+            return ResponseEntity.ok(Map.of("message", "Space item successfully deleted."));
         } catch (Exception e) {
-            logger.error("Error deleting space item with id: {}", spaceItemId, e);
-            return "공간 아이템 삭제 실패";
+            log.error("Error deleting space item with id: {}", spaceItemId, e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to delete space item."));
         }
     }
-
-//    @PostMapping("/{space-item-id}/request")
-//    public String requestSpaceMatching() {
-//        // 이 부분은 구현의 예시가 되지 않았으므로, 구체적인 로직에 따라 예외 처리 및 로깅을 추가할 필요가 있습니다.
-//        logger.info("Request space matching");
-//        return "";
-//    }
 }

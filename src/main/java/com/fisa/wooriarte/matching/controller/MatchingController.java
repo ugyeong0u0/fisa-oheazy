@@ -4,12 +4,15 @@ import com.fisa.wooriarte.matching.dto.MatchingDto;
 import com.fisa.wooriarte.matching.dto.MatchingStatusDto;
 import com.fisa.wooriarte.matching.domain.MatchingStatus;
 import com.fisa.wooriarte.matching.service.MatchingService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
+@Slf4j // Lombok 라이브러리를 사용하여 로그 객체를 자동으로 생성합니다.
 @RestController
 public class MatchingController {
 
@@ -18,83 +21,115 @@ public class MatchingController {
     @Autowired
     public MatchingController(MatchingService matchingService) {
         this.matchingService = matchingService;
+        log.info("MatchingController initialized");
     }
 
     @GetMapping("/admin/matchings")
-    public String getAllMatching() {
-        return matchingService.getAllMatching().toString();
+    public ResponseEntity<?> getAllMatching() {
+        try {
+            log.info("Fetching all matchings");
+            return ResponseEntity.ok(matchingService.getAllMatching());
+        } catch (Exception e) {
+            log.error("Error fetching all matchings: {}", e.getMessage());
+            return ResponseEntity.internalServerError().body(Map.of("message", "Error fetching all matchings."));
+        }
     }
 
     @GetMapping("/admin/matchings/{matching-id}")
-    public MatchingDto getMatching(@PathVariable(value = "matching-id") Long matchingId) {
-        return matchingService.getMatching(matchingId);
-    }
-
-    // 매칭 수정 (매칭에서는 상태만 수정가능)
-    @PatchMapping("/admin/matchings/{matching-id}")
-    public String updateMatching(@PathVariable(value = "matching-id") Long matchingId, @RequestBody MatchingStatusDto matchingStatusDTO) {
-        MatchingStatus matchingStatus = matchingStatusDTO.getMatchingStatus();
-        if(matchingService.updateMatching(matchingId, matchingStatus))
-            return "success";
-        return "fail";
-    }
-
-    // 공간 대여자 -> 프로젝트 매니저 매칭 신청
-    @PostMapping("/space/{space-item-id}/request")
-    public String addMatchingBySpaceRental(@PathVariable(value = "space-item-id") Long spaceItemId, @RequestBody Map<String, Long> projectItemIdInfo) {
-        Long projectItemId = projectItemIdInfo.get("projectItemId");
-         return matchingService.addMatchingBySpaceRental(spaceItemId, projectItemId).toString();
-    }
-
-    // 프로젝트 매니저 -> 공간 대여자 매칭 신청
-    @PostMapping("/project/{project-item-id}/request")
-    public String addMatchingByProjectManager(@PathVariable(value = "project-item-id") Long projectItemId, @RequestBody Map<String, Long> spaceItemIdInfo) {
-        Long spaceItemId = spaceItemIdInfo.get("spaceItemId");
-        return matchingService.addMatchingByProjectManager(projectItemId, spaceItemId).toString();
-    }
-
-    // 매칭 수락, 거절
-    @PostMapping("/matching/{matching-id}")
-    public String approvalMatching(@PathVariable(value = "matching-id") Long id, @RequestBody boolean accept) {
-        if(matchingService.updateMatching(id, accept ? MatchingStatus.WAITING : MatchingStatus.CANCEL)) {
-            return "success";
+    public ResponseEntity<?> getMatching(@PathVariable(value = "matching-id") Long matchingId) {
+        try {
+            log.info("Fetching matching with ID: {}", matchingId);
+            return ResponseEntity.ok(matchingService.getMatching(matchingId));
+        } catch (Exception e) {
+            log.error("Error fetching matching with ID {}: {}", matchingId, e.getMessage());
+            return ResponseEntity.internalServerError().body(Map.of("message", "Error fetching matching."));
         }
-        return "fail";
     }
 
-    // 공간 대여자 대기중인 매칭 조회
+    @PatchMapping("/admin/matchings/{matching-id}")
+    public ResponseEntity<?> updateMatching(@PathVariable(value = "matching-id") Long matchingId, @RequestBody MatchingStatusDto matchingStatusDTO) {
+        try {
+            log.info("Updating matching with ID: {}", matchingId);
+            MatchingStatus matchingStatus = matchingStatusDTO.getMatchingStatus();
+            if (matchingService.updateMatching(matchingId, matchingStatus)) {
+                log.info("Matching with ID: {} updated successfully", matchingId);
+                return ResponseEntity.ok(Map.of("message", "Matching successfully updated."));
+            } else {
+                log.error("Failed to update matching with ID: {}", matchingId);
+                return ResponseEntity.badRequest().body(Map.of("message", "Failed to update matching."));
+            }
+        } catch (Exception e) {
+            log.error("Error updating matching with ID {}: {}", matchingId, e.getMessage());
+            return ResponseEntity.internalServerError().body(Map.of("message", "Error updating matching."));
+        }
+    }
+
+    @PostMapping("/project/{project-item-id}/request")
+    public ResponseEntity<?> addMatchingByProjectManager(@PathVariable(value = "project-item-id") Long projectItemId, @RequestBody Map<String, Long> spaceItemIdInfo) {
+        try {
+            log.info("Adding matching by project manager for projectItemId: {}, with spaceItemId: {}", projectItemId, spaceItemIdInfo.get("spaceItemId"));
+
+            Long spaceItemId = spaceItemIdInfo.get("spaceItemId");
+
+            if (matchingService.addMatchingByProjectManager(projectItemId, spaceItemId) != null) {
+                log.info("Matching added successfully for projectItemId: {}", projectItemId);
+                return ResponseEntity.ok(Map.of("message", "Matching successfully added for projectItemId " + projectItemId));
+            } else {
+                log.error("Matching addition failed for projectItemId: {}", projectItemId);
+                return ResponseEntity.badRequest().body(Map.of("message", "Matching addition failed for unknown reasons for projectItemId " + projectItemId));
+            }
+        } catch (Exception e) {
+            log.error("An exception occurred while adding matching for projectItemId: {}", projectItemId, e);
+            return ResponseEntity.internalServerError().body(Map.of("message", "An error occurred while processing your request."));
+        }
+    }
+
+
+    @PostMapping("/matching/{matching-id}")
+    public ResponseEntity<?> approvalMatching(@PathVariable(value = "matching-id") Long id, @RequestBody boolean accept) {
+        try {
+            log.info("Approval status update for matchingId: {}, accept: {}", id, accept);
+
+            if (matchingService.updateMatching(id, accept ? MatchingStatus.WAITING : MatchingStatus.CANCEL)) {
+                log.info("Matching status updated successfully for matchingId: {}", id);
+                return ResponseEntity.ok(Map.of("message", "Matching status successfully updated."));
+            }
+            log.error("Failed to update matching status for matchingId: {}", id);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to update matching status."));
+        } catch (Exception e) {
+            log.error("An exception occurred while updating matching status for matchingId: {}", id, e);
+            return ResponseEntity.internalServerError().body(Map.of("message", "An error occurred while processing your request."));
+        }
+    }
+
+
     @GetMapping("/space-rental/{space-rental-id}/waitings")
-    public List<MatchingDto> findSpaceRentalWaitingMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
-        return matchingService.findSpaceRentalWaitingMatching(spaceRentalId);
+    public ResponseEntity<List<MatchingDto>> findSpaceRentalWaitingMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
+        log.info("Fetching waiting matchings for spaceRentalId: {}", spaceRentalId);
+        return ResponseEntity.ok(matchingService.findSpaceRentalWaitingMatching(spaceRentalId));
     }
 
-    // 공간 대여자 받은 매칭 조회
     @GetMapping("/space-rental/{space-rental-id}/offers")
-    public List<MatchingDto> findSpaceRentalOfferMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
-        return matchingService.findSpaceRentalOfferMatching(spaceRentalId);
+    public ResponseEntity<List<MatchingDto>> findSpaceRentalOfferMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
+        log.info("Fetching offer matchings for spaceRentalId: {}", spaceRentalId);
+        return ResponseEntity.ok(matchingService.findSpaceRentalOfferMatching(spaceRentalId));
     }
 
-    // 공간 대여자 상사된 매칭 조회
     @GetMapping("/space-rental/{space-rental-id}/success")
-    public List<MatchingDto> findSpaceRentalSuccessMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
-        return matchingService.findSpaceRentalSuccessMatching(spaceRentalId);
+    public ResponseEntity<List<MatchingDto>> findSpaceRentalSuccessMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
+        log.info("Fetching successful matchings for spaceRentalId: {}", spaceRentalId);
+        return ResponseEntity.ok(matchingService.findSpaceRentalSuccessMatching(spaceRentalId));
     }
 
-    // 프로젝트 매니저 대기중인 매칭 조회
     @GetMapping("/project-managers/{project-manager-id}/waitings")
-    public List<MatchingDto> findProjectManagerWaitingMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
-        return matchingService.findProjectManagerWaitingMatching(projectManagerId);
+    public ResponseEntity<List<MatchingDto>> findProjectManagerWaitingMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
+        log.info("Fetching waiting matchings for projectManagerId: {}", projectManagerId);
+        return ResponseEntity.ok(matchingService.findProjectManagerWaitingMatching(projectManagerId));
     }
 
-    // 프로젝트 매니저 받은 매칭 조회
     @GetMapping("/project-managers/{project-manager-id}/offers")
-    public List<MatchingDto> findProjectManagerOfferMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
-        return matchingService.findProjectManagerOfferMatching(projectManagerId);
-    }
-
-    // 프로젝트 매니저 성사된 매칭 조회
-    @GetMapping("/project-managers/{project-manager-id}/success")
-    public List<MatchingDto> findProjectManagerSuccessMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
-        return matchingService.findProjectManagerSuccessMatching(projectManagerId);
+    public ResponseEntity<List<MatchingDto>> findProjectManagerOfferMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
+        log.info("Fetching offer matchings for projectManagerId: {}", projectManagerId);
+        return ResponseEntity.ok(matchingService.findProjectManagerOfferMatching(projectManagerId));
     }
 }
