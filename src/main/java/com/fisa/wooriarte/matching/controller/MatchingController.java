@@ -38,7 +38,7 @@ public class MatchingController {
     }
 
     @GetMapping("/admin/matchings/{matching-id}")
-    public ResponseEntity<?> getMatching(@PathVariable(value = "matching-id") Long matchingId) {
+    public ResponseEntity<?> getMatching(@PathVariable(name = "matching-id") Long matchingId) {
         try {
             log.info("Fetching matching with ID: {}", matchingId);
             return ResponseEntity.ok(matchingService.getMatching(matchingId));
@@ -49,7 +49,7 @@ public class MatchingController {
     }
 
     @PatchMapping("/admin/matchings/{matching-id}")
-    public ResponseEntity<?> updateMatching(@PathVariable(value = "matching-id") Long matchingId, @RequestBody MatchingStatusDto matchingStatusDTO) {
+    public ResponseEntity<?> updateMatching(@PathVariable(name = "matching-id") Long matchingId, @RequestBody MatchingStatusDto matchingStatusDTO) {
         try {
             log.info("Updating matching with ID: {}", matchingId);
             MatchingStatus matchingStatus = matchingStatusDTO.getMatchingStatus();
@@ -67,7 +67,7 @@ public class MatchingController {
     }
 
     @PostMapping("/project/{project-item-id}/request")
-    public ResponseEntity<?> addMatchingByProjectManager(@PathVariable(value = "project-item-id") Long projectItemId, @RequestBody Map<String, Long> spaceItemIdInfo) {
+    public ResponseEntity<?> addMatchingByProjectManager(@PathVariable(name = "project-item-id") Long projectItemId, @RequestBody Map<String, Long> spaceItemIdInfo) {
         try {
             log.info("Adding matching by project manager for projectItemId: {}, with spaceItemId: {}", projectItemId, spaceItemIdInfo.get("spaceItemId"));
 
@@ -87,7 +87,7 @@ public class MatchingController {
     }
 
     @PostMapping("/space/{space-item-id}/request")
-    public ResponseEntity<?> addMatchingBySpaceRental(@PathVariable(value = "space-item-id") Long spaceItemId, @RequestBody Map<String, Long> projectItemIdInfo) {
+    public ResponseEntity<?> addMatchingBySpaceRental(@PathVariable(name = "space-item-id") Long spaceItemId, @RequestBody Map<String, Long> projectItemIdInfo) {
         try {
             log.info("Adding matching by space rental for space item ID: {}", spaceItemId);
             Long projectItemId = projectItemIdInfo.get("projectItemId");
@@ -106,7 +106,7 @@ public class MatchingController {
     }
 
     @PostMapping("/matching/{matching-id}")
-    public ResponseEntity<?> approvalMatching(@PathVariable(value = "matching-id") Long id, @RequestBody boolean accept) {
+    public ResponseEntity<?> approvalMatching(@PathVariable(name = "matching-id") Long id, @RequestBody boolean accept) {
         try {
             log.info("Approval status update for matchingId: {}, accept: {}", id, accept);
 
@@ -124,31 +124,31 @@ public class MatchingController {
 
 
     @GetMapping("/space-rental/{space-rental-id}/waitings")
-    public ResponseEntity<List<MatchingDto>> findSpaceRentalWaitingMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
+    public ResponseEntity<List<MatchingDto>> findSpaceRentalWaitingMatching(@PathVariable(name = "space-rental-id") Long spaceRentalId) {
         log.info("Fetching waiting matchings for spaceRentalId: {}", spaceRentalId);
         return ResponseEntity.ok(matchingService.findSpaceRentalWaitingMatching(spaceRentalId));
     }
 
     @GetMapping("/space-rental/{space-rental-id}/offers")
-    public ResponseEntity<List<MatchingDto>> findSpaceRentalOfferMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
+    public ResponseEntity<List<MatchingDto>> findSpaceRentalOfferMatching(@PathVariable(name = "space-rental-id") Long spaceRentalId) {
         log.info("Fetching offer matchings for spaceRentalId: {}", spaceRentalId);
         return ResponseEntity.ok(matchingService.findSpaceRentalOfferMatching(spaceRentalId));
     }
 
     @GetMapping("/space-rental/{space-rental-id}/success")
-    public ResponseEntity<List<MatchingDto>> findSpaceRentalSuccessMatching(@PathVariable(value = "space-rental-id") Long spaceRentalId) {
+    public ResponseEntity<List<MatchingDto>> findSpaceRentalSuccessMatching(@PathVariable(name = "space-rental-id") Long spaceRentalId) {
         log.info("Fetching successful matchings for spaceRentalId: {}", spaceRentalId);
         return ResponseEntity.ok(matchingService.findSpaceRentalSuccessMatching(spaceRentalId));
     }
 
     @GetMapping("/project-managers/{project-manager-id}/waitings")
-    public ResponseEntity<List<MatchingDto>> findProjectManagerWaitingMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
+    public ResponseEntity<List<MatchingDto>> findProjectManagerWaitingMatching(@PathVariable(name = "project-manager-id") Long projectManagerId) {
         log.info("Fetching waiting matchings for projectManagerId: {}", projectManagerId);
         return ResponseEntity.ok(matchingService.findProjectManagerWaitingMatching(projectManagerId));
     }
 
     @GetMapping("/project-managers/{project-manager-id}/offers")
-    public ResponseEntity<List<MatchingDto>> findProjectManagerOfferMatching(@PathVariable(value = "project-manager-id") Long projectManagerId) {
+    public ResponseEntity<List<MatchingDto>> findProjectManagerOfferMatching(@PathVariable(name = "project-manager-id") Long projectManagerId) {
         log.info("Fetching offer matchings for projectManagerId: {}", projectManagerId);
         return ResponseEntity.ok(matchingService.findProjectManagerOfferMatching(projectManagerId));
     }

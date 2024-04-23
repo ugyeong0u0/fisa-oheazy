@@ -52,7 +52,7 @@ public class MatchingService {
                 .spaceItem(spaceItem)
                 .projectItem(projectItem)
                 .sender(spaceItem.getSpaceItemId())
-                .receiver(projectItem.getProjectItemId())
+                .receiver(projectItem.getProjectManager().getProjectManagerId())
                 .senderType(SenderType.SPACERENTAL)
                 .build();
         matchingRepository.save(matching);
@@ -83,7 +83,7 @@ public class MatchingService {
                 .spaceItem(spaceItem)
                 .projectItem(projectItem)
                 .sender(projectItem.getProjectItemId())
-                .receiver(spaceItem.getSpaceItemId())
+                .receiver(spaceItem.getSpaceRental().getSpaceRentalId())
                 .senderType(SenderType.PROJECTMANAGER)
                 .build();
 
@@ -129,7 +129,7 @@ public class MatchingService {
         return list.stream().map(MatchingDto::fromEntity).collect(Collectors.toList());
     }
 
-    // 프로젝트 매니저가 받은 매칭git
+    // 프로젝트 매니저가 받은 매칭
     public List<MatchingDto> findProjectManagerOfferMatching(Long projectManagerId) {
         List<Matching> list = matchingRepository.findByReceiverAndMatchingStatusAndSenderType(projectManagerId, MatchingStatus.REQUESTWAITING, SenderType.SPACERENTAL);
         return list.stream().map(MatchingDto::fromEntity).collect(Collectors.toList());
