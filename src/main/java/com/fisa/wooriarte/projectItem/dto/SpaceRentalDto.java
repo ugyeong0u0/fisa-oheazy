@@ -2,18 +2,16 @@ package com.fisa.wooriarte.projectItem.dto;
 
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
-import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
-public class ProjectItemDTO {
+public class SpaceRentalDto {
     private Long projectItemId;
 
     private Long projectManagerId;
@@ -43,8 +41,8 @@ public class ProjectItemDTO {
                 .build();
     }
 
-    public static ProjectItemDTO fromEntity(ProjectItem entity) {
-        return ProjectItemDTO.builder()
+    public static SpaceRentalDto fromEntity(ProjectItem entity) {
+        return SpaceRentalDto.builder()
                 .projectItemId(entity.getProjectItemId())
                 .projectManagerId(entity.getProjectManager().getProjectManagerId())
                 .artistName(entity.getArtistName())

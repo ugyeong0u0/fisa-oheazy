@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.spaceItem.controller;
 
+import com.fisa.wooriarte.projectItem.dto.SpaceRentalDto;
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
 import com.fisa.wooriarte.spaceItem.service.SpaceItemService;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/space-item")
 @RestController
 public class SpaceItemController {
 
@@ -25,7 +27,7 @@ public class SpaceItemController {
     }
 
     // Retrieve all space items information
-    @GetMapping("/space-item")
+    @GetMapping("")
     public ResponseEntity<?> getAllSpaceItemInfo() {
         try {
             List<SpaceItemDto> items = spaceItemService.findAll();
@@ -36,8 +38,14 @@ public class SpaceItemController {
         }
     }
 
+    @GetMapping("/space-rental/{space-rental-id}")
+    public ResponseEntity<List<SpaceItemDto>> getSpaceItemBySpaceRentalId(@PathVariable("space-rental-id") Long spaceRentalId) {
+        List<SpaceItemDto> spaceItemDtoList = spaceItemService.findBySpaceRentalId(spaceRentalId);
+        return ResponseEntity.ok(spaceItemDtoList);
+    }
+
     // Add a space item
-    @PostMapping("/space-item")
+    @PostMapping("")
     public ResponseEntity<?> addSpaceItem(@RequestBody SpaceItemDto spaceItemDTO) {
         try {
             spaceItemService.addSpaceItem(spaceItemDTO);
@@ -49,7 +57,7 @@ public class SpaceItemController {
     }
 
     // Retrieve detail of a space item
-    @GetMapping("/space-item/{space-item-id}")
+    @GetMapping("/{space-item-id}")
     public ResponseEntity<?> getSpaceItemInfo(@PathVariable(name = "space-item-id") Long spaceItemId) {
         try {
             return spaceItemService.findSpaceItemById(spaceItemId)
@@ -62,7 +70,7 @@ public class SpaceItemController {
     }
 
     // Update a space item
-    @PutMapping("/space-item/{space-item-id}")
+    @PutMapping("/{space-item-id}")
     public ResponseEntity<?> updateSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId, @RequestBody SpaceItemDto spaceItemDTO) {
         try {
             spaceItemService.updateSpaceItem(spaceItemId, spaceItemDTO);
@@ -74,7 +82,7 @@ public class SpaceItemController {
     }
 
     // Delete a space item
-    @DeleteMapping("/space-item/{space-item-id}")
+    @DeleteMapping("/{space-item-id}")
     public ResponseEntity<?> deleteSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId) {
         try {
             spaceItemService.deleteSpaceItem(spaceItemId);

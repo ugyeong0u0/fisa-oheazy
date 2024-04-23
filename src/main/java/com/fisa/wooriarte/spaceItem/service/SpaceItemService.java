@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -46,8 +47,22 @@ public class SpaceItemService {
         System.out.println("findSpaceItemById");
         return spaceItemRepository.findById(spaceItemId)
                 .map(SpaceItemDto::fromEntity);
-
     }
+
+    public List<SpaceItemDto> findBySpaceRentalId(Long spaceRentalId) {
+        // Optional<List<ProjectItem>>에서 List<ProjectItem>을 얻기 위해 orElseGet을 사용합니다.
+        // Optional이 비어있다면, 빈 리스트를 반환합니다.
+        SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId).orElseThrow(() -> new NoSuchElementException("No Project Manager"));
+        List<SpaceItem> spaceItems = spaceItemRepository.findBySpaceRental(spaceRental)
+                .orElse(Collections.emptyList());
+
+        // Stream을 사용하여 각 ProjectItem을 ProjectItemDTO로 변환합니다.
+        return spaceItems.stream()
+                .map(SpaceItemDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+
     @Transactional
     public void updateSpaceItem(Long spaceItemId, SpaceItemDto spaceItemDTO) {
         System.out.println("updateSpaceItem");

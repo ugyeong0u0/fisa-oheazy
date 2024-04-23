@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.projectItem.domain;
 
-import com.fisa.wooriarte.projectItem.dto.ProjectItemDTO;
+import com.fisa.wooriarte.projectItem.dto.SpaceRentalDto;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectphoto.domain.ProjectPhoto;
@@ -79,7 +79,7 @@ public class ProjectItem {
     }
 
 
-    public void updateProjectItem(ProjectItemDTO projectItemDTO) {
+    public void updateProjectItem(SpaceRentalDto projectItemDTO) {
         this.artistName = projectItemDTO.getArtistName();
         this.intro = projectItemDTO.getIntro();
         this.phone = projectItemDTO.getPhone();

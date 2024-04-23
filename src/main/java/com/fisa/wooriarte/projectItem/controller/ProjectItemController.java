@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.projectItem.controller;
 
-import com.fisa.wooriarte.projectItem.dto.ProjectItemDTO;
+import com.fisa.wooriarte.projectItem.dto.SpaceRentalDto;
+import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
 import com.fisa.wooriarte.projectItem.service.ProjectItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,24 +11,27 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/project-item")
 @RestController
 public class ProjectItemController {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectItemController.class);
 
     private final ProjectItemService projectItemService;
+    private final ProjectItemRepository projectItemRepository;
 
     @Autowired
-    public ProjectItemController(ProjectItemService projectItemService) {
+    public ProjectItemController(ProjectItemService projectItemService, ProjectItemRepository projectItemRepository) {
         this.projectItemService = projectItemService;
+        this.projectItemRepository = projectItemRepository;
     }
 
-    @GetMapping("/project-item")
+    @GetMapping("")
     public ResponseEntity<?> getAllProjectItemInfo() {
         try {
-            List<ProjectItemDTO> items = projectItemService.findAll();
+            List<SpaceRentalDto> items = projectItemService.findAll();
             return ResponseEntity.ok(items);
         } catch (Exception e) {
             log.error("Failed to retrieve all project items", e);
@@ -35,8 +39,15 @@ public class ProjectItemController {
         }
     }
 
-    @PostMapping("/project-item")
-    public ResponseEntity<?> addProjectItem(@RequestBody ProjectItemDTO projectItemDTO) {
+    @GetMapping("/project-manager/{project-manager-id}")
+    public ResponseEntity<List<SpaceRentalDto>> getProjectItemByProjectManagerId(@PathVariable("project-manager-id") Long projectManagerId) {
+        List<SpaceRentalDto> projectItemDtoList = projectItemService.findByProjectManagerId(projectManagerId);
+        return ResponseEntity.ok(projectItemDtoList);
+    }
+
+
+    @PostMapping("")
+    public ResponseEntity<?> addProjectItem(@RequestBody SpaceRentalDto projectItemDTO) {
         try {
             projectItemService.addProjectItem(projectItemDTO);
             return ResponseEntity.ok(Map.of("message", "Project item successfully added."));
@@ -46,7 +57,7 @@ public class ProjectItemController {
         }
     }
 
-    @GetMapping("/project-item/{project-item-id}")
+    @GetMapping("/{project-item-id}")
     public ResponseEntity<?> getProjectItemInfo(@PathVariable(name = "project-item-id") Long projectItemId) {
         try {
             return projectItemService.findByProjectItemId(projectItemId)
@@ -58,8 +69,8 @@ public class ProjectItemController {
         }
     }
 
-    @PutMapping("/project-item/{project-item-id}")
-    public ResponseEntity<?> updateProjectItem(@PathVariable(name = "project-item-id") Long projectItemId, @RequestBody ProjectItemDTO projectItemDTO) {
+    @PutMapping("/{project-item-id}")
+    public ResponseEntity<?> updateProjectItem(@PathVariable(name = "project-item-id") Long projectItemId, @RequestBody SpaceRentalDto projectItemDTO) {
         try {
             projectItemService.updateProjectItem(projectItemId, projectItemDTO);
             return ResponseEntity.ok(Map.of("message", "Project item successfully updated."));
@@ -69,7 +80,7 @@ public class ProjectItemController {
         }
     }
 
-    @DeleteMapping("/project-item/{project-item-id}")
+    @DeleteMapping("/{project-item-id}")
     public ResponseEntity<?> deleteProjectItem(@PathVariable(name = "project-item-id") Long projectItemId) {
         try {
             projectItemService.deleteProjectItem(projectItemId);
@@ -79,4 +90,6 @@ public class ProjectItemController {
             return ResponseEntity.badRequest().body(Map.of("message", "Failed to delete project item."));
         }
     }
+
+
 }
