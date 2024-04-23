@@ -52,9 +52,14 @@ public class ProjectManagerService {
         없으면 예외 처리
     2. 비밀번호와 비교
      */
-    public boolean loginProjectManager(String id, String pwd) {
+    public ProjectManagerDto loginProjectManager(String id, String pwd) throws Exception {
         Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findById(id);
-        return optionalProjectManager.isPresent() && optionalProjectManager.get().getPwd().equals(pwd);
+        if(optionalProjectManager.isPresent() && optionalProjectManager.get().getPwd().equals(pwd)){
+            return ProjectManagerDto.fromEntity(optionalProjectManager.get());
+        }else{
+            throw new Exception("로그인 불가");
+        }
+
     }
 
     @Transactional

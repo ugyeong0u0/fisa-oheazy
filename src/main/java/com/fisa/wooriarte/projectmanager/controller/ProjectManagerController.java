@@ -46,20 +46,17 @@ public class ProjectManagerController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> loginProjectManager(@RequestBody Map<String, String> loginInfo) {
+    public ResponseEntity<?> loginProjectManager(@RequestBody Map<String, String> loginInfo) {
         try {
             log.info("Trying to login project manager");
             String id = loginInfo.get("id");
             String pwd = loginInfo.get("pwd");
-            boolean loggedIn = projectManagerService.loginProjectManager(id, pwd);
-            if (loggedIn) {
-                return ResponseEntity.ok(Map.of("message", "Login success."));
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Login failed. Invalid credentials."));
-            }
+            ProjectManagerDto projectManagerDto = projectManagerService.loginProjectManager(id, pwd);
+            return ResponseEntity.status(HttpStatus.OK).body(projectManagerDto.getProjectManagerId());
+
         } catch (Exception e) {
             log.error("Exception occurred while logging in project manager: ", e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Login failed due to an exception."));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body( "Login failed due to an exception.");
         }
 
     }

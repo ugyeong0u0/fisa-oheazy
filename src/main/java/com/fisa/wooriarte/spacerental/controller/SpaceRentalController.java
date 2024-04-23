@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -47,13 +48,9 @@ public class SpaceRentalController {
         try {
             String id = loginInfo.get("id");
             String pwd = loginInfo.get("pwd");
-            if(spaceRentalService.loginSpaceRental(id, pwd)) {
-                log.info("Login successful for ID {}", id);
-                return ResponseEntity.ok(Map.of("message", "Login successful."));
-            } else {
-                log.warn("Login failed for ID {}", id);
-                return ResponseEntity.badRequest().body(Map.of("message", "Login failed."));
-            }
+            SpaceRentalDto spaceRentalDto= spaceRentalService.loginSpaceRental(id, pwd);
+            return ResponseEntity.status(HttpStatus.OK).body(spaceRentalDto.getSpaceRentalId());
+
         } catch (Exception e) {
             log.error("Login failed for ID {}", loginInfo.get("id"), e);
             return ResponseEntity.badRequest().body(Map.of("message", "An error occurred during login."));

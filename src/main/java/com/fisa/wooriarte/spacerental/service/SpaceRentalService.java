@@ -52,9 +52,13 @@ public class SpaceRentalService {
         없으면 예외 처리
     2. 비밀번호와 비교
      */
-    public boolean loginSpaceRental(String id, String pwd) {
+    public SpaceRentalDto loginSpaceRental(String id, String pwd) throws Exception{
         Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(id);
-        return optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd);
+        if(optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(pwd)){
+            return SpaceRentalDto.fromEntity(optionalSpaceRental.get());
+        }else{
+            throw new Exception("로그인 불가 ");
+        }
     }
 
     @Transactional
