@@ -20,7 +20,7 @@ import java.util.Map;
 public class MailController {
     private final MailSendService mailService;
 
-    @PostMapping("/mailSend")
+    @PostMapping("/mail-send")
     public ResponseEntity<String> mailSend(@RequestBody @Valid EmailRequestDto emailDto){
         System.out.println("이메일 인증 요청이 들어옴");
         System.out.println("이메일 인증 이메일 :"+emailDto.getEmail());
@@ -32,7 +32,7 @@ public class MailController {
         }
     }
 
-    @PostMapping("/mailAuthCheck")
+    @PostMapping("/mail-auth-check")
     public ResponseEntity<?> AuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
         try {
             Boolean Checked = mailService.CheckAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());

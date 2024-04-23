@@ -59,7 +59,7 @@ public class ExhibitService {
      * @param ExhibitId
      * @return
      */
-    public Optional<ExhibitDto> findExhibitbyId(Long ExhibitId) {
+    public Optional<ExhibitDto> findExhibitById(Long ExhibitId) {
 
         System.out.println("findExhibitItemById");
         return exhibitRepository.findById(ExhibitId)

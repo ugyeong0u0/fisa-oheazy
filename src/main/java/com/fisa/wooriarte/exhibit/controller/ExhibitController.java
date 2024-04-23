@@ -28,33 +28,42 @@ public class ExhibitController {
      * @return
      */
     @GetMapping({"/admin/exhibits", "/exhibits"})
-    public ResponseEntity<List<ExhibitDto>> findAllExhibits() {
-        List<ExhibitDto> exhibits = exhibitService.findAllExhibits();
-        return ResponseEntity.ok(exhibits);
+    public ResponseEntity<?> findAllExhibits() {
+        try {
+            List<ExhibitDto> exhibits = exhibitService.findAllExhibits();
+            if (exhibits.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("전시가 존재하지 않습니다.");
+            }
+            return ResponseEntity.ok(exhibits);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("전시 목록 조회 중 오류 발생: " + e.getMessage());
+        }
     }
 
-    /**
-     * 2. 하나의 전시 출력
-     * @param exhibitId : 출력할 exhibitId
-     * @return
-     */
     @GetMapping({"/admin/exhibits/{exhibit-id}", "/exhibits/{exhibit-id}"})
     public ResponseEntity<ExhibitDto> findExhibitById(@PathVariable(name = "exhibit-id") Long exhibitId) {
-        Optional<ExhibitDto> exhibitOptional = exhibitService.findExhibitbyId(exhibitId);
+        Optional<ExhibitDto> exhibitOptional = exhibitService.findExhibitById(exhibitId);
 
-        return exhibitOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        if (exhibitOptional.isPresent()) {
+            return ResponseEntity.ok(exhibitOptional.get());
+        } else {
+            // 실패 시 적절한 타입을 유지하면서 오류 메시지를 전달하는 방법이 필요함
+            // 여기서는 ResponseEntity<?>를 사용하지 않고, 단순히 상태 코드만 반환하도록 선택
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
+
 
     /**
      * 3. 전시 생성 (매칭 성공시)
      * @param matchingId : 생성할 전시의 matchingId
-     * @param exhibitDTO : 생성할 전시 데이터
+     * @param exhibitDto : 생성할 전시 데이터
      * @return
      */
     @PostMapping("/admin/matchings/{matching-id}/exhibits")
-    public ResponseEntity<String> addExhibit(@PathVariable(name = "matching-id") Long matchingId, @RequestBody ExhibitDto exhibitDTO) {
+    public ResponseEntity<String> addExhibit(@PathVariable(name = "matching-id") Long matchingId, @RequestBody ExhibitDto exhibitDto) {
         try {
-            exhibitService.addExhibit(exhibitDTO, matchingId);
+            exhibitService.addExhibit(exhibitDto, matchingId);
             return ResponseEntity.status(HttpStatus.CREATED).body("전시 생성 완료");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("전시 생성 중 오류 발생: " + e.getMessage());
@@ -64,13 +73,13 @@ public class ExhibitController {
     /**
      * 4. 전시 수정
      * @param exhibitId : 수정할 exhibitId
-     * @param exhibitDTO : 수정에 대입될 전시 정보 (name, intro, startDate, endDate, price, city)
+     * @param exhibitDto : 수정에 대입될 전시 정보 (name, intro, startDate, endDate, price, city)
      * @return
      */
     @PutMapping("/admin/exhibits/{exhibit-id}")
-    public ResponseEntity<String> updateExhibit(@PathVariable(name = "exhibit-id") Long exhibitId, @RequestBody ExhibitDto exhibitDTO) {
+    public ResponseEntity<String> updateExhibit(@PathVariable(name = "exhibit-id") Long exhibitId, @RequestBody ExhibitDto exhibitDto) {
         try {
-            exhibitService.updateExhibit(exhibitId, exhibitDTO);
+            exhibitService.updateExhibit(exhibitId, exhibitDto);
             return ResponseEntity.ok("전시 수정 완료");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("전시 수정 실패: " + e.getMessage());

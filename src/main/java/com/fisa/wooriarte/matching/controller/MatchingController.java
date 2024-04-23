@@ -86,6 +86,24 @@ public class MatchingController {
         }
     }
 
+    @PostMapping("/space/{space-item-id}/request")
+    public ResponseEntity<?> addMatchingBySpaceRental(@PathVariable(value = "space-item-id") Long spaceItemId, @RequestBody Map<String, Long> projectItemIdInfo) {
+        try {
+            log.info("Adding matching by space rental for space item ID: {}", spaceItemId);
+            Long projectItemId = projectItemIdInfo.get("projectItemId");
+
+            if (matchingService.addMatchingBySpaceRental(spaceItemId, projectItemId) != null) {
+                log.info("Matching added successfully for space item ID: {}", spaceItemId);
+                return ResponseEntity.ok(Map.of("message", "Matching successfully added."));
+            } else {
+                log.error("Failed to add matching for space item ID: {}", spaceItemId);
+                return ResponseEntity.badRequest().body(Map.of("message", "Failed to add matching."));
+            }
+        } catch (Exception e) {
+            log.error("An exception occurred while adding matching for space item ID: {}", spaceItemId, e);
+            return ResponseEntity.internalServerError().body(Map.of("message", "An error occurred while processing your request."));
+        }
+    }
 
     @PostMapping("/matching/{matching-id}")
     public ResponseEntity<?> approvalMatching(@PathVariable(value = "matching-id") Long id, @RequestBody boolean accept) {
