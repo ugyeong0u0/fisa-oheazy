@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.projectItem.controller;
 
-import com.fisa.wooriarte.projectItem.dto.SpaceRentalDto;
+import com.fisa.wooriarte.projectItem.dto.ProjectItemDto;
 import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
 import com.fisa.wooriarte.projectItem.service.ProjectItemService;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class ProjectItemController {
     @GetMapping("")
     public ResponseEntity<?> getAllProjectItemInfo() {
         try {
-            List<SpaceRentalDto> items = projectItemService.findAll();
+            List<ProjectItemDto> items = projectItemService.findAll();
             return ResponseEntity.ok(items);
         } catch (Exception e) {
             log.error("Failed to retrieve all project items", e);
@@ -40,14 +40,14 @@ public class ProjectItemController {
     }
 
     @GetMapping("/project-manager/{project-manager-id}")
-    public ResponseEntity<List<SpaceRentalDto>> getProjectItemByProjectManagerId(@PathVariable("project-manager-id") Long projectManagerId) {
-        List<SpaceRentalDto> projectItemDtoList = projectItemService.findByProjectManagerId(projectManagerId);
+    public ResponseEntity<List<ProjectItemDto>> getProjectItemByProjectManagerId(@PathVariable("project-manager-id") Long projectManagerId) {
+        List<ProjectItemDto> projectItemDtoList = projectItemService.findByProjectManagerId(projectManagerId);
         return ResponseEntity.ok(projectItemDtoList);
     }
 
 
     @PostMapping("")
-    public ResponseEntity<?> addProjectItem(@RequestBody SpaceRentalDto projectItemDTO) {
+    public ResponseEntity<?> addProjectItem(@RequestBody ProjectItemDto projectItemDTO) {
         try {
             projectItemService.addProjectItem(projectItemDTO);
             return ResponseEntity.ok(Map.of("message", "Project item successfully added."));
@@ -70,7 +70,7 @@ public class ProjectItemController {
     }
 
     @PutMapping("/{project-item-id}")
-    public ResponseEntity<?> updateProjectItem(@PathVariable(name = "project-item-id") Long projectItemId, @RequestBody SpaceRentalDto projectItemDTO) {
+    public ResponseEntity<?> updateProjectItem(@PathVariable(name = "project-item-id") Long projectItemId, @RequestBody ProjectItemDto projectItemDTO) {
         try {
             projectItemService.updateProjectItem(projectItemId, projectItemDTO);
             return ResponseEntity.ok(Map.of("message", "Project item successfully updated."));

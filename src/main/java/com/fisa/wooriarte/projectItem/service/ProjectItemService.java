@@ -1,7 +1,7 @@
 package com.fisa.wooriarte.projectItem.service;
 
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
-import com.fisa.wooriarte.projectItem.dto.SpaceRentalDto;
+import com.fisa.wooriarte.projectItem.dto.ProjectItemDto;
 import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
@@ -28,7 +28,7 @@ public class ProjectItemService {
 
     // 프로젝트 추가
     @Transactional
-    public void addProjectItem(SpaceRentalDto projectItemDTO){
+    public void addProjectItem(ProjectItemDto projectItemDTO){
         System.out.println("addProjectItem");
         ProjectManager projectManager = projectManagerRepository.findById(projectItemDTO.getProjectManagerId())
                 .orElseThrow(() -> new NoSuchElementException("No Project Manager"));
@@ -36,21 +36,21 @@ public class ProjectItemService {
     }
 
     // 프로젝트 아이템 전체 조회
-    public List<SpaceRentalDto> findAll() {
+    public List<ProjectItemDto> findAll() {
         System.out.println("findAll");
         return projectItemRepository.findAll().stream()
-                .map(SpaceRentalDto::fromEntity) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
+                .map(ProjectItemDto::fromEntity) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
                 .collect(Collectors.toList());
     }
 
     // 프로젝트 아이템 조회
-    public Optional<SpaceRentalDto> findByProjectItemId(Long projectItemId) {
+    public Optional<ProjectItemDto> findByProjectItemId(Long projectItemId) {
         System.out.println("findByProjectItemId");
         return projectItemRepository.findById(projectItemId)
-                .map(SpaceRentalDto::fromEntity);
+                .map(ProjectItemDto::fromEntity);
     }
 
-    public List<SpaceRentalDto> findByProjectManagerId(Long projectManagerId) {
+    public List<ProjectItemDto> findByProjectManagerId(Long projectManagerId) {
         // Optional<List<ProjectItem>>에서 List<ProjectItem>을 얻기 위해 orElseGet을 사용합니다.
         // Optional이 비어있다면, 빈 리스트를 반환합니다.
         ProjectManager projectManager = projectManagerRepository.findById(projectManagerId).orElseThrow(() -> new NoSuchElementException("No Project Manager"));
@@ -59,12 +59,12 @@ public class ProjectItemService {
 
         // Stream을 사용하여 각 ProjectItem을 ProjectItemDTO로 변환합니다.
         return projectItems.stream()
-                .map(SpaceRentalDto::fromEntity)
+                .map(ProjectItemDto::fromEntity)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void updateProjectItem(Long projectItemId, SpaceRentalDto projectItemDTO) {
+    public void updateProjectItem(Long projectItemId, ProjectItemDto projectItemDTO) {
         System.out.println("updateProjectItem");
         // 기존 엔티티를 찾고, 있으면 업데이트
         projectItemRepository.findById(projectItemId).ifPresent(existingItem -> {

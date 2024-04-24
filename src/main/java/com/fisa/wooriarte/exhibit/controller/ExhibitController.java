@@ -13,6 +13,7 @@ import java.util.Optional;
 
 
 @Slf4j
+@RequestMapping("/api/exhibits ")
 @RestController
 public class ExhibitController {
 
@@ -27,7 +28,7 @@ public class ExhibitController {
      * 1. 진행 중인 모든 전시 출력
      * @return
      */
-    @GetMapping({"/admin/exhibits", "/exhibits"})
+    @GetMapping("/exhibits")
     public ResponseEntity<?> findAllExhibits() {
         try {
             List<ExhibitDto> exhibits = exhibitService.findAllExhibits();
@@ -40,7 +41,7 @@ public class ExhibitController {
         }
     }
 
-    @GetMapping({"/admin/exhibits/{exhibit-id}", "/exhibits/{exhibit-id}"})
+    @GetMapping({"/exhibits/{exhibit-id}"})
     public ResponseEntity<ExhibitDto> findExhibitById(@PathVariable(name = "exhibit-id") Long exhibitId) {
         Optional<ExhibitDto> exhibitOptional = exhibitService.findExhibitById(exhibitId);
 

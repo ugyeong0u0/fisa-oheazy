@@ -2,14 +2,13 @@ package com.fisa.wooriarte.config;
 
 import com.fisa.wooriarte.jwt.JwtAuthenticationFilter;
 import com.fisa.wooriarte.jwt.JwtTokenProvider;
-import com.fisa.wooriarte.redis.RedisDao;
 import com.fisa.wooriarte.redis.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,6 +55,7 @@ public class SecurityConfig {
 //                .build();
                 .httpBasic().disable()
                 .csrf().disable()
+                .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()

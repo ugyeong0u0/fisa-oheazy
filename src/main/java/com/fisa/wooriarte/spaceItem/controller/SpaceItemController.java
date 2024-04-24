@@ -1,6 +1,5 @@
 package com.fisa.wooriarte.spaceItem.controller;
 
-import com.fisa.wooriarte.projectItem.dto.SpaceRentalDto;
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
 import com.fisa.wooriarte.spaceItem.service.SpaceItemService;
 import org.slf4j.Logger;

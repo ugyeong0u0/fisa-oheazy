@@ -41,14 +41,13 @@ public class ExhibitService {
         System.out.println("findAllExhibits");
         //오늘 날짜를 받아옴
         LocalDate today = LocalDate.now();
-        Date todayDate = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
         //오늘 날짜와 전시 시작날짜, 전시 끝 날짜를 비교해서 사이 값만 출력
         return exhibitRepository.findAll().stream()
                 .filter(exhibit -> {
-                    Date startDate = exhibit.getStartDate();
-                    Date endDate = exhibit.getEndDate();
-                    return startDate.before(todayDate) && endDate.after(todayDate) && !exhibit.getIsDeleted();
+                    LocalDate startDate = exhibit.getStartDate();
+                    LocalDate endDate = exhibit.getEndDate();
+                    return startDate.isBefore(today) && endDate.isAfter(today) && !exhibit.getIsDeleted();
                 })
                 .map(ExhibitDto::fromEntity)
                 .collect(Collectors.toList());

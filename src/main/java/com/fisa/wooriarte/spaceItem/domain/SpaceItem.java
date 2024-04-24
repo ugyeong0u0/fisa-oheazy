@@ -9,6 +9,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class SpaceItem {
     private String hostName;
 
     @Column
-    private String city;
+    private City city;
 
     @Column
     private String size;
@@ -62,17 +63,15 @@ public class SpaceItem {
     @Column
     private Boolean approval;
 
-    @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime startDate;
+    private LocalDate startDate;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDate endDate;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime endDate;
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     @Column
     private Boolean isDeleted;
@@ -82,13 +81,13 @@ public class SpaceItem {
         this.isDeleted = true;
     }
 
-    public void updateSpaceItem(SpaceItemDto spaceItemDTO) {
-        this.intro = spaceItemDTO.getIntro();
-        this.hostName = spaceItemDTO.getHostName();
-        this.city = spaceItemDTO.getCity();
-        this.size = spaceItemDTO.getSize();
-        this.parking = spaceItemDTO.getParking();
-        this.fee = spaceItemDTO.getFee();
-        this.phone = spaceItemDTO.getPhone();
+    public void updateSpaceItem(SpaceItemDto spaceItemDto) {
+        this.intro = spaceItemDto.getIntro();
+        this.hostName = spaceItemDto.getHostName();
+        this.city = City.valueOf(spaceItemDto.getCity());
+        this.size = spaceItemDto.getSize();
+        this.parking = spaceItemDto.getParking();
+        this.fee = spaceItemDto.getFee();
+        this.phone = spaceItemDto.getPhone();
     }
 }

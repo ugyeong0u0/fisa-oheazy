@@ -1,4 +1,4 @@
-package com.fisa.wooriarte.exhibit.domain;
+package com.fisa.wooriarte.projectItem.domain;
 
 public enum City {
     SEOUL("서울"),

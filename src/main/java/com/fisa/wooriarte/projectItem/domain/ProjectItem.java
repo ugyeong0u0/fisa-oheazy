@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.projectItem.domain;
 
-import com.fisa.wooriarte.projectItem.dto.SpaceRentalDto;
+import com.fisa.wooriarte.projectItem.dto.ProjectItemDto;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectphoto.domain.ProjectPhoto;
@@ -9,8 +9,10 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -58,34 +60,32 @@ public class ProjectItem {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
-    @CreatedDate
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
-    @CreatedDate
     @Column(nullable = false)
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     @Column(nullable = false)
     private Boolean isDeleted;
 
     @Column(nullable = false)
-    private String city;
+    private City city;
 
     public void setIsDeleted() {
         this.isDeleted = true;
     }
 
 
-    public void updateProjectItem(SpaceRentalDto projectItemDTO) {
-        this.artistName = projectItemDTO.getArtistName();
-        this.intro = projectItemDTO.getIntro();
-        this.phone = projectItemDTO.getPhone();
-        this.startDate = projectItemDTO.getStartDate();
-        this.endDate = projectItemDTO.getEndDate();
-        this.city = projectItemDTO.getCity();
+    public void updateProjectItem(ProjectItemDto projectItemDto) {
+        this.artistName = projectItemDto.getArtistName();
+        this.intro = projectItemDto.getIntro();
+        this.phone = projectItemDto.getPhone();
+        this.startDate = projectItemDto.getStartDate();
+        this.endDate = projectItemDto.getEndDate();
+        this.city = City.valueOf(projectItemDto.getCity());
 
     }
 }

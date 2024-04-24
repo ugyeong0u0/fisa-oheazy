@@ -5,7 +5,9 @@ import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.matching.repository.MatchingRepository;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 
@@ -17,8 +19,8 @@ public class ExhibitDto {
     private Long matchingId;
     private String name;
     private String intro;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String artistName;
     private String hostName;
     private Long price;

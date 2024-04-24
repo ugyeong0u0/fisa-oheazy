@@ -1,9 +1,11 @@
 package com.fisa.wooriarte.spaceItem.dto;
 
+import com.fisa.wooriarte.spaceItem.domain.City;
 import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -33,11 +35,11 @@ public class SpaceItemDto {
 
     private Boolean approval;
 
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     private Boolean isDeleted;
 
@@ -46,7 +48,7 @@ public class SpaceItemDto {
                 .spaceRental(spaceRental)
                 .intro(this.intro)
                 .hostName(this.hostName)
-                .city(this.city)
+                .city(City.valueOf(this.city))
                 .size(this.size)
                 .parking(this.parking)
                 .fee(this.fee)
@@ -65,7 +67,7 @@ public class SpaceItemDto {
                 .spaceRentalId(entity.getSpaceRental().getSpaceRentalId()) // SpaceRental 객체의 ID를 추출
                 .intro(entity.getIntro())
                 .hostName(entity.getHostName())
-                .city(entity.getCity())
+                .city(entity.getCity().name())
                 .size(entity.getSize())
                 .parking(entity.getParking())
                 .fee(entity.getFee())
