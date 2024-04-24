@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Slf4j
+@RequestMapping("/api/tickets")
 @RestController
 public class TicketController {
 
@@ -25,14 +26,14 @@ public class TicketController {
 
     /**
      * 1. 티켓 생성(결제 완료 후 생성)
-     * @param ticketDTO : 티켓 데이터
+     * @param ticketDto : 티켓 데이터
      * @param exhibitId : 예매될 전시 exhibitId
      * @param userId : 구매자 userId
      * @return
      */
-    @PostMapping("/exhibits/{exhibit-id}/payments/{user-id}")
-    public ResponseEntity<?> addTicket(@RequestBody TicketDto ticketDTO, @PathVariable(name = "exhibit-id") long exhibitId, @PathVariable(name = "user-id") long userId) {
-        if (ticketDTO.getName() == null || ticketDTO.getEmail() == null || ticketDTO.getPhone() == null) {
+    @PostMapping("/exhibits/{exhibit-id}/payment/{user-id}")
+    public ResponseEntity<?> addTicket(@RequestBody TicketDto ticketDto, @PathVariable(name = "exhibit-id") long exhibitId, @PathVariable(name = "user-id") long userId) {
+        if (ticketDto.getName() == null || ticketDto.getEmail() == null || ticketDto.getPhone() == null) {
             log.warn("Ticket creation failed due to missing information");
             throw new IllegalArgumentException("Name, email, and phone number are required.");
         }
@@ -46,8 +47,8 @@ public class TicketController {
                 isDuplicate = ticketService.isTicketNumberDuplicate(ticketNo);
             } while (isDuplicate); // 중복된 경우 다시 번호 생성
 
-            ticketDTO.setTicketNo(ticketNo);
-            ticketService.addTicket(ticketDTO, userId, exhibitId);
+            ticketDto.setTicketNo(ticketNo);
+            ticketService.addTicket(ticketDto, userId, exhibitId);
             log.info("Ticket creation successful for user ID: {}, Exhibit ID: {}", userId, exhibitId);
             return ResponseEntity.ok(Map.of("message", "Ticket successfully created."));
         } catch (Exception e) {

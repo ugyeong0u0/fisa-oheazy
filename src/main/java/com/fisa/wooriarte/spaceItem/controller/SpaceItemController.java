@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping("/space-item")
+@RequestMapping("/api/space-items")
 @RestController
 public class SpaceItemController {
 

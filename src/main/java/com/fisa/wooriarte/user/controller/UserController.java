@@ -33,15 +33,15 @@ public class UserController {
     /**
      * 유저 회원가입
      * 회원 삭제 소프트딜리트라 email 중복확인때 isDeleted도 봐야함
-     * @param userDTO
+     * @param userDto
      * @return
      */
     // 이메일 중복 체크를 통해 중복회원 거르기
     @PostMapping("")
     //<?> : 제네릭 타입, 모든 종류의 응답 본문 반환할지 나타낸다.
-    public ResponseEntity<?> addUser(@RequestBody UserDto userDTO)  {
+    public ResponseEntity<?> addUser(@RequestBody UserDto userDto)  {
         try {
-            boolean result = userService.addUser(userDTO);
+            boolean result = userService.addUser(userDto);
             if (result) { //result 값이 true -> 회원가입 성공
                 return ResponseEntity.ok().body("회원가입 성공");
             } else { //result 값이 False -> 회원가입 실패

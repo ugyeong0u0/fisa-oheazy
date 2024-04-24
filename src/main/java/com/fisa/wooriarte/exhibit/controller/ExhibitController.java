@@ -28,7 +28,7 @@ public class ExhibitController {
      * 1. 진행 중인 모든 전시 출력
      * @return
      */
-    @GetMapping("/exhibits")
+    @GetMapping("")
     public ResponseEntity<?> findAllExhibits() {
         try {
             List<ExhibitDto> exhibits = exhibitService.findAllExhibits();
@@ -41,7 +41,7 @@ public class ExhibitController {
         }
     }
 
-    @GetMapping({"/exhibits/{exhibit-id}"})
+    @GetMapping({"/{exhibit-id}"})
     public ResponseEntity<ExhibitDto> findExhibitById(@PathVariable(name = "exhibit-id") Long exhibitId) {
         Optional<ExhibitDto> exhibitOptional = exhibitService.findExhibitById(exhibitId);
 
@@ -61,7 +61,7 @@ public class ExhibitController {
      * @param exhibitDto : 생성할 전시 데이터
      * @return
      */
-    @PostMapping("/admin/matchings/{matching-id}/exhibits")
+    @PostMapping("/admin/matchings/{matching-id}")
     public ResponseEntity<String> addExhibit(@PathVariable(name = "matching-id") Long matchingId, @RequestBody ExhibitDto exhibitDto) {
         try {
             exhibitService.addExhibit(exhibitDto, matchingId);
@@ -77,7 +77,7 @@ public class ExhibitController {
      * @param exhibitDto : 수정에 대입될 전시 정보 (name, intro, startDate, endDate, price, city)
      * @return
      */
-    @PutMapping("/admin/exhibits/{exhibit-id}")
+    @PutMapping("/admin/{exhibit-id}")
     public ResponseEntity<String> updateExhibit(@PathVariable(name = "exhibit-id") Long exhibitId, @RequestBody ExhibitDto exhibitDto) {
         try {
             exhibitService.updateExhibit(exhibitId, exhibitDto);
@@ -92,7 +92,7 @@ public class ExhibitController {
      * @param exhibitId : 삭제할 exhibitId
      * @return
      */
-    @DeleteMapping("/exhibit/{exhibit-id}")
+    @DeleteMapping("/{exhibit-id}")
     public ResponseEntity<String> deleteExhibit(@PathVariable(name = "exhibit-id") Long exhibitId) {
         try {
             exhibitService.deleteExhibitById(exhibitId);

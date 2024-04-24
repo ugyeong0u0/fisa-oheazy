@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/api/project-managers")
 @RestController
-@RequestMapping("/project-managers")
 public class ProjectManagerController {
 
     private final ProjectManagerService projectManagerService;

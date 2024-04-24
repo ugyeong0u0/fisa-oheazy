@@ -6,14 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Map;
 
+@RequestMapping("/api/payment")
 @RestController
 public class PaymentController {
     private final PaymentService paymentService;
@@ -24,7 +22,7 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @PostMapping("/payment")
+    @PostMapping("")
     public ResponseEntity<?> addPayment(@RequestBody Map<String, Long> payload) {
         try {
             Long exhibitId = payload.get("exhibit_id");
@@ -39,7 +37,7 @@ public class PaymentController {
         }
     }
 
-    @PostMapping("/payment/verifyIamport/{imp_uid}")
+    @PostMapping("/verifyIamport/{imp_uid}")
     public ResponseEntity<?> verifyPayment(@PathVariable("imp_uid") String impUid) {
         if (!paymentService.verifyPayment(impUid)) {
             if (paymentService.cancelPayment(impUid)) {
@@ -56,7 +54,7 @@ public class PaymentController {
         return ResponseEntity.ok(Map.of("verified", true, "message", "결제 검증 성공"));
     }
 
-    @PostMapping("/payment/cancel/{order_number}")
+    @PostMapping("/cancel/{order_number}")
     public String cancelPayment(@PathVariable("order_number") String orderNumber) {
         if(paymentService.removePayment(orderNumber))
             return "success";

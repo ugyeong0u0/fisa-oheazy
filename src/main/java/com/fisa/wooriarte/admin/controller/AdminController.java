@@ -37,11 +37,11 @@ public class AdminController {
     }
 
     @PostMapping("/jwtlogin")
-    public JwtToken login(@RequestBody UserLoginRequestDto userLoginRequestDTO) {
+    public JwtToken login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         try {
             log.info("Trying to login with JWT");
-            String id = userLoginRequestDTO.getId();
-            String pwd = userLoginRequestDTO.getPwd();
+            String id = userLoginRequestDto.getId();
+            String pwd = userLoginRequestDto.getPwd();
             return adminService.login(id, pwd);
         } catch (Exception e) {
             log.error("Exception occurred while logging in with JWT: ", e);

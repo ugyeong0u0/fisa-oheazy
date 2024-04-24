@@ -1,7 +1,6 @@
 package com.fisa.wooriarte.jwt;
 
 
-import com.fisa.wooriarte.redis.RedisDao;
 import com.fisa.wooriarte.redis.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

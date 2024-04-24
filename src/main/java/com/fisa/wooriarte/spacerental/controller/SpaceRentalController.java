@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 @RestController
-@RequestMapping("/space-rentals")
+@RequestMapping("/api/space-rentals")
 public class SpaceRentalController {
     private final SpaceRentalService spaceRentalService;
     private static final Logger log = LoggerFactory.getLogger(SpaceRentalController.class);

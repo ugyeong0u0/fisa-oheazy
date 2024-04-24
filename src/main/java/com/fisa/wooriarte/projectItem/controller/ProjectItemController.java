@@ -13,19 +13,17 @@ import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping("/project-item")
+@RequestMapping("/api/project-items")
 @RestController
 public class ProjectItemController {
 
     private static final Logger log = LoggerFactory.getLogger(ProjectItemController.class);
 
     private final ProjectItemService projectItemService;
-    private final ProjectItemRepository projectItemRepository;
 
     @Autowired
-    public ProjectItemController(ProjectItemService projectItemService, ProjectItemRepository projectItemRepository) {
+    public ProjectItemController(ProjectItemService projectItemService) {
         this.projectItemService = projectItemService;
-        this.projectItemRepository = projectItemRepository;
     }
 
     @GetMapping("")

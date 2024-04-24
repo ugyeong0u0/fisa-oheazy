@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@RequestMapping("/api/space-photos")
 @RestController
 public class SpacePhotoController {
 
@@ -29,7 +30,7 @@ public class SpacePhotoController {
      * @return
      * @throws IOException
      */
-    @PostMapping(path = "/{space-item-id}/add-space-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/{space-item-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addPhotos(@PathVariable("space-item-id") Long spaceItemId, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFileList) throws IOException {
         if (multipartFileList == null) {
             return ResponseEntity.badRequest().body("No files provided");
@@ -58,7 +59,7 @@ public class SpacePhotoController {
      * @param spaceItemId : 삭제할 사진을 가지고 있는 spaceItemId
      * @return
      */
-    @DeleteMapping("/{space-item-id}/delete-all-space-photo")
+    @DeleteMapping("/{space-item-id}")
     public ResponseEntity<String> deleteAllPhotos(@PathVariable("space-item-id") Long spaceItemId) {
         try {
             spacePhotoService.deleteAllPhotos(spaceItemId);
@@ -73,7 +74,7 @@ public class SpacePhotoController {
      * @param spaceItemId : 출력할 사진을 가지고 있는 spaceItemId
      * @return photos 객체 정보 출력
      */
-    @GetMapping("/{space-item-id}/space-photos")
+    @GetMapping("/{space-item-id}")
     public ResponseEntity<List<SpacePhotoDTO>> getPhotosBySpaceItemId(@PathVariable("space-item-id") Long spaceItemId) {
         List<SpacePhotoDTO> photos = spacePhotoService.getPhotosBySpaceItemId(spaceItemId);
         return new ResponseEntity<>(photos, HttpStatus.OK);
@@ -86,7 +87,7 @@ public class SpacePhotoController {
      * @return
      * @throws IOException
      */
-    @PutMapping(path = "/{space-item-id}/edit-space-photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "/{space-item-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> editPhotos(@PathVariable("space-item-id") Long spaceItemId, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFileList) throws IOException {
         if (multipartFileList == null) {
             return ResponseEntity.badRequest().body("No files provided");

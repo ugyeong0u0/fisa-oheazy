@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@RequestMapping("/api/project-photos")
 @RestController
 public class ProjectPhotoController {
 
@@ -29,7 +30,7 @@ public class ProjectPhotoController {
      * @return
      * @throws IOException
      */
-    @PostMapping(path = "/{project-item-id}/add-project-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/{project-item-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addPhotos(@PathVariable("project-item-id") Long projectItemId, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFileList) throws IOException {
         if (multipartFileList == null) {
             return ResponseEntity.badRequest().body("No files provided");
@@ -58,7 +59,7 @@ public class ProjectPhotoController {
      * @param projectItemId : 삭제할 사진을 가지고 있는 projectItemId
      * @return
      */
-    @DeleteMapping("/{project-item-id}/delete-all-project-photo")
+    @DeleteMapping("/{project-item-id}")
     public ResponseEntity<String> deleteAllPhotos(@PathVariable("project-item-id") Long projectItemId) {
         try {
             projectPhotoService.deleteAllPhotos(projectItemId);
@@ -73,7 +74,7 @@ public class ProjectPhotoController {
      * @param projectItemId : 출력할 사진을 가지고 있는 projectItemId
      * @return photos 객체 정보 출력
      */
-    @GetMapping("/{project-item-id}/project-photos")
+    @GetMapping("/{project-item-id}")
     public ResponseEntity<List<ProjectPhotoDTO>> getPhotosBySpaceItemId(@PathVariable("project-item-id") Long projectItemId) {
         List<ProjectPhotoDTO> photos = projectPhotoService.getPhotosByProjectItemId(projectItemId);
         return new ResponseEntity<>(photos, HttpStatus.OK);
@@ -86,7 +87,7 @@ public class ProjectPhotoController {
      * @return
      * @throws IOException
      */
-    @PutMapping(path = "/{project-item-id}/edit-project-photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "/{project-item-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> editPhotos(@PathVariable("project-item-id") Long projectItemId, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFileList) throws IOException {
         if (multipartFileList == null) {
             return ResponseEntity.badRequest().body("No files provided");
