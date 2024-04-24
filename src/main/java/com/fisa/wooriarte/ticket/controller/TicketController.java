@@ -63,7 +63,7 @@ public class TicketController {
      * @param status : 티켓이 사용됐는지 안 됐는지 확인하는 Boolean 값 0 : 사용 예정 1 : 사용 완료
      * @return
      */
-    @GetMapping("/user/{user-id}/bookings/{status}")
+    @GetMapping("/users/{user-id}/bookings/{status}")
     public ResponseEntity<?> getTicketsByUserIdAndStatus(@PathVariable(name = "user-id") long userId, @PathVariable boolean status) {
         try {
             List<TicketDto> tickets = ticketService.getTicketsByUserIdAndStatus(userId, status);
@@ -80,7 +80,7 @@ public class TicketController {
      * @param ticketId : 취소할 ticketId
      * @return
      */
-    @DeleteMapping("/user/ticket/{ticket-id}")
+    @DeleteMapping("/{ticket-id}")
     public ResponseEntity<?> deleteTicket(@PathVariable(name = "ticket-id") long ticketId) {
         try {
             ticketService.deleteTicketById(ticketId);

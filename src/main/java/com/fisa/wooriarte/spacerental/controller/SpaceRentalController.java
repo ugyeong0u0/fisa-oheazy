@@ -66,7 +66,7 @@ public class SpaceRentalController {
 
     // 공간대여자 아이디 찾기
     @PostMapping("/find-id")
-    public ResponseEntity<?> findBusinessId(@RequestBody String email) {
+    public ResponseEntity<?> findSpaceRentalId(@RequestBody String email) {
         log.info("Attempting to find ID for email: {}", email);
         try {
             String id = spaceRentalService.getId(email);
@@ -80,7 +80,7 @@ public class SpaceRentalController {
 
     // 공간대여자 비밀번호 재설정
     @PostMapping("/set-pwd")
-    public ResponseEntity<?> findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
+    public ResponseEntity<?> findSpaceRentalPw(@RequestBody Map<String, String> pwdInfo) {
         String id = pwdInfo.get("id");
         String newPwd = pwdInfo.get("new_pwd");
         log.info("Attempting to reset password for ID: {}", id);

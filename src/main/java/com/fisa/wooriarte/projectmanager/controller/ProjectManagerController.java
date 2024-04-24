@@ -75,7 +75,7 @@ public class ProjectManagerController {
     }
 
     @PostMapping("/find-id")
-    public ResponseEntity<Map<String, String>> findBusinessId(@RequestBody String email) {
+    public ResponseEntity<Map<String, String>> findProjectManagerId(@RequestBody String email) {
         try {
             log.info("Trying to find business ID");
             String id = projectManagerService.getId(email);
@@ -87,7 +87,7 @@ public class ProjectManagerController {
     }
 
     @PostMapping("/set-pwd")
-    public ResponseEntity<Map<String, String>> findBusinessPass(@RequestBody Map<String, String> pwdInfo) {
+    public ResponseEntity<Map<String, String>> setProjectManagerPw(@RequestBody Map<String, String> pwdInfo) {
         try {
             log.info("Trying to reset password");
             String id = pwdInfo.get("id");

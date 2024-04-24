@@ -14,6 +14,7 @@ import java.util.Map;
 
 @Slf4j // Lombok 라이브러리를 사용하여 로그 객체를 자동으로 생성합니다.
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/api/matchings")
 @RestController
 public class MatchingController {
 
@@ -26,7 +27,7 @@ public class MatchingController {
     }
 
     // 모든 매칭 가져오기
-    @GetMapping("/admin/matchings")
+    @GetMapping("/admin")
     public ResponseEntity<?> getAllMatching() {
         try {
             log.info("Fetching all matchings");
@@ -105,7 +106,7 @@ public class MatchingController {
         }
     }
 
-    @PostMapping("/matching/{matching-id}")
+    @PostMapping("/{matching-id}")
     public ResponseEntity<?> approvalMatching(@PathVariable(name = "matching-id") Long id, @RequestBody boolean accept) {
         try {
             log.info("Approval status update for matchingId: {}, accept: {}", id, accept);

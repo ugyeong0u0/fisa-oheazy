@@ -104,10 +104,10 @@ public class ExhibitService {
     @Transactional
     public void deleteExhibitById(long exhibitId){
         //exhibit_id로 검색
-        Optional<Exhibit> optionalExhibit = exhibitRepository.findById(exhibitId);
-
-        //exhibit이 존재할 경우 deleted 컬럼 변경
-        optionalExhibit.ifPresent(Exhibit::setIsDeleted);
+        Exhibit exhibit = exhibitRepository.findById(exhibitId)
+                .orElseThrow(() -> new NoSuchElementException("Fail to delete. No one uses that ID"));
+        exhibit.setIsDeleted();
+        exhibitRepository.save(exhibit);
     }
 
 
