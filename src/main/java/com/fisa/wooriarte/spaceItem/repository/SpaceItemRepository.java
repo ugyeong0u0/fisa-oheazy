@@ -13,4 +13,5 @@ public interface SpaceItemRepository extends JpaRepository<SpaceItem, Long> {
 
     Optional<SpaceItem> findBySpaceItemIdAndIsDeletedFalse(Long id);
     Optional<List<SpaceItem>> findBySpaceRental(SpaceRental spaceRental);
+    Optional<List<SpaceItem>> findAllByIsDeletedFalse();
 }

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/space-items")
 @RestController
 public class SpaceItemController {
@@ -59,9 +59,11 @@ public class SpaceItemController {
     @GetMapping("/{space-item-id}")
     public ResponseEntity<?> getSpaceItemInfo(@PathVariable(name = "space-item-id") Long spaceItemId) {
         try {
-            return spaceItemService.findSpaceItemById(spaceItemId)
-                    .map(item -> ResponseEntity.ok(item))
-                    .orElseGet(() -> ResponseEntity.notFound().build());
+            SpaceItemDto spaceItemDto = spaceItemService.findSpaceItemById(spaceItemId);
+            return ResponseEntity.ok(spaceItemDto);
+        } catch (NoSuchElementException e) {
+            log.error("Failed to retrieve space item with id: {}", spaceItemId, e);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("Error retrieving space item with id: {}", spaceItemId, e);
             return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve space item details."));

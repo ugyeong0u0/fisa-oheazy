@@ -7,6 +7,10 @@ import jakarta.validation.constraints.NotEmpty;
 
 @Data
 public class EmailCheckDto {
+
+    @NotEmpty
+    private String id;
+
     @Email
     @NotEmpty(message = "이메일을 입력해 주세요")
     private String email;

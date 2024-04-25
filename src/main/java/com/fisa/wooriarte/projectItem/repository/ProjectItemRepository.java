@@ -13,4 +13,5 @@ public interface ProjectItemRepository extends JpaRepository<ProjectItem, Long> 
 
     Optional<ProjectItem> findByProjectItemIdAndIsDeletedFalse(Long projectItemId);
     Optional<List<ProjectItem>> findByProjectManager(ProjectManager projectManager);
+    Optional<List<ProjectItem>> findAllByIsDeletedFalse();
 }

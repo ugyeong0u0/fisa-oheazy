@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/project-items")
 @RestController
 public class ProjectItemController {
@@ -58,11 +58,13 @@ public class ProjectItemController {
     @GetMapping("/{project-item-id}")
     public ResponseEntity<?> getProjectItemInfo(@PathVariable(name = "project-item-id") Long projectItemId) {
         try {
-            return projectItemService.findByProjectItemId(projectItemId)
-                    .map(item -> ResponseEntity.ok(item))
-                    .orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (Exception e) {
+            ProjectItemDto projectItemDto = projectItemService.findByProjectItemId(projectItemId);
+            return ResponseEntity.ok(projectItemDto);
+        } catch (NoSuchElementException e) {
             log.error("Failed to retrieve project item with id: {}", projectItemId, e);
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error("An error occurred while retrieving project item with id: {}", projectItemId, e);
             return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve project item details."));
         }
     }

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j // Lombok 라이브러리를 사용하여 로그 객체를 자동으로 생성합니다.
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/matchings")
 @RestController
 public class MatchingController {

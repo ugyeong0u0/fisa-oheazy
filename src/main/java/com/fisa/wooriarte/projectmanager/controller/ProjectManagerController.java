@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/project-managers")
 @RestController
 public class ProjectManagerController {

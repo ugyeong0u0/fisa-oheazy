@@ -35,20 +35,23 @@ public class ProjectItemService {
         projectItemRepository.save(projectItemDTO.toEntity(projectManager));
     }
 
-    // 프로젝트 아이템 전체 조회
+    // 프로젝트 아이템 전체 조회(삭제된 아이템 제외)
     public List<ProjectItemDto> findAll() {
         System.out.println("findAll");
-        return projectItemRepository.findAll().stream()
+        List<ProjectItem> projectItemList = projectItemRepository.findAllByIsDeletedFalse().orElseThrow(() -> new NoSuchElementException("No Project Item"));
+        return projectItemList.stream()
                 .map(ProjectItemDto::fromEntity) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
                 .collect(Collectors.toList());
     }
 
-    // 프로젝트 아이템 조회
-    public Optional<ProjectItemDto> findByProjectItemId(Long projectItemId) {
+    // 프로젝트 아이템 조회(삭제된 아이템 제외)
+    public ProjectItemDto findByProjectItemId(Long projectItemId) {
         System.out.println("findByProjectItemId");
-        return projectItemRepository.findById(projectItemId)
-                .map(ProjectItemDto::fromEntity);
+        ProjectItem projectItem = projectItemRepository.findByProjectItemIdAndIsDeletedFalse(projectItemId)
+                .orElseThrow(() -> new NoSuchElementException("No Project Item found with ID: " + projectItemId));
+        return ProjectItemDto.fromEntity(projectItem);
     }
+
 
     public List<ProjectItemDto> findByProjectManagerId(Long projectManagerId) {
         // Optional<List<ProjectItem>>에서 List<ProjectItem>을 얻기 위해 orElseGet을 사용합니다.

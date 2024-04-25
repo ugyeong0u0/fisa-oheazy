@@ -38,14 +38,14 @@ public class UserService {
         //userDTO.toEntity 를 User userEntity로 변환한 이유는
         //클라이언트로부터 받은 데이터를 db에 저장하기 위함
         User userEntity = userDto.toEntity();
-        Optional<User> userEmail = userRepository.findUserByEmail(userEntity.getEmail());
+        Optional<User> userEmail = userRepository.findByEmail(userEntity.getEmail());
 
         if (userEmail.isPresent() && !userEmail.get().getIsDeleted()) {
             System.out.println("유저 삭제여부:" + userEmail.get().getIsDeleted());
             throw new IllegalStateException("회원가입 불가능(이메일 중복)");
         }
 
-        Optional<User> userId = userRepository.findUserById(userEntity.getId());
+        Optional<User> userId = userRepository.findById(userEntity.getId());
 
         if (userId.isPresent()&&!userEmail.get().getIsDeleted()) {
             throw new IllegalStateException("회원가입 불가능 (아이디 중복)");
@@ -88,7 +88,7 @@ public class UserService {
 
     // 유저 로그인
     public UserDto loginUser(String id, String pwd) throws NoSuchElementException, IllegalAccessException {
-        Optional<User> optionalUser = userRepository.findUserById(id);
+        Optional<User> optionalUser = userRepository.findById(id);
         UserDto userdto = null;
         if (optionalUser.isPresent() && optionalUser.get().getPwd().equals(pwd)) {
             userdto = UserDto.fromEntity(optionalUser.get());
@@ -122,7 +122,7 @@ public class UserService {
     // 유저 개인 정보 수정
     public Boolean updateMyUser(Long id, UserInfoRequestDto userInfoRequestDto) {
         // 이메일 중복 확인
-        Optional<User> userEmail = userRepository.findUserByEmail(userInfoRequestDto.getEmail());
+        Optional<User> userEmail = userRepository.findByEmail(userInfoRequestDto.getEmail());
         if (userEmail.isPresent()) {
             System.out.println("수정 불가능(이메일 중복)");
             return false;
@@ -145,7 +145,7 @@ public class UserService {
 
     // 유저 비밀번호 찾기
     public String findUserPw (String id, String name, String email){
-        User userInfo = userRepository.findUserByIdAndNameAndEmail(id, name, email)
+        User userInfo = userRepository.findByIdAndNameAndEmail(id, name, email)
                 .orElseThrow(() -> new NoSuchElementException("유저 비밀번호를 찾을 수 없습니다.")); //객체 없으면 에러던지기
 
         return userInfo.getPwd(); //아이디 던저주기
