@@ -1,6 +1,8 @@
 package com.fisa.wooriarte.email.service;
 
 import com.fisa.wooriarte.redis.RedisUtil;
+import com.fisa.wooriarte.user.domain.User;
+import com.fisa.wooriarte.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -8,20 +10,25 @@ import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 @Service
-public class MailSendService {
-    @Autowired
-    private JavaMailSender mailSender;
+public class EmailService {
+    private final UserRepository userRepository;
+    private final JavaMailSender mailSender;
+    private final RedisUtil redisUtil;
     private int authNumber;
+
     @Autowired
-    private RedisUtil redisUtil;
+    public EmailService(UserRepository userRepository, JavaMailSender mailSender, RedisUtil redisUtil) {
+        this.userRepository = userRepository;
+        this.mailSender = mailSender;
+        this.redisUtil = redisUtil;
+    }
 
-    public boolean CheckAuthNum(String email,String authNum){
-        System.out.println(redisUtil);
-        System.out.println(redisUtil.getData(authNum));
-
+    public boolean checkAuthNum(String email,String authNum){
         if(redisUtil.getData(authNum)==null){
             return false;
         }
@@ -32,6 +39,11 @@ public class MailSendService {
             return false;
         }
     }
+
+    public boolean checkUserId(String id) {
+        return userRepository.existsById(id);
+    }
+
 
     //임의의 6자리 양수 반환
     public void makeRandomNumber() {
@@ -48,7 +60,7 @@ public class MailSendService {
     //mail을 어디서 보내는지, 어디로 보내는지 , 인증 번호를 html 형식으로 어떻게 보내는지 작성합니다.
     public String joinEmail(String email) {
         makeRandomNumber();
-        String setFrom = "nowead814@gmail.com"; // email-config에 설정한 자신의 이메일 주소를 입력
+        String setFrom = ""; // email-config에 설정한 자신의 이메일 주소를 입력
         String toMail = email;
         String title = "Woori Arte 회원 가입 인증 이메일 입니다."; // 이메일 제목
         String content =

@@ -41,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        UserDetails userDetails = userRepository.findUserById(id)
+        UserDetails userDetails = userRepository.findById(id)
                 .map(this::createUserDetails)
                 .orElse(null);
 
