@@ -38,15 +38,23 @@ public class SpaceItemService {
 
     public List<SpaceItemDto> findAll() {
         System.out.println("findAll");
-        return spaceItemRepository.findAll().stream()
+        List<SpaceItem> spaceItemList = spaceItemRepository.findAllByIsDeletedFalse()
+                .orElseThrow(() -> new NoSuchElementException("No Space Item"));
+        return spaceItemList.stream()
                 .map(SpaceItemDto::fromEntity) // 람다식을 사용하여 각 SpaceItem 엔티티를 SpaceItemDTO로 변환
                 .collect(Collectors.toList());
     }
 
-    public Optional<SpaceItemDto> findSpaceItemById(Long spaceItemId) {
+
+    /**
+     *
+     * @param spaceItemId
+     * @return
+     */
+    public SpaceItemDto findSpaceItemById(Long spaceItemId) {
         System.out.println("findSpaceItemById");
-        return spaceItemRepository.findById(spaceItemId)
-                .map(SpaceItemDto::fromEntity);
+        SpaceItem spaceItem = spaceItemRepository.findBySpaceItemIdAndIsDeletedFalse(spaceItemId).orElseThrow(() -> new NoSuchElementException("No Space Item"));
+        return SpaceItemDto.fromEntity(spaceItem);
     }
 
     public List<SpaceItemDto> findBySpaceRentalId(Long spaceRentalId) {

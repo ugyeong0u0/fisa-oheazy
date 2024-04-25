@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/email")
 public class MailController {
     private final MailSendService mailService;
+
+    public MailController(MailSendService mailService) {
+        this.mailService = mailService;
+    }
 
     @PostMapping("/mail-send")
     public ResponseEntity<String> mailSend(@RequestBody @Valid EmailRequestDto emailDto){
