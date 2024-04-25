@@ -5,6 +5,7 @@ import com.fisa.wooriarte.jwt.JwtTokenProvider;
 import com.fisa.wooriarte.projectmanager.dto.ProjectManagerDto;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
+import com.fisa.wooriarte.util.encryption.Encryption;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,12 +22,14 @@ public class ProjectManagerService {
     private final ProjectManagerRepository projectManagerRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final Encryption encryption;
 
     @Autowired
-    public ProjectManagerService(ProjectManagerRepository projectManagerRepository, AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider) {
+    public ProjectManagerService(ProjectManagerRepository projectManagerRepository, AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider, Encryption encryption) {
         this.projectManagerRepository = projectManagerRepository;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.encryption = encryption;
     }
     /*
    프로젝트 매니저 추가
@@ -41,6 +44,7 @@ public class ProjectManagerService {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
         ProjectManager projectManager = projectManagerDTO.toEntity();
+        projectManager.setPwd(encryption.encryptionSHA256(projectManagerDTO.getPwd()));
         projectManager.addRole("PROJECT_MANAGER");
         projectManagerRepository.save(projectManager);
         return true;
@@ -54,7 +58,7 @@ public class ProjectManagerService {
      */
     public ProjectManagerDto loginProjectManager(String id, String pwd) throws Exception {
         Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findById(id);
-        if(optionalProjectManager.isPresent() && optionalProjectManager.get().getPwd().equals(pwd)){
+        if(optionalProjectManager.isPresent() && optionalProjectManager.get().getPwd().equals(encryption.encryptionSHA256(pwd))){
             return ProjectManagerDto.fromEntity(optionalProjectManager.get());
         }else{
             throw new Exception("로그인 불가");
@@ -100,7 +104,7 @@ public class ProjectManagerService {
         ProjectManager projectManager = projectManagerRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
         //비밀번호 검증
-        projectManager.setPwd(newPwd);
+        projectManager.setPwd(encryption.encryptionSHA256(newPwd));
         projectManagerRepository.save(projectManager);
         return true;
     }
@@ -154,5 +158,11 @@ public class ProjectManagerService {
         projectManager.setIsDeleted();
         projectManagerRepository.save(projectManager);
         return true;
+    }
+
+    public boolean verifyPassword(Long projectManagerId, String pwd) {
+        ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
+                .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
+        return projectManager.getPwd().equals(encryption.encryptionSHA256(pwd));
     }
 }

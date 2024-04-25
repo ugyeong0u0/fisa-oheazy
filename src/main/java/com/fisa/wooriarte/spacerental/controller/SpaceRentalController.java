@@ -99,8 +99,8 @@ public class SpaceRentalController {
     }
 
     // 공간대여자 정보 조회
-    @GetMapping("/{space_rental_id}")
-    public ResponseEntity<?> getSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId) {
+    @GetMapping("/{space-rental-id}")
+    public ResponseEntity<?> getSpaceRentalInfo(@PathVariable("space-rental-id") Long spaceRentalId) {
         log.info("Fetching space rental info for ID: {}", spaceRentalId);
         try {
             SpaceRentalDto spaceRentalDTO = spaceRentalService.findBySpaceRentalId(spaceRentalId);
@@ -113,8 +113,8 @@ public class SpaceRentalController {
     }
 
     // 공간대여자 정보 갱신
-    @PutMapping("/{space_rental_id}")
-    public ResponseEntity<?> updateSpaceRentalInfo(@PathVariable("space_rental_id") Long spaceRentalId, @RequestBody SpaceRentalDto spaceRentalDTO) {
+    @PutMapping("/{space-rental-id}")
+    public ResponseEntity<?> updateSpaceRentalInfo(@PathVariable("space-rental-id") Long spaceRentalId, @RequestBody SpaceRentalDto spaceRentalDTO) {
         log.info("Attempting to update space rental information for ID: {}", spaceRentalId);
         try {
             if (spaceRentalService.updateSpaceRental(spaceRentalId, spaceRentalDTO)) {
@@ -131,8 +131,8 @@ public class SpaceRentalController {
     }
 
     // 공간대여자 삭제
-    @DeleteMapping("/{space_rental_id}")
-    public ResponseEntity<?> deleteSpaceRental(@PathVariable("space_rental_id") Long spaceRentalId) {
+    @DeleteMapping("/{space-rental-id}")
+    public ResponseEntity<?> deleteSpaceRental(@PathVariable("space-rental-id") Long spaceRentalId) {
         log.info("Attempting to delete space rental with ID {}", spaceRentalId);
         try {
             if (spaceRentalService.deleteSpaceRental(spaceRentalId)) {
@@ -148,6 +148,19 @@ public class SpaceRentalController {
         }
     }
 
+    @PostMapping("/{space-rental-id}/verify-pwd")
+    public ResponseEntity<?> verifySpaceRentalPassword(@PathVariable("space-rental-id") Long spaceRentalId, @RequestBody SpaceRentalDto spaceRentalDto) {
+        try{
+            boolean success = spaceRentalService.verifyPassword(spaceRentalId, spaceRentalDto.getPwd());
+            if(success)
+                return ResponseEntity.ok(Map.of("message", "Password verified success"));
+            else
+                return ResponseEntity.badRequest().body(Map.of("message", "Password verified fail"));
+        } catch (Exception e) {
+            log.error("Error verified project manager pwd: {}", spaceRentalId, e);
+            return ResponseEntity.internalServerError().body(Map.of("message", "Internal server error."));
+        }
+    }
     /*
     예외 처리하는 부분
     DataIntegrityViolationException: 데이터베이스 제약조건, 무결성 위반 시도 (이미 존재하는 아이디 삽입, 이미 삭제된 사용자 삭제 등등)

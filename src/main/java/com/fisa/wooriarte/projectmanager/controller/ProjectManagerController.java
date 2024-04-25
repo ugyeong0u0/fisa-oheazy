@@ -152,6 +152,21 @@ public class ProjectManagerController {
         }
     }
 
+    @PostMapping("/{project-manager-id}/verify-pwd")
+    public ResponseEntity<?> verifyProjectManagerPassword(@PathVariable("project-manager-id") Long projectManagerId, @RequestBody ProjectManagerDto projectManagerDto) {
+        try{
+            log.info("Check project manager pwd");
+            boolean success = projectManagerService.verifyPassword(projectManagerId, projectManagerDto.getPwd());
+            if(success)
+                return ResponseEntity.ok(Map.of("message", "Password verified success"));
+            else
+                return ResponseEntity.badRequest().body(Map.of("message", "Password verified fail"));
+        } catch (Exception e) {
+            log.error("Error verified project manager pwd: {}", projectManagerId, e);
+            return ResponseEntity.internalServerError().body(Map.of("message", "Internal server error."));
+        }
+    }
+
     @ExceptionHandler({NoSuchElementException.class})
     public ResponseEntity<Map<String, String>> handleNoSuchElementException(Exception e) {
         return ResponseEntity.badRequest().body(Map.of("message", "No user found with the given id."));
