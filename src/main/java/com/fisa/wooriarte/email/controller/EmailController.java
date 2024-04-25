@@ -21,13 +21,39 @@ public class EmailController {
     private final EmailService emailService;
     private final Logger log = LoggerFactory.getLogger(EmailController.class);
 
-
     public EmailController(EmailService mailService) {
         this.emailService = mailService;
     }
 
-    @PostMapping("/mail-send")
-    public ResponseEntity<String> mailSend(@RequestBody @Valid EmailRequestDto emailDto) {
+    @PostMapping("/email-send")
+    public ResponseEntity<String> emailSend(@RequestBody @Valid EmailRequestDto emailDto){
+        System.out.println("이메일 인증 요청이 들어옴");
+        System.out.println("이메일 인증 이메일 :"+emailDto.getEmail());
+        try {
+            String result = emailService.joinEmail(emailDto.getEmail());
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("이메일 전송 실패: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/email-auth-check")
+    public ResponseEntity<?> authCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+        try {
+            boolean Checked = emailService.checkAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
+            if(Checked){
+                return ResponseEntity.ok(Map.of("message", "인증 성공"));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("error", "인증 번호 불일치"));
+            }
+        } catch (Exception e) {
+            // 일반적인 예외 처리
+            return new ResponseEntity<>(Map.of("error", "뭔가 잘못됐습니다: " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/users/email-send")
+    public ResponseEntity<String> userEmailSend(@RequestBody @Valid EmailRequestDto emailDto) {
         log.info("Email verification request received.");
         log.info("Email for verification: {}", emailDto.getEmail());
         try {
@@ -46,8 +72,8 @@ public class EmailController {
         }
     }
 
-    @PostMapping("/mail-auth-check")
-    public ResponseEntity<?> AuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+    @PostMapping("/users/email-auth-check")
+    public ResponseEntity<?> userAuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
         try {
             boolean isIdChecked = emailService.checkUserId(emailCheckDto.getId());
             boolean isAuthNumChecked = emailService.checkAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
@@ -61,5 +87,78 @@ public class EmailController {
             return new ResponseEntity<>(Map.of("error", "에러 발생" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/project-managers/email-send")
+    public ResponseEntity<String> projectManagerEmailSend(@RequestBody @Valid EmailRequestDto emailDto) {
+        log.info("Email verification request received.");
+        log.info("Email for verification: {}", emailDto.getEmail());
+        try {
+            boolean isIdChecked = emailService.checkProjectManagerId(emailDto.getId());
+            if (isIdChecked) {
+                String result = emailService.joinEmail(emailDto.getEmail());
+                log.info("Email sent successfully to: {}", emailDto.getEmail());
+                return ResponseEntity.ok(result); // Success response
+            } else {
+                log.error("Project Manager ID not found: {}", emailDto.getId());
+                return ResponseEntity.badRequest().body("Project Manager ID does not exist."); // User ID not found
+            }
+        } catch (Exception e) {
+            log.error("Email sending failed: {}", e.getMessage());
+            return ResponseEntity.badRequest().body("Email sending failed: " + e.getMessage()); // Failure response
+        }
+    }
+
+    @PostMapping("/project-managers/email-auth-check")
+    public ResponseEntity<?> projectManagerAuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+        try {
+            boolean isIdChecked = emailService.checkProjectManagerId(emailCheckDto.getId());
+            boolean isAuthNumChecked = emailService.checkAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
+            if(isIdChecked & isAuthNumChecked){
+                return ResponseEntity.ok(Map.of("message", "인증 성공"));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("error", "입력 정보 불일치"));
+            }
+        } catch (Exception e) {
+            // 일반적인 예외 처리
+            return new ResponseEntity<>(Map.of("error", "에러 발생" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/space-rentals/email-send")
+    public ResponseEntity<String> spaceRentalEmailSend(@RequestBody @Valid EmailRequestDto emailDto) {
+        log.info("Email verification request received.");
+        log.info("Email for verification: {}", emailDto.getEmail());
+        try {
+            boolean isIdChecked = emailService.checkSpaceRentalId(emailDto.getId());
+            if (isIdChecked) {
+                String result = emailService.joinEmail(emailDto.getEmail());
+                log.info("Email sent successfully to: {}", emailDto.getEmail());
+                return ResponseEntity.ok(result); // Success response
+            } else {
+                log.error("Space Rental ID not found: {}", emailDto.getId());
+                return ResponseEntity.badRequest().body("Space Rental ID does not exist."); // User ID not found
+            }
+        } catch (Exception e) {
+            log.error("Email sending failed: {}", e.getMessage());
+            return ResponseEntity.badRequest().body("Email sending failed: " + e.getMessage()); // Failure response
+        }
+    }
+
+    @PostMapping("/space-rentals/email-auth-check")
+    public ResponseEntity<?> spaceRentalAuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+        try {
+            boolean isIdChecked = emailService.checkSpaceRentalId(emailCheckDto.getId());
+            boolean isAuthNumChecked = emailService.checkAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
+            if(isIdChecked & isAuthNumChecked){
+                return ResponseEntity.ok(Map.of("message", "인증 성공"));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("error", "입력 정보 불일치"));
+            }
+        } catch (Exception e) {
+            // 일반적인 예외 처리
+            return new ResponseEntity<>(Map.of("error", "에러 발생" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

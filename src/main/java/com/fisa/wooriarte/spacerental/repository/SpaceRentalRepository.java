@@ -13,5 +13,6 @@ public interface SpaceRentalRepository extends JpaRepository<SpaceRental, Long> 
     @Query(value = "select * from space_rental s where s.id =:id", nativeQuery = true)
     Optional<SpaceRental> findById(String id);
     Optional<SpaceRental> findByEmail(String email);
+    boolean existsById(String id);
 
 }

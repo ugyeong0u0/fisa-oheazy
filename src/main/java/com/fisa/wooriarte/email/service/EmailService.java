@@ -1,6 +1,8 @@
 package com.fisa.wooriarte.email.service;
 
+import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
 import com.fisa.wooriarte.redis.RedisUtil;
+import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,21 @@ import java.util.Random;
 @Service
 public class EmailService {
     private final UserRepository userRepository;
+    private final ProjectManagerRepository projectManagerRepository;
+    private final SpaceRentalRepository spaceRentalRepository;
     private final JavaMailSender mailSender;
     private final RedisUtil redisUtil;
     private int authNumber;
 
     @Autowired
-    public EmailService(UserRepository userRepository, JavaMailSender mailSender, RedisUtil redisUtil) {
+    public EmailService(UserRepository userRepository,
+                        ProjectManagerRepository projectManagerRepository,
+                        SpaceRentalRepository spaceRentalRepository,
+                        JavaMailSender mailSender,
+                        RedisUtil redisUtil) {
         this.userRepository = userRepository;
+        this.projectManagerRepository = projectManagerRepository;
+        this.spaceRentalRepository = spaceRentalRepository;
         this.mailSender = mailSender;
         this.redisUtil = redisUtil;
     }
@@ -44,6 +54,13 @@ public class EmailService {
         return userRepository.existsById(id);
     }
 
+    public boolean checkProjectManagerId(String id) {
+        return projectManagerRepository.existsById(id);
+    }
+
+    public boolean checkSpaceRentalId(String id) {
+        return spaceRentalRepository.existsById(id);
+    }
 
     //임의의 6자리 양수 반환
     public void makeRandomNumber() {
@@ -55,7 +72,6 @@ public class EmailService {
 
         authNumber = Integer.parseInt(randomNumber);
     }
-
 
     //mail을 어디서 보내는지, 어디로 보내는지 , 인증 번호를 html 형식으로 어떻게 보내는지 작성합니다.
     public String joinEmail(String email) {
@@ -88,7 +104,6 @@ public class EmailService {
             e.printStackTrace();//e.printStackTrace()는 예외를 기본 오류 스트림에 출력하는 메서드
         }
         redisUtil.setDataExpire(Integer.toString(authNumber),toMail,60*3L);
-
     }
 
 }
