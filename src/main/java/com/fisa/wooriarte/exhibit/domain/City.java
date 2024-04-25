@@ -1,25 +1,15 @@
 package com.fisa.wooriarte.exhibit.domain;
 
 public enum City {
-    SEOUL("서울"),
-    GYEONGGI("경기"),
-    INCHEON("인천"),
-    GANGWON("강원"),
-    CHUNGBUK("충북"),
-    CHUNGNAM("충남"),
-    JEONBUK("전북"),
-    JEONNAM("전남"),
-    GYEONGBUK("경북"),
-    GYEONGNAM("경남"),
-    JEJU("제주");
-
-    private final String koreanName;
-
-    City(String koreanName) {
-        this.koreanName = koreanName;
-    }
-
-    public String getKoreanName() {
-        return this.koreanName;
-    }
+    서울,
+    경기,
+    인천,
+    강원,
+    충북,
+    충남,
+    전북,
+    전남,
+    경북,
+    경남,
+    제주;
 }
