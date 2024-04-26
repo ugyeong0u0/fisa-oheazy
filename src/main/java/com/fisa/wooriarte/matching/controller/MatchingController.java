@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.matching.controller;
 
 import com.fisa.wooriarte.matching.dto.MatchingDto;
+import com.fisa.wooriarte.matching.dto.MatchingResponseDto;
 import com.fisa.wooriarte.matching.dto.MatchingStatusDto;
 import com.fisa.wooriarte.matching.domain.MatchingStatus;
 import com.fisa.wooriarte.matching.service.MatchingService;
@@ -124,32 +125,38 @@ public class MatchingController {
 
 
     @GetMapping("/space-rental/{space-rental-id}/waitings")
-    public ResponseEntity<List<MatchingDto>> findSpaceRentalWaitingMatching(@PathVariable(name = "space-rental-id") Long spaceRentalId) {
+    public ResponseEntity<List<MatchingResponseDto>> findSpaceRentalWaitingMatching(@PathVariable(name = "space-rental-id") Long spaceRentalId) {
         log.info("Fetching waiting matchings for spaceRentalId: {}", spaceRentalId);
         return ResponseEntity.ok(matchingService.findSpaceRentalWaitingMatching(spaceRentalId));
     }
 
     @GetMapping("/space-rental/{space-rental-id}/offers")
-    public ResponseEntity<List<MatchingDto>> findSpaceRentalOfferMatching(@PathVariable(name = "space-rental-id") Long spaceRentalId) {
+    public ResponseEntity<List<MatchingResponseDto>> findSpaceRentalOfferMatching(@PathVariable(name = "space-rental-id") Long spaceRentalId) {
         log.info("Fetching offer matchings for spaceRentalId: {}", spaceRentalId);
         return ResponseEntity.ok(matchingService.findSpaceRentalOfferMatching(spaceRentalId));
     }
 
     @GetMapping("/space-rental/{space-rental-id}/success")
-    public ResponseEntity<List<MatchingDto>> findSpaceRentalSuccessMatching(@PathVariable(name = "space-rental-id") Long spaceRentalId) {
+    public ResponseEntity<List<MatchingResponseDto>> findSpaceRentalSuccessMatching(@PathVariable(name = "space-rental-id") Long spaceRentalId) {
         log.info("Fetching successful matchings for spaceRentalId: {}", spaceRentalId);
         return ResponseEntity.ok(matchingService.findSpaceRentalSuccessMatching(spaceRentalId));
     }
 
     @GetMapping("/project-managers/{project-manager-id}/waitings")
-    public ResponseEntity<List<MatchingDto>> findProjectManagerWaitingMatching(@PathVariable(name = "project-manager-id") Long projectManagerId) {
+    public ResponseEntity<List<MatchingResponseDto>> findProjectManagerWaitingMatching(@PathVariable(name = "project-manager-id") Long projectManagerId) {
         log.info("Fetching waiting matchings for projectManagerId: {}", projectManagerId);
         return ResponseEntity.ok(matchingService.findProjectManagerWaitingMatching(projectManagerId));
     }
 
     @GetMapping("/project-managers/{project-manager-id}/offers")
-    public ResponseEntity<List<MatchingDto>> findProjectManagerOfferMatching(@PathVariable(name = "project-manager-id") Long projectManagerId) {
+    public ResponseEntity<List<MatchingResponseDto>> findProjectManagerOfferMatching(@PathVariable(name = "project-manager-id") Long projectManagerId) {
         log.info("Fetching offer matchings for projectManagerId: {}", projectManagerId);
         return ResponseEntity.ok(matchingService.findProjectManagerOfferMatching(projectManagerId));
+    }
+
+    @GetMapping("/project-managers/{project-manager-id}/success")
+    public ResponseEntity<List<MatchingResponseDto>> findProjectManagerSuccessMatching(@PathVariable(name = "project-manager-id") Long projectManagerId) {
+        log.info("Fetching successful matchings for projectManagerId: {}", projectManagerId);
+        return ResponseEntity.ok(matchingService.findProjectManagerSuccessMatching(projectManagerId));
     }
 }

@@ -4,6 +4,7 @@ import com.fisa.wooriarte.matching.dto.MatchingDto;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.matching.domain.MatchingStatus;
 import com.fisa.wooriarte.matching.domain.SenderType;
+import com.fisa.wooriarte.matching.dto.MatchingResponseDto;
 import com.fisa.wooriarte.matching.repository.MatchingRepository;
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
@@ -105,40 +106,40 @@ public class MatchingService {
     }
 
     // 공간 대여자가 보낸 매칭 조회
-    public List<MatchingDto> findSpaceRentalWaitingMatching(Long spaceRentalId) {
+    public List<MatchingResponseDto> findSpaceRentalWaitingMatching(Long spaceRentalId) {
         List<Matching> list = matchingRepository.findBySenderAndMatchingStatusAndSenderType(spaceRentalId, MatchingStatus.REQUESTWAITING, SenderType.SPACERENTAL);
-        return list.stream().map(MatchingDto::fromEntity).collect(Collectors.toList());
+        return list.stream().map(MatchingResponseDto::fromEntityBySpaceRental).collect(Collectors.toList());
     }
 
     // 공간 대여자가 받은 매칭 조회
-    public List<MatchingDto> findSpaceRentalOfferMatching(Long spaceRentalId) {
+    public List<MatchingResponseDto> findSpaceRentalOfferMatching(Long spaceRentalId) {
         List<Matching> list = matchingRepository.findByReceiverAndMatchingStatusAndSenderType(spaceRentalId, MatchingStatus.REQUESTWAITING, SenderType.PROJECTMANAGER);
-        return list.stream().map(MatchingDto::fromEntity).collect(Collectors.toList());
+        return list.stream().map(MatchingResponseDto::fromEntityBySpaceRental).collect(Collectors.toList());
     }
 
     // 공간 대여자의 성사된 매칭 조회
-    public List<MatchingDto> findSpaceRentalSuccessMatching(Long spaceRentalId) {
+    public List<MatchingResponseDto> findSpaceRentalSuccessMatching(Long spaceRentalId) {
         List<Matching> senderList = matchingRepository.findSuccessMatchingSenderSpaceRental(spaceRentalId);
         List<Matching> receiverList = matchingRepository.findSuccessMatchingReceiverSpaceRental(spaceRentalId);
-        return Stream.concat(senderList.stream(), receiverList.stream()).map(MatchingDto::fromEntity).collect(Collectors.toList());
+        return Stream.concat(senderList.stream(), receiverList.stream()).map(MatchingResponseDto::fromEntityBySpaceRental).collect(Collectors.toList());
     }
 
     // 프로젝트 매니저가 보낸 매칭 조회
-    public List<MatchingDto> findProjectManagerWaitingMatching(Long projectManagerId) {
+    public List<MatchingResponseDto> findProjectManagerWaitingMatching(Long projectManagerId) {
         List<Matching> list = matchingRepository.findBySenderAndMatchingStatusAndSenderType(projectManagerId, MatchingStatus.REQUESTWAITING, SenderType.PROJECTMANAGER);
-        return list.stream().map(MatchingDto::fromEntity).collect(Collectors.toList());
+        return list.stream().map(MatchingResponseDto::fromEntityByProjectManager).collect(Collectors.toList());
     }
 
     // 프로젝트 매니저가 받은 매칭
-    public List<MatchingDto> findProjectManagerOfferMatching(Long projectManagerId) {
+    public List<MatchingResponseDto> findProjectManagerOfferMatching(Long projectManagerId) {
         List<Matching> list = matchingRepository.findByReceiverAndMatchingStatusAndSenderType(projectManagerId, MatchingStatus.REQUESTWAITING, SenderType.SPACERENTAL);
-        return list.stream().map(MatchingDto::fromEntity).collect(Collectors.toList());
+        return list.stream().map(MatchingResponseDto::fromEntityByProjectManager).collect(Collectors.toList());
     }
 
     //프로젝트 매니저의 성사된 매칭
-    public List<MatchingDto> findProjectManagerSuccessMatching(Long projectManagerId) {
+    public List<MatchingResponseDto> findProjectManagerSuccessMatching(Long projectManagerId) {
         List<Matching> senderList = matchingRepository.findSuccessMatchingSenderProjectManager(projectManagerId);
         List<Matching> receiverList = matchingRepository.findSuccessMatchingReceiverProjectManager(projectManagerId);
-        return Stream.concat(senderList.stream(), receiverList.stream()).map(MatchingDto::fromEntity).collect(Collectors.toList());
+        return Stream.concat(senderList.stream(), receiverList.stream()).map(MatchingResponseDto::fromEntityByProjectManager).collect(Collectors.toList());
     }
 }
