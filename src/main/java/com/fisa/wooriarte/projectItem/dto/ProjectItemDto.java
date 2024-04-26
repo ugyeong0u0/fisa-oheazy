@@ -26,6 +26,7 @@ public class ProjectItemDto {
     private LocalDate endDate;
     private Boolean isDeleted;
     private String city;
+    private String itemType;
 
     public ProjectItem toEntity(ProjectManager projectManager) {
 
@@ -55,6 +56,7 @@ public class ProjectItemDto {
                 .endDate(entity.getEndDate())
                 .isDeleted(entity.getIsDeleted())
                 .city(entity.getCity().name())
+                .itemType(entity.getItemType())
                 .build();
     }
 }

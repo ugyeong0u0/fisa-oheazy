@@ -76,6 +76,10 @@ public class SpaceItem {
     @Column
     private Boolean isDeleted;
 
+    @Column(nullable = false, updatable = false)
+    @Builder.Default
+    private String itemType = "SpaceItem";
+
     public void setIsDeleted() {
         this.isDeleted = true;
     }

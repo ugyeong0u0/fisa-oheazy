@@ -74,7 +74,9 @@ public class ProjectItem {
     @Column(nullable = false)
     private City city;
 
-    private String itemType;
+    @Column(nullable = false, updatable = false)
+    @Builder.Default
+    private String itemType = "ProjectItem";
 
     public void setIsDeleted() {
         this.isDeleted = true;

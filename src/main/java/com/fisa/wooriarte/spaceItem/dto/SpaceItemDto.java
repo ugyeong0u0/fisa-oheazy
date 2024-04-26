@@ -16,32 +16,20 @@ import java.time.LocalDateTime;
 public class SpaceItemDto {
 
     private Long spaceItemId;
-
     private Long spaceRentalId;
-
     private String intro;
-
     private String hostName;
-
     private String city;
-
     private String size;
-
     private Boolean parking;
-
     private int fee;
-
     private String phone;
-
     private Boolean approval;
-
     private LocalDate startDate;
-
     private LocalDate endDate;
-
     private LocalDate createdAt;
-
     private Boolean isDeleted;
+    private String itemType;
 
     public SpaceItem toEntity(SpaceRental spaceRental) {
         return SpaceItem.builder()
@@ -77,6 +65,7 @@ public class SpaceItemDto {
                 .endDate(entity.getEndDate())
                 .createdAt(entity.getCreatedAt())
                 .isDeleted(entity.getIsDeleted())
+                .itemType(entity.getItemType())
                 .build();
     }
 
