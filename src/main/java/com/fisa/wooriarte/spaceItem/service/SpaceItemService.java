@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.spaceItem.service;
 
+import com.fisa.wooriarte.spaceItem.domain.City;
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
 import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import com.fisa.wooriarte.spaceItem.repository.SpaceItemRepository;
@@ -9,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -86,6 +88,11 @@ public class SpaceItemService {
         SpaceItem spaceItem = spaceItemRepository.findBySpaceItemIdAndIsDeletedFalse(spaceItemId)
                 .orElseThrow(() -> new Exception("spaceItem id: " + spaceItemId + " 는 존재하지 않습니다"));
         spaceItem.setIsDeleted();
+    }
+
+    public List<SpaceItemDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
+        List<SpaceItem> spaceItems = spaceItemRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCity(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
+        return spaceItems.stream().map(SpaceItemDto::fromEntity).collect(Collectors.toList());
     }
 }
 

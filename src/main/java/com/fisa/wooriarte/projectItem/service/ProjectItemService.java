@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.projectItem.service;
 
+import com.fisa.wooriarte.projectItem.domain.City;
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectItem.dto.ProjectItemDto;
 import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
@@ -9,10 +10,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,4 +85,8 @@ public class ProjectItemService {
         projectItem.setIsDeleted();
     }
 
+    public List<ProjectItemDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
+        List<ProjectItem> projectItems = projectItemRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCity(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
+        return projectItems.stream().map(ProjectItemDto::fromEntity).collect(Collectors.toList());
+    }
 }

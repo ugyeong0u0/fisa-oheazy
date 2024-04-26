@@ -1,15 +1,17 @@
 package com.fisa.wooriarte.projectItem.controller;
 
 import com.fisa.wooriarte.projectItem.dto.ProjectItemDto;
-import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
 import com.fisa.wooriarte.projectItem.service.ProjectItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -91,5 +93,14 @@ public class ProjectItemController {
         }
     }
 
-
+    @GetMapping("/{start-date}/{end-date}/{city}")
+    public ResponseEntity<?> getProjectItemByFilter(@PathVariable("start-date") LocalDate startDate, @PathVariable("end-date") LocalDate endDate, @PathVariable("city") String city) {
+        try {
+            List<ProjectItemDto> projectItemDtoList = projectItemService.findByFilter(startDate, endDate, city);
+            return ResponseEntity.ok(projectItemDtoList);
+        } catch (Exception e) {
+            log.error("Failed to find project item by filter", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to find project item"));
+        }
+    }
 }

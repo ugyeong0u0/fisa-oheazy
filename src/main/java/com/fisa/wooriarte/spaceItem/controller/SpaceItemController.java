@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -91,6 +92,17 @@ public class SpaceItemController {
         } catch (Exception e) {
             log.error("Error deleting space item with id: {}", spaceItemId, e);
             return ResponseEntity.badRequest().body(Map.of("message", "Failed to delete space item."));
+        }
+    }
+
+    @GetMapping("/{start-date}/{end-date}/{city}")
+    public ResponseEntity<?> getSpaceItemByFilter(@PathVariable("start-date") LocalDate startDate, @PathVariable("end-date") LocalDate endDate, @PathVariable("city") String city) {
+        try {
+            List<SpaceItemDto> spaceItemDtoList = spaceItemService.findByFilter(startDate, endDate, city);
+            return ResponseEntity.ok(spaceItemDtoList);
+        } catch (Exception e) {
+            log.error("Failed to find space item by filter", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to find space item"));
         }
     }
 }
