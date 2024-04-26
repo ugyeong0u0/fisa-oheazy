@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,5 +89,26 @@ public class ProjectItemService {
     public List<ProjectItemDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
         List<ProjectItem> projectItems = projectItemRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCity(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
         return projectItems.stream().map(ProjectItemDto::fromEntity).collect(Collectors.toList());
+    }
+    @Transactional
+    public boolean approveItem(Long projectItemId) {
+        ProjectItem projectItem = projectItemRepository.findById(projectItemId).orElseThrow(() -> new NoSuchElementException("No Project Item found with ID: " + projectItemId));
+        projectItem.setApproval();
+        projectItemRepository.save(projectItem);
+        return true;
+    }
+    @Transactional
+    public boolean refuseItem(Long projectItemId) {
+        projectItemRepository.deleteById(projectItemId);
+        return true;
+    }
+
+    public List<ProjectItemDto> getUnapprovedItems() {
+        List<ProjectItem> projectItems = projectItemRepository.findAllByApprovalFalse()
+                .orElseThrow(() -> new NoSuchElementException("No Project Item"));
+
+        return projectItems.stream()
+                .map(ProjectItemDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }

@@ -17,4 +17,5 @@ public interface ProjectItemRepository extends JpaRepository<ProjectItem, Long> 
     Optional<List<ProjectItem>> findByProjectManager(ProjectManager projectManager);
     Optional<List<ProjectItem>> findAllByIsDeletedFalse();
     Optional<List<ProjectItem>> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCity(LocalDate startDate, LocalDate endDate, City city);
+    Optional<List<ProjectItem>> findAllByApprovalFalse();
 }

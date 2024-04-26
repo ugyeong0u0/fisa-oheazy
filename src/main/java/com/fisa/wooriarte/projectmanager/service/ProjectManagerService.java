@@ -76,17 +76,13 @@ public class ProjectManagerService {
 
         Authentication authentication = null;
         try {
-            System.out.println("***111");
             authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-            System.out.println("***222");
         } catch (Exception e) {
             e.printStackTrace(); // 예외를 로깅
             throw e; // 필요한 경우, 예외를 다시 던져 처리할 수 있습니다.
         }
-        System.out.println("***333");
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
-        System.out.println("***444");
         return jwtToken;
     }
 

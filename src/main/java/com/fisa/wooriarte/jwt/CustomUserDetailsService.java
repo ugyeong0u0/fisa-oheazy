@@ -1,5 +1,7 @@
 package com.fisa.wooriarte.jwt;
 
+import com.fisa.wooriarte.admin.domain.Admin;
+import com.fisa.wooriarte.admin.repository.AdminRepository;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
@@ -26,24 +28,26 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     private final ProjectManagerRepository projectManagerRepository;
     private final SpaceRentalRepository spaceRentalRepository;
+    private final AdminRepository adminRepository;
 
     @Autowired
     public CustomUserDetailsService(
             PasswordEncoder passwordEncoder,
             UserRepository userRepository,
             ProjectManagerRepository projectManagerRepository,
-            SpaceRentalRepository spaceRentalRepository) {
+            SpaceRentalRepository spaceRentalRepository, AdminRepository adminRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.projectManagerRepository = projectManagerRepository;
         this.spaceRentalRepository = spaceRentalRepository;
+        this.adminRepository = adminRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
         UserDetails userDetails = userRepository.findById(id)
                 .map(this::createUserDetails)
-                .orElse(null);
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
         if (userDetails != null) {
             return userDetails;
@@ -51,13 +55,21 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         userDetails = projectManagerRepository.findById(id)
                 .map(this::createUserDetails)
-                .orElse(null);
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
         if (userDetails != null) {
             return userDetails;
         }
 
-        return spaceRentalRepository.findById(id)
+        userDetails = spaceRentalRepository.findById(id)
+                .map(this::createUserDetails)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+
+        if (userDetails != null) {
+            return userDetails;
+        }
+
+        return adminRepository.findById(id)
                 .map(this::createUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
@@ -89,6 +101,13 @@ public class CustomUserDetailsService implements UserDetailsService {
             password = userEntity.getPassword();
             // User 엔티티의 권한 설정 방식을 가정합니다.
             authorities = userEntity.getRoles().stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+        } else if (user instanceof Admin) {
+            Admin admin = (Admin) user;
+            username = admin.getUsername();
+            password = admin.getPassword();
+            authorities = admin.getRoles().stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
         } else {

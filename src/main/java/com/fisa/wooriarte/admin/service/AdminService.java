@@ -5,6 +5,9 @@ import com.fisa.wooriarte.admin.dto.AdminDto;
 import com.fisa.wooriarte.admin.repository.AdminRepository;
 import com.fisa.wooriarte.jwt.JwtToken;
 import com.fisa.wooriarte.jwt.JwtTokenProvider;
+import com.fisa.wooriarte.projectItem.domain.ProjectItem;
+import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
+import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,18 +16,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AdminService {
 
     private final AdminRepository adminRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final ProjectItemRepository projectItemRepository;
 
     @Autowired
-    public AdminService(AdminRepository adminRepository, JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
+    public AdminService(AdminRepository adminRepository, JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, ProjectItemRepository projectItemRepository) {
         this.adminRepository = adminRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.projectItemRepository = projectItemRepository;
     }
     @Transactional
     public Boolean addAdmin(AdminDto adminDto) {

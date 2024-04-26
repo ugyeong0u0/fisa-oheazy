@@ -47,7 +47,6 @@ public class SecurityConfig {
 //                .requestMatchers("/project-managers/**").hasAuthority("PROJECT_MANAGER")
 //                .requestMatchers("/project-item/**", "/space-item/**").hasAnyAuthority("PROJECT_MANAGER", "SPACE_RENTAL") // 수정: hasAnyRole 사용
 //                .requestMatchers("/space-rentals/**").hasAnyAuthority("SPACE_RENTAL")
-//                .requestMatchers("/email", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
 //                .anyRequest().authenticated()
 //                .and()
 //                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService),

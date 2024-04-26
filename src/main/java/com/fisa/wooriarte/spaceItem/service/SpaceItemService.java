@@ -93,5 +93,26 @@ public class SpaceItemService {
         List<SpaceItem> spaceItems = spaceItemRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCity(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
         return spaceItems.stream().map(SpaceItemDto::fromEntity).collect(Collectors.toList());
     }
+
+    public boolean approveItem(Long spaceItemId) {
+        SpaceItem spaceItem = spaceItemRepository.findById(spaceItemId).orElseThrow(() -> new NoSuchElementException("No Space Item found with ID: " + spaceItemId));
+        spaceItem.setApproval();
+        spaceItemRepository.save(spaceItem);
+        return true;
+    }
+
+    public boolean refuseItem(Long spaceItemId) {
+        spaceItemRepository.deleteById(spaceItemId);
+        return true;
+    }
+
+    public List<SpaceItemDto> getUnapprovedItems() {
+        List<SpaceItem> spaceItems = spaceItemRepository.findAllByApprovalFalse()
+                .orElseThrow(() -> new NoSuchElementException("No Space Item"));
+
+        return spaceItems.stream()
+                .map(SpaceItemDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 }
 

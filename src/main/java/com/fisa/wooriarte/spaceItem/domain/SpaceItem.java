@@ -76,10 +76,11 @@ public class SpaceItem {
     @Column
     private Boolean isDeleted;
 
-
     public void setIsDeleted() {
         this.isDeleted = true;
     }
+
+    public void setApproval() { this.approval = true; }
 
     public void updateSpaceItem(SpaceItemDto spaceItemDto) {
         this.intro = spaceItemDto.getIntro();

@@ -74,9 +74,13 @@ public class ProjectItem {
     @Column(nullable = false)
     private City city;
 
+    private String itemType;
+
     public void setIsDeleted() {
         this.isDeleted = true;
     }
+
+    public void setApproval() { this.approval = true; }
 
 
     public void updateProjectItem(ProjectItemDto projectItemDto) {
