@@ -2,6 +2,8 @@ package com.fisa.wooriarte.ticket.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
+import com.fisa.wooriarte.payment.domain.Payment;
+import com.fisa.wooriarte.refund.domain.Refund;
 import com.fisa.wooriarte.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,6 +34,13 @@ public class Ticket {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_id", nullable = false)
+    private Payment payment;
+
+    @OneToOne(mappedBy = "ticket")
+    private Refund refund;
 
     @Column(nullable = false)
     private Long amount;

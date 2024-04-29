@@ -2,6 +2,8 @@ package com.fisa.wooriarte.ticket.service;
 
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
+import com.fisa.wooriarte.payment.domain.Payment;
+import com.fisa.wooriarte.payment.repository.PaymentRepository;
 import com.fisa.wooriarte.ticket.domain.Ticket;
 import com.fisa.wooriarte.ticket.dto.TicketDto;
 import com.fisa.wooriarte.ticket.repository.TicketRepository;
@@ -29,11 +31,14 @@ public class TicketService {
 
     private final ExhibitRepository exhibitRepository;
 
+    private final PaymentRepository paymentRepository;
+
     @Autowired
-    public TicketService(TicketRepository ticketRepository, UserRepository userRepository, ExhibitRepository exhibitRepository){
+    public TicketService(TicketRepository ticketRepository, UserRepository userRepository, ExhibitRepository exhibitRepository, PaymentRepository paymentRepository){
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.exhibitRepository = exhibitRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     /**
@@ -79,11 +84,13 @@ public class TicketService {
         //exhibitId로 Exhibit 가져오기
         Exhibit exhibit = exhibitRepository.findById(exhibitId)
                 .orElseThrow(() -> new IllegalArgumentException("Exhibit not found with id: " + exhibitId));
+        Payment payment = paymentRepository.findById(ticketDTO.getPaymentId())
+                .orElseThrow(() -> new IllegalArgumentException("payment not found with id: " + ticketDTO.getPaymentId()));
         // TicketDTO에 userId, exhibitId 설정
         ticketDTO.setUserId(user.getUserId());
         ticketDTO.setExhibitId(exhibit.getExhibitId());
         //TicketDTO -> 엔티티 변환
-        Ticket ticket = ticketDTO.toEntity(user, exhibit);
+        Ticket ticket = ticketDTO.toEntity(user, exhibit, payment);
         //Ticket 엔티티 저장
         ticketRepository.save(ticket);
     }

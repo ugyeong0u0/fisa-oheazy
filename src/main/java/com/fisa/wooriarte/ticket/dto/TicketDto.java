@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.ticket.dto;
 
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
+import com.fisa.wooriarte.payment.domain.Payment;
 import com.fisa.wooriarte.ticket.domain.Ticket;
 import com.fisa.wooriarte.user.domain.User;
 import lombok.*;
@@ -12,6 +13,7 @@ import lombok.*;
 public class TicketDto {
     private Long ticketId;
     private Long exhibitId;
+    private Long paymentId;
     private Long userId;
     private Long amount;
     private Boolean canceled;
@@ -21,10 +23,10 @@ public class TicketDto {
     private String email;
     private String phone;
 
-    public Ticket toEntity(User user, Exhibit exhibit) {
+    public Ticket toEntity(User user, Exhibit exhibit, Payment payment) {
         return Ticket.builder()
-                .ticketId(this.ticketId)
                 .exhibit(exhibit)
+                .payment(payment)
                 .user(user)
                 .amount(this.amount)
                 .canceled(this.canceled)
@@ -48,6 +50,7 @@ public class TicketDto {
                 .phone(ticket.getPhone())
                 .exhibitId(ticket.getExhibit() != null ? ticket.getExhibit().getExhibitId() : null)
                 .userId(ticket.getUser() != null ? ticket.getUser().getUserId() : null)
+                .paymentId(ticket.getPayment().getPaymentId())
                 .build();
     }
 

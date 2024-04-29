@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PaymentDTO {
+public class PaymentDto {
     private Long paymentId;
     private String orderNumber;
     private String method;
@@ -19,8 +19,8 @@ public class PaymentDTO {
     private String approvalNumber;
     private PaymentStatus status;
 
-    public static PaymentDTO fromEntity(Payment payment) {
-        return PaymentDTO.builder()
+    public static PaymentDto fromEntity(Payment payment) {
+        return PaymentDto.builder()
                 .paymentId(payment.getPaymentId())
                 .orderNumber(payment.getOrderNumber())
                 .method(payment.getMethod())

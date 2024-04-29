@@ -1,6 +1,6 @@
 package com.fisa.wooriarte.payment.domain;
 
-import com.fisa.wooriarte.payment.dto.PaymentDTO;
+import com.fisa.wooriarte.ticket.domain.Ticket;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +23,9 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
+
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
+    private Ticket ticket;
 
     @Column(nullable = false, updatable = false, unique = true)
     private String orderNumber;

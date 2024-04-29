@@ -4,7 +4,7 @@ import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
 import com.fisa.wooriarte.payment.domain.Payment;
 import com.fisa.wooriarte.payment.domain.PaymentStatus;
-import com.fisa.wooriarte.payment.dto.PaymentDTO;
+import com.fisa.wooriarte.payment.dto.PaymentDto;
 import com.fisa.wooriarte.payment.repository.PaymentRepository;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
@@ -14,7 +14,6 @@ import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Prepare;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -51,7 +50,7 @@ public class PaymentService {
     }
 
     @Transactional
-    public PaymentDTO addPayment(Long exhibitId, Long amount) {
+    public PaymentDto addPayment(Long exhibitId, Long amount) {
         Exhibit exhibit = exhibitRepository.findById(exhibitId).orElseThrow(() -> new NoSuchElementException("해당 전시가 없습니다."));
         Payment payment = Payment.builder()
                 .orderNumber(UUID.randomUUID().toString())
@@ -59,7 +58,7 @@ public class PaymentService {
                 .status(PaymentStatus.PROGRESSING)
                 .build();
         paymentRepository.save(payment);
-        return PaymentDTO.fromEntity(payment);
+        return PaymentDto.fromEntity(payment);
     }
 
     public void preRegisterPayment(String orderNumber, Long amount) {
@@ -93,7 +92,7 @@ public class PaymentService {
     }
 
     @Transactional
-    public boolean verifyPayment(String impUid) {
+    public PaymentDto verifyPayment(String impUid) {
         com.siot.IamportRestClient.response.Payment iamPayment = null;
         try {
             iamPayment = iamportClient.paymentByImpUid(impUid).getResponse();
@@ -105,11 +104,11 @@ public class PaymentService {
         if(!iamPayment.getStatus().equals("paid") || payment.getStatus() != PaymentStatus.PROGRESSING || payment.getAmount() != iamPayment.getAmount().longValue()) {
             payment.updatePayment(iamPayment.getPayMethod(), impUid, PaymentStatus.WRONGPAYMENT);
             paymentRepository.save(payment);
-            return false;
+            return null;
         }
         payment.updatePayment(iamPayment.getPayMethod(), impUid, PaymentStatus.FINISH);
         paymentRepository.save(payment);
-        return true;
+        return PaymentDto.fromEntity(payment);
     }
 
     @Transactional
