@@ -14,8 +14,8 @@ import java.util.Optional;
 public interface ProjectItemRepository extends JpaRepository<ProjectItem, Long> {
 
     Optional<ProjectItem> findByProjectItemIdAndIsDeletedFalse(Long projectItemId);
-    Optional<List<ProjectItem>> findByProjectManager(ProjectManager projectManager);
+    Optional<List<ProjectItem>> findByProjectManagerAndIsDeletedFalse(ProjectManager projectManager);
     Optional<List<ProjectItem>> findAllByIsDeletedFalse();
-    Optional<List<ProjectItem>> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCity(LocalDate startDate, LocalDate endDate, City city);
-    Optional<List<ProjectItem>> findAllByApprovalFalse();
+    Optional<List<ProjectItem>> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCityAndIsDeletedFalse(LocalDate startDate, LocalDate endDate, City city);
+    Optional<List<ProjectItem>> findAllByApprovalFalseAndIsDeletedFalse();
 }

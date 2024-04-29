@@ -53,10 +53,10 @@ public class AdminController {
         try {
             log.info("Adding a new admin");
             adminService.addAdmin(adminDto);
-            return ResponseEntity.ok().body("Admin added successfully");
+            return ResponseEntity.ok(Map.of("message", "Admin added successfully"));
         } catch (Exception e) {
             log.error("Exception occurred while adding an admin: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add admin");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message","Failed to add admin"));
         }
     }
 
@@ -79,15 +79,10 @@ public class AdminController {
             log.info("Managing item approval");
             List<ProjectItemDto> projectItemList = projectItemService.getUnapprovedItems();
             List<SpaceItemDto> spaceItemList = spaceItemService.getUnapprovedItems();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("projectItems", projectItemList);
-            response.put("spaceItems", spaceItemList);
-
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(Map.of("projectItems", projectItemList, "spaceItems", spaceItemList));
         } catch (Exception e) {
             log.error("Exception occurred while managing item approval: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to manage item approval");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to manage item approval"));
         }
     }
 
@@ -96,10 +91,10 @@ public class AdminController {
         try {
             log.info("Approving project item with id: {}", projectItemId);
             projectItemService.approveItem(projectItemId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(Map.of("message", "Success to approve project item"));
         } catch (Exception e) {
             log.error("Exception occurred while approving project item: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to approve project item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to approve project item"));
         }
     }
 
@@ -108,10 +103,10 @@ public class AdminController {
         try {
             log.info("Approving space item with ID: {}", spaceItemId);
             spaceItemService.approveItem(spaceItemId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(Map.of("message", "Success to approve space item"));
         } catch (Exception e) {
             log.error("Exception occurred while approving space item with ID: {}: ", spaceItemId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to approve space item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to approve space item"));
         }
     }
 
@@ -120,10 +115,10 @@ public class AdminController {
         try {
             log.info("Refusing project item with ID: {}", projectItemId);
             projectItemService.refuseItem(projectItemId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(Map.of("message", "Success to refuse project item"));
         } catch (Exception e) {
             log.error("Exception occurred while refusing project item with ID: {}: ", projectItemId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to refuse project item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to refuse project item"));
         }
     }
 
@@ -132,12 +127,10 @@ public class AdminController {
         try {
             log.info("Refusing space item with ID: {}", spaceItemId);
             spaceItemService.refuseItem(spaceItemId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(Map.of("message", "Success to refuse space item"));
         } catch (Exception e) {
             log.error("Exception occurred while refusing space item with ID: {}: ", spaceItemId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to refuse space item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to refuse space item"));
         }
     }
 }
-
-

@@ -59,7 +59,7 @@ public class ProjectItemService {
         // Optional<List<ProjectItem>>에서 List<ProjectItem>을 얻기 위해 orElseGet을 사용합니다.
         // Optional이 비어있다면, 빈 리스트를 반환합니다.
         ProjectManager projectManager = projectManagerRepository.findById(projectManagerId).orElseThrow(() -> new NoSuchElementException("No Project Manager"));
-        List<ProjectItem> projectItems = projectItemRepository.findByProjectManager(projectManager)
+        List<ProjectItem> projectItems = projectItemRepository.findByProjectManagerAndIsDeletedFalse(projectManager)
                 .orElse(Collections.emptyList());
 
         // Stream을 사용하여 각 ProjectItem을 ProjectItemDTO로 변환합니다.
@@ -84,10 +84,11 @@ public class ProjectItemService {
         ProjectItem projectItem = projectItemRepository.findByProjectItemIdAndIsDeletedFalse(projectItemId)
                 .orElseThrow(() -> new Exception("projectItem id: " + projectItemId + " 는 존재하지 않습니다"));
         projectItem.setIsDeleted();
+        projectItemRepository.save(projectItem);
     }
 
     public List<ProjectItemDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
-        List<ProjectItem> projectItems = projectItemRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCity(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
+        List<ProjectItem> projectItems = projectItemRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCityAndIsDeletedFalse(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
         return projectItems.stream().map(ProjectItemDto::fromEntity).collect(Collectors.toList());
     }
     @Transactional
@@ -104,7 +105,7 @@ public class ProjectItemService {
     }
 
     public List<ProjectItemDto> getUnapprovedItems() {
-        List<ProjectItem> projectItems = projectItemRepository.findAllByApprovalFalse()
+        List<ProjectItem> projectItems = projectItemRepository.findAllByApprovalFalseAndIsDeletedFalse()
                 .orElseThrow(() -> new NoSuchElementException("No Project Item"));
 
         return projectItems.stream()
