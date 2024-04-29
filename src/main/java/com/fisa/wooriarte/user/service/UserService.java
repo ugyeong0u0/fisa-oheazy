@@ -136,8 +136,8 @@ public class UserService {
     }
 
     // 유저 아이디 찾기
-    public String findUserId(String name, String email)  {
-        User userInfo = userRepository.findByNameAndEmail(name, email)
+    public String findUserId( String email)  {
+        User userInfo = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("유저 아이디를 찾을 수 없습니다.")); //객체 없으면 에러던지기
 
         return userInfo.getId(); //아이디 던저주기

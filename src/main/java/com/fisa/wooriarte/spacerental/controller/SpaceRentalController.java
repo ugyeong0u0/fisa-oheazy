@@ -78,7 +78,7 @@ public class SpaceRentalController {
     }
 
     // 공간대여자 비밀번호 재설정
-    @PostMapping("/set-pwd")
+        @PostMapping("/set-pwd")
     public ResponseEntity<?> findSpaceRentalPw(@RequestBody Map<String, String> pwdInfo) {
         String id = pwdInfo.get("id");
         String newPwd = pwdInfo.get("new_pwd");

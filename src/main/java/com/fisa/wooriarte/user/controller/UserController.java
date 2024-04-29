@@ -166,12 +166,10 @@ public class UserController {
      */
     @PostMapping("/find-id")
     public ResponseEntity<?> findUserId(@RequestBody UserDto userDto) {
-
-        String name = userDto.getName();
         String email = userDto.getEmail();
 
         try {
-            String userId = userService.findUserId(name, email);
+            String userId = userService.findUserId(email);
             return ResponseEntity.ok().body(userId);
         } catch (NoSuchElementException e) {
             errorMessage.setMsg(e.getMessage());

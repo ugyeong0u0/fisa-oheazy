@@ -107,11 +107,12 @@ public class MatchingController {
     }
 
     @PostMapping("/{matching-id}")
-    public ResponseEntity<?> approvalMatching(@PathVariable(name = "matching-id") Long id, @RequestBody boolean accept) {
+    public ResponseEntity<?> approvalMatching(@PathVariable(name = "matching-id") Long id, @RequestBody Map<String, Boolean> accept) {
         try {
             log.info("Approval status update for matchingId: {}, accept: {}", id, accept);
-
-            if (matchingService.updateMatching(id, accept ? MatchingStatus.WAITING : MatchingStatus.CANCEL)) {
+            boolean boolAccept = accept.getOrDefault("accept", false);
+            System.out.println("신청값" + boolAccept);
+            if (matchingService.updateMatching(id, boolAccept ? MatchingStatus.WAITING : MatchingStatus.CANCEL)) {
                 log.info("Matching status updated successfully for matchingId: {}", id);
                 return ResponseEntity.ok(Map.of("message", "Matching status successfully updated."));
             }
