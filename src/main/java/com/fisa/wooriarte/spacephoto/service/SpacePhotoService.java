@@ -37,6 +37,7 @@ public class SpacePhotoService {
      * @throws IOException
      */
     public ResponseEntity<?> addPhotos(List<MultipartFile> multipartFileList, Long id) throws IOException {
+        SpaceItem spaceItem = spaceItemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("SpaceItem not found with id: " + id));
         // 리스트로 들어온 여러 파일들을 하나씩 S3와 DB에 저장
         for (MultipartFile multipartFile : multipartFileList) {
             // 파일명 지정 (겹치지 않도록 UUID와 원본 파일명을 조합)
@@ -57,7 +58,7 @@ public class SpacePhotoService {
                     .build();
 
             // SpacePhotoDTO를 엔티티로 변환하여 저장
-            SpacePhoto spacePhoto = spacePhotoDTO.toEntity(spaceItemRepository);
+            SpacePhoto spacePhoto = spacePhotoDTO.toEntity(spaceItem);
             spacePhotoRepository.save(spacePhoto);
         }
         return ResponseEntity.ok().build();

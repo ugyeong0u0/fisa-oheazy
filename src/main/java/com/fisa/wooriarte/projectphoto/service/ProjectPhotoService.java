@@ -37,7 +37,9 @@ public class ProjectPhotoService {
      * @return
      * @throws IOException
      */
+    @Transactional
     public ResponseEntity<?> addPhotos(List<MultipartFile> multipartFileList, Long id) throws IOException {
+        ProjectItem projectItem = projectItemRepository.findById(id).orElseThrow(() ->  new IllegalArgumentException("SpaceItem not found with id: " + id));
         // 리스트로 들어온 여러 파일들을 하나씩 S3와 DB에 저장
         for (MultipartFile multipartFile : multipartFileList) {
             // 파일명 지정 (겹치지 않도록 UUID와 원본 파일명을 조합)
@@ -45,10 +47,8 @@ public class ProjectPhotoService {
 
             // S3에 파일 업로드
             String url = s3Service.upload(multipartFile, fileName);
-
             // S3 키 이름 추출
             String s3KeyName = extractKeyNameFromUrl(url);
-
             // ProjectPhotoDTO 생성
             ProjectPhotoDTO projectPhotoDTO = ProjectPhotoDTO.builder()
                     .projectItemId(id)
@@ -58,7 +58,8 @@ public class ProjectPhotoService {
                     .build();
 
             // ProjectPhotoDTO를 엔티티로 변환하여 저장
-            ProjectPhoto projectPhoto = projectPhotoDTO.toEntity(projectItemRepository);
+            ProjectPhoto projectPhoto = projectPhotoDTO.toEntity(projectItem);
+            System.out.println(projectPhoto.getProjectPhotoId());
             projectPhotoRepository.save(projectPhoto);
         }
         return ResponseEntity.ok().build();

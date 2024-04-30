@@ -28,13 +28,14 @@ public class SpaceItemService {
     }
 
     @Transactional
-    public boolean addSpaceItem(SpaceItemDto spaceItemDTO){
+    public Long addSpaceItem(SpaceItemDto spaceItemDTO){
         System.out.println("addSpaceItem");
         // 공간대여자가 있을 경우에 생성
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceItemDTO.getSpaceRentalId())
                 .orElseThrow(() -> new NoSuchElementException("No space Rental"));
-        spaceItemRepository.save(spaceItemDTO.toEntity(spaceRental));
-        return true;
+        SpaceItem spaceItem = spaceItemDTO.toEntity(spaceRental);
+        spaceItemRepository.save(spaceItem);
+        return spaceItem.getSpaceItemId();
     }
 
     public List<SpaceItemDto> findAll() {

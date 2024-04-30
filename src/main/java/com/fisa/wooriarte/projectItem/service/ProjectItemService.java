@@ -30,11 +30,13 @@ public class ProjectItemService {
 
     // 프로젝트 추가
     @Transactional
-    public void addProjectItem(ProjectItemDto projectItemDTO){
+    public Long addProjectItem(ProjectItemDto projectItemDTO){
         System.out.println("addProjectItem");
         ProjectManager projectManager = projectManagerRepository.findById(projectItemDTO.getProjectManagerId())
                 .orElseThrow(() -> new NoSuchElementException("No Project Manager"));
-        projectItemRepository.save(projectItemDTO.toEntity(projectManager));
+        ProjectItem projectItem = projectItemDTO.toEntity(projectManager);
+        projectItemRepository.save(projectItem);
+        return projectItem.getProjectItemId();
     }
 
     // 프로젝트 아이템 전체 조회(삭제된 아이템 제외)

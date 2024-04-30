@@ -47,8 +47,8 @@ public class ProjectItemController {
     @PostMapping("")
     public ResponseEntity<?> addProjectItem(@RequestBody ProjectItemDto projectItemDTO) {
         try {
-            projectItemService.addProjectItem(projectItemDTO);
-            return ResponseEntity.ok(Map.of("message", "Project item successfully added."));
+            Long projectItemId = projectItemService.addProjectItem(projectItemDTO);
+            return ResponseEntity.ok(Map.of("message", "Project item successfully added.", "projectItemId", projectItemId));
         } catch (Exception e) {
             log.error("Failed to add project item", e);
             return ResponseEntity.badRequest().body(Map.of("message", "Failed to add project item."));

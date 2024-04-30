@@ -15,9 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 public class ProjectItemDto {
     private Long projectItemId;
-
     private Long projectManagerId;
-
     private String artistName;
     private String intro;
     private String phone;

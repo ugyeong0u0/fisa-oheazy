@@ -24,12 +24,7 @@ public class SpacePhotoDTO {
     private String url;
     private String s3KeyName; // S3 키 값을 저장하는 필드 추가
 
-    public SpacePhoto toEntity(SpaceItemRepository spaceItemRepository) {
-        // spaceItemId를 찾아서 Optional로 받음
-        Optional<SpaceItem> optionalSpaceItem = spaceItemRepository.findById(this.spaceItemId);
-
-        // Optional에서 SpaceItem이 존재하지 않으면 예외 발생
-        SpaceItem spaceItem = optionalSpaceItem.orElseThrow(() -> new IllegalArgumentException("SpaceItem not found with id: " + this.spaceItemId));
+    public SpacePhoto toEntity(SpaceItem spaceItem) {
         return SpacePhoto.builder()
                 .spaceItem(spaceItem)
                 .fileName(this.fileName)

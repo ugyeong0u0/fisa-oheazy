@@ -25,7 +25,6 @@ public class SpaceItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long spaceItemId;
 
     @ManyToOne
@@ -37,6 +36,7 @@ public class SpaceItem {
     private List<Matching> matchings = new ArrayList<>();
 
     @OneToMany(mappedBy = "spaceItem", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<SpacePhoto> spacePhoto = new ArrayList<>();
 
     @Column
