@@ -12,6 +12,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -22,14 +24,15 @@ public class ProjectManagerService {
     private final ProjectManagerRepository projectManagerRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
-    private final Encryption encryption;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ProjectManagerService(ProjectManagerRepository projectManagerRepository, AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider, Encryption encryption) {
+    public ProjectManagerService(ProjectManagerRepository projectManagerRepository, AuthenticationManagerBuilder authenticationManagerBuilder,
+                                 JwtTokenProvider jwtTokenProvider, Encryption encryption, PasswordEncoder passwordEncoder) {
         this.projectManagerRepository = projectManagerRepository;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.encryption = encryption;
+        this.passwordEncoder = passwordEncoder;
     }
     /*
    프로젝트 매니저 추가
@@ -44,7 +47,7 @@ public class ProjectManagerService {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
         ProjectManager projectManager = projectManagerDTO.toEntity();
-        projectManager.setPwd(encryption.encryptionSHA256(projectManagerDTO.getPwd()));
+        projectManager.setPwd(passwordEncoder.encode(projectManagerDTO.getPwd())); // assuming 'encryption' is properly injected
         projectManager.addRole("PROJECT_MANAGER");
         projectManagerRepository.save(projectManager);
         return true;
@@ -58,33 +61,47 @@ public class ProjectManagerService {
      */
     public ProjectManagerDto loginProjectManager(String id, String pwd) throws Exception {
         Optional<ProjectManager> optionalProjectManager = projectManagerRepository.findById(id);
-        if(optionalProjectManager.isPresent() && optionalProjectManager.get().getPwd().equals(encryption.encryptionSHA256(pwd))){
+        if (passwordEncoder.matches(pwd, optionalProjectManager.get().getPwd())){
             return ProjectManagerDto.fromEntity(optionalProjectManager.get());
-        }else{
+        } else {
             throw new Exception("로그인 불가");
         }
-
     }
 
     @Transactional
     public JwtToken login(String id, String pwd) {
-        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, pwd);
-        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
+        ProjectManager projectManager = projectManagerRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new); // 사용자가 존재하지 않는 경우 예외 발생
 
+        if (!passwordEncoder.matches(pwd, projectManager.getPassword())) {
+            // 비밀번호가 일치하지 않는 경우
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        System.out.println(passwordEncoder.matches(pwd, projectManager.getPassword()));
+        System.out.println(passwordEncoder.encode(projectManager.getPwd()));
+        // 1. Login ID/PW를 기반으로 Authentication 객체 생성
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, pwd);
+        System.out.println(id);
+        System.out.println(pwd);
+        System.out.println(passwordEncoder.encode(projectManager.getPwd()));
+        System.out.println("%%% 111");
+        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         Authentication authentication = null;
         try {
+            System.out.println("%%% 222");
             authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            System.out.println("%%% 333");
         } catch (Exception e) {
             e.printStackTrace(); // 예외를 로깅
             throw e; // 필요한 경우, 예외를 다시 던져 처리할 수 있습니다.
         }
+
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+
         return jwtToken;
     }
+
 
     //프로젝트 매니저 아이디 찾기
     public String getId(String email) {
@@ -100,7 +117,7 @@ public class ProjectManagerService {
         ProjectManager projectManager = projectManagerRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
         //비밀번호 검증
-        projectManager.setPwd(encryption.encryptionSHA256(newPwd));
+        projectManager.setPwd(passwordEncoder.encode(newPwd));
         projectManagerRepository.save(projectManager);
         return true;
     }
@@ -159,6 +176,6 @@ public class ProjectManagerService {
     public boolean verifyPassword(Long projectManagerId, String pwd) {
         ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
-        return projectManager.getPwd().equals(encryption.encryptionSHA256(pwd));
+        return passwordEncoder.matches(projectManager.getPwd(),passwordEncoder.encode(pwd));
     }
 }

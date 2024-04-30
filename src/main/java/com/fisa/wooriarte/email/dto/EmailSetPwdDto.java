@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
-public class EmailRequestDto {
+public class EmailSetPwdDto {
 
     @NotEmpty
     private String id;

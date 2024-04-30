@@ -8,6 +8,7 @@ import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.repository.UserRepository;
+import com.fisa.wooriarte.util.encryption.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,19 +25,15 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final ProjectManagerRepository projectManagerRepository;
     private final SpaceRentalRepository spaceRentalRepository;
     private final AdminRepository adminRepository;
 
     @Autowired
-    public CustomUserDetailsService(
-            PasswordEncoder passwordEncoder,
-            UserRepository userRepository,
+    public CustomUserDetailsService( UserRepository userRepository,
             ProjectManagerRepository projectManagerRepository,
-            SpaceRentalRepository spaceRentalRepository, AdminRepository adminRepository) {
-        this.passwordEncoder = passwordEncoder;
+            SpaceRentalRepository spaceRentalRepository, AdminRepository adminRepository, Encryption encryption) {
         this.userRepository = userRepository;
         this.projectManagerRepository = projectManagerRepository;
         this.spaceRentalRepository = spaceRentalRepository;
@@ -116,8 +113,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(username)
-                .password(passwordEncoder.encode(password))
+                .password(password)
                 .authorities(authorities)
                 .build();
     }
 }
+

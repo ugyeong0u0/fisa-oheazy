@@ -1,7 +1,7 @@
 package com.fisa.wooriarte.email.controller;
 
 import com.fisa.wooriarte.email.dto.EmailCheckDto;
-import com.fisa.wooriarte.email.dto.EmailRequestDto;
+import com.fisa.wooriarte.email.dto.EmailSetPwdDto;
 import com.fisa.wooriarte.email.service.EmailService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class EmailController {
     }
 
     @PostMapping("/email-send")
-    public ResponseEntity<String> emailSend(@RequestBody @Valid EmailRequestDto emailDto){
+    public ResponseEntity<String> emailSend(@RequestBody @Valid EmailSetPwdDto emailDto){
         System.out.println("이메일 인증 요청이 들어옴");
         System.out.println("이메일 인증 이메일 :"+emailDto.getEmail());
         try {
@@ -53,7 +53,7 @@ public class EmailController {
     }
 
     @PostMapping("/users/email-send")
-    public ResponseEntity<String> userEmailSend(@RequestBody @Valid EmailRequestDto emailDto) {
+    public ResponseEntity<String> userEmailSend(@RequestBody @Valid EmailSetPwdDto emailDto) {
         log.info("Email verification request received.");
         log.info("Email for verification: {}", emailDto.getEmail());
         try {
@@ -89,7 +89,7 @@ public class EmailController {
     }
 
     @PostMapping("/project-managers/email-send")
-    public ResponseEntity<String> projectManagerEmailSend(@RequestBody @Valid EmailRequestDto emailDto) {
+    public ResponseEntity<String> projectManagerEmailSend(@RequestBody @Valid EmailSetPwdDto emailDto) {
         log.info("Email verification request received.");
         log.info("Email for verification: {}", emailDto.getEmail());
         try {
@@ -125,7 +125,7 @@ public class EmailController {
     }
 
     @PostMapping("/space-rentals/email-send")
-    public ResponseEntity<String> spaceRentalEmailSend(@RequestBody @Valid EmailRequestDto emailDto) {
+    public ResponseEntity<String> spaceRentalEmailSend(@RequestBody @Valid EmailSetPwdDto emailDto) {
         log.info("Email verification request received.");
         log.info("Email for verification: {}", emailDto.getEmail());
         try {

@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.projectmanager.domain;
 
+import com.fisa.wooriarte.jwt.CustomUserDetails;
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectmanager.dto.ProjectManagerDto;
 import jakarta.persistence.*;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class ProjectManager implements UserDetails {
+public class ProjectManager implements CustomUserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -108,6 +109,9 @@ public class ProjectManager implements UserDetails {
     public String getUsername() {
         return this.id; // id 필드 반환
     }
+
+    @Override
+    public Long getUserId() { return this.projectManagerId; }
 
     @Override
     public boolean isAccountNonExpired() {

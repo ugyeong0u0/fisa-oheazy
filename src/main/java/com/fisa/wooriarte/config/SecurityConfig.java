@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.config;
 
+import com.fisa.wooriarte.jwt.CustomUserDetailsService;
 import com.fisa.wooriarte.jwt.JwtAuthenticationFilter;
 import com.fisa.wooriarte.jwt.JwtTokenProvider;
 import com.fisa.wooriarte.redis.RedisService;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,9 +24,9 @@ public class SecurityConfig {
     private final RedisService redisService;
 
     @Autowired
-    public SecurityConfig(@Lazy JwtTokenProvider jwtTokenProvider, RedisService redisService) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public SecurityConfig(RedisService redisService, JwtTokenProvider jwtTokenProvider) {
         this.redisService = redisService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Bean
@@ -64,15 +66,5 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
-
-
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        // BCrypt Encoder 사용
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
 }
 

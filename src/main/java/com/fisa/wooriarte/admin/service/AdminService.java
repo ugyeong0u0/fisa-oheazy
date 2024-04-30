@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,20 +26,21 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final ProjectItemRepository projectItemRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AdminService(AdminRepository adminRepository, JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, ProjectItemRepository projectItemRepository) {
+    public AdminService(AdminRepository adminRepository, JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, PasswordEncoder passwordEncoder) {
         this.adminRepository = adminRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.projectItemRepository = projectItemRepository;
+        this.passwordEncoder = passwordEncoder;
     }
     @Transactional
     public Boolean addAdmin(AdminDto adminDto) {
 
         Admin admin = adminDto.toEntity();
         admin.addRole("ADMIN");
+        admin.setPwd(passwordEncoder.encode(adminDto.getPwd()));
         adminRepository.save(admin);
 
         return true;

@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.NoSuchElementException;
@@ -22,13 +23,15 @@ public class SpaceRentalService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final Encryption encryption;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SpaceRentalService(SpaceRentalRepository spaceRentalRepository, AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider, Encryption encryption) {
+    public SpaceRentalService(SpaceRentalRepository spaceRentalRepository, AuthenticationManagerBuilder authenticationManagerBuilder, JwtTokenProvider jwtTokenProvider, Encryption encryption, PasswordEncoder passwordEncoder) {
         this.spaceRentalRepository = spaceRentalRepository;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.encryption = encryption;
+        this.passwordEncoder = passwordEncoder;
     }
     /*
     공간대여자 추가
@@ -43,7 +46,7 @@ public class SpaceRentalService {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
         SpaceRental spaceRental = spaceRentalDTO.toEntity();
-        spaceRental.setPwd(encryption.encryptionSHA256(spaceRentalDTO.getPwd()));
+        spaceRental.setPwd(passwordEncoder.encode(spaceRentalDTO.getPwd()));
         spaceRental.addRole("SPACE_RENTAL");
         spaceRentalRepository.save(spaceRental);
         return true;
@@ -57,7 +60,7 @@ public class SpaceRentalService {
      */
     public SpaceRentalDto loginSpaceRental(String id, String pwd) throws Exception{
         Optional<SpaceRental> optionalSpaceRental = spaceRentalRepository.findById(id);
-        if(optionalSpaceRental.isPresent() && optionalSpaceRental.get().getPwd().equals(encryption.encryptionSHA256(pwd))){
+        if(passwordEncoder.matches(pwd, optionalSpaceRental.get().getPwd())){
             return SpaceRentalDto.fromEntity(optionalSpaceRental.get());
         }else{
             throw new Exception("로그인 불가 ");
@@ -79,7 +82,6 @@ public class SpaceRentalService {
             e.printStackTrace(); // 예외를 로깅
             throw e; // 필요한 경우, 예외를 다시 던져 처리할 수 있습니다.
         }
-
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
         return jwtToken;
@@ -97,7 +99,7 @@ public class SpaceRentalService {
         SpaceRental spaceRental = spaceRentalRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
         //비밀번호 검증
-        spaceRental.setPwd(encryption.encryptionSHA256(newPwd));
+        spaceRental.setPwd(encryption.encrypt(newPwd));
         return true;
     }
 
@@ -155,6 +157,6 @@ public class SpaceRentalService {
     public boolean verifyPassword(Long spaceRentalId, String pwd) {
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
-        return spaceRental.getPwd().equals(encryption.encryptionSHA256(pwd));
+        return passwordEncoder.matches(pwd, spaceRental.getPwd());
     }
 }

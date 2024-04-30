@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +25,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService (UserRepository userRepository, JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder){
+    public UserService (UserRepository userRepository, JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 회원가입
@@ -52,7 +55,7 @@ public class UserService {
         }
 
         userEntity.addRole("USER");
-
+        userEntity.setPwd(passwordEncoder.encode(userEntity.getPwd()));
         userRepository.save(userEntity);
         System.out.println("회원가입 가능");
 
@@ -90,7 +93,7 @@ public class UserService {
     public UserDto loginUser(String id, String pwd) throws NoSuchElementException, IllegalAccessException {
         Optional<User> optionalUser = userRepository.findById(id);
         UserDto userdto = null;
-        if (optionalUser.isPresent() && optionalUser.get().getPwd().equals(pwd)) {
+        if (passwordEncoder.matches(pwd, optionalUser.get().getPwd())) {
             userdto = UserDto.fromEntity(optionalUser.get());
             return userdto;
         } else {

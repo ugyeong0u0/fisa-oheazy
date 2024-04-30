@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fisa.wooriarte.jwt.CustomUserDetails;
 import com.fisa.wooriarte.ticket.domain.Ticket;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class User implements UserDetails {
+public class User implements CustomUserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -102,6 +103,11 @@ public class User implements UserDetails {
     }
 
     @Override
+    public Long getUserId() {
+        return userId;
+    }
+
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
@@ -119,5 +125,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 }

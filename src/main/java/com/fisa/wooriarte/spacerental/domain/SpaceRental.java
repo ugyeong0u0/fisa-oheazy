@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.spacerental.domain;
 
+import com.fisa.wooriarte.jwt.CustomUserDetails;
 import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import com.fisa.wooriarte.spacerental.dto.SpaceRentalDto;
 import jakarta.persistence.*;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class SpaceRental implements UserDetails {
+public class SpaceRental implements CustomUserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -105,6 +106,9 @@ public class SpaceRental implements UserDetails {
     public String getUsername() {
         return this.id; // id 필드 반환
     }
+
+    @Override
+    public Long getUserId() {return this.spaceRentalId; }
 
     @Override
     public boolean isAccountNonExpired() {

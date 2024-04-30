@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.admin.domain;
 
+import com.fisa.wooriarte.jwt.CustomUserDetails;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Admin implements UserDetails {
+public class Admin implements CustomUserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,6 +67,9 @@ public class Admin implements UserDetails {
     }
 
     @Override
+    public Long getUserId() { return adminId; }
+
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
@@ -85,5 +89,8 @@ public class Admin implements UserDetails {
         return true;
     }
 
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
 }
 
