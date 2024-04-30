@@ -3,6 +3,7 @@ package com.fisa.wooriarte.ticket.service;
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
 import com.fisa.wooriarte.payment.domain.Payment;
+import com.fisa.wooriarte.payment.domain.PaymentStatus;
 import com.fisa.wooriarte.payment.repository.PaymentRepository;
 import com.fisa.wooriarte.ticket.domain.Ticket;
 import com.fisa.wooriarte.ticket.dto.TicketDto;
@@ -73,22 +74,22 @@ public class TicketService {
     /**
      * 2. 새로운 ticket 생성
      * @param ticketDTO : 티켓 정보
-     * @param userId : 티켓을 구매한 userId
-     * @param exhibitId : 구매된 티켓의 exhibitId
      */
     @Transactional
-    public void addTicket(TicketDto ticketDTO, long userId, long exhibitId) {
+    public void addTicket(TicketDto ticketDTO) {
         //userId로 User 가져오기
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+        User user = userRepository.findById(ticketDTO.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + ticketDTO.getUserId()));
         //exhibitId로 Exhibit 가져오기
-        Exhibit exhibit = exhibitRepository.findById(exhibitId)
-                .orElseThrow(() -> new IllegalArgumentException("Exhibit not found with id: " + exhibitId));
+        Exhibit exhibit = exhibitRepository.findById(ticketDTO.getExhibitId())
+                .orElseThrow(() -> new IllegalArgumentException("Exhibit not found with id: " + ticketDTO.getExhibitId()));
         Payment payment = paymentRepository.findById(ticketDTO.getPaymentId())
                 .orElseThrow(() -> new IllegalArgumentException("payment not found with id: " + ticketDTO.getPaymentId()));
-        // TicketDTO에 userId, exhibitId 설정
-        ticketDTO.setUserId(user.getUserId());
-        ticketDTO.setExhibitId(exhibit.getExhibitId());
+        if(payment.getStatus() == PaymentStatus.CREATETICKET) {
+            throw new RuntimeException("이미 티켓이 발권된 주문입니다");
+        } else if(payment.getStatus() != PaymentStatus.FINISH) {
+            throw new RuntimeException("결제가 완료되지 않았습니다");
+        }
         //TicketDTO -> 엔티티 변환
         Ticket ticket = ticketDTO.toEntity(user, exhibit, payment);
         //Ticket 엔티티 저장

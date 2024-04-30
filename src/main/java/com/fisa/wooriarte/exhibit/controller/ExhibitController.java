@@ -2,6 +2,8 @@ package com.fisa.wooriarte.exhibit.controller;
 
 import com.fisa.wooriarte.exhibit.dto.ExhibitDto;
 import com.fisa.wooriarte.exhibit.service.ExhibitService;
+import com.fisa.wooriarte.matching.domain.MatchingStatus;
+import com.fisa.wooriarte.matching.service.MatchingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +20,12 @@ import java.util.Optional;
 public class ExhibitController {
 
     private final ExhibitService exhibitService;
+    private final MatchingService matchingService;
 
     @Autowired
-    public ExhibitController(ExhibitService exhibitService) {
+    public ExhibitController(ExhibitService exhibitService, MatchingService matchingService) {
         this.exhibitService = exhibitService;
+        this.matchingService = matchingService;
     }
 
     /**
@@ -65,6 +69,7 @@ public class ExhibitController {
     public ResponseEntity<String> addExhibit(@PathVariable(name = "matching-id") Long matchingId, @RequestBody ExhibitDto exhibitDto) {
         try {
             exhibitService.addExhibit(exhibitDto, matchingId);
+            matchingService.updateMatching(matchingId, MatchingStatus.FINISH);
             return ResponseEntity.status(HttpStatus.CREATED).body("전시 생성 완료");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("전시 생성 중 오류 발생: " + e.getMessage());

@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.ticket.controller;
 
+import com.fisa.wooriarte.payment.service.PaymentService;
 import com.fisa.wooriarte.ticket.dto.TicketDto;
 import com.fisa.wooriarte.ticket.service.TicketService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,21 +19,21 @@ import java.util.NoSuchElementException;
 public class TicketController {
 
     private final TicketService ticketService;
+    private final PaymentService paymentService;
 
     @Autowired
-    public TicketController(TicketService ticketService){
+    public TicketController(TicketService ticketService, PaymentService paymentService){
         this.ticketService = ticketService;
+        this.paymentService = paymentService;
     }
 
     /**
      * 1. 티켓 생성(결제 완료 후 생성)
      * @param ticketDto : 티켓 데이터
-     * @param exhibitId : 예매될 전시 exhibitId
-     * @param userId : 구매자 userId
      * @return
      */
-    @PostMapping("/exhibits/{exhibit-id}/payment/{user-id}")
-    public ResponseEntity<?> addTicket(@RequestBody TicketDto ticketDto, @PathVariable(name = "exhibit-id") long exhibitId, @PathVariable(name = "user-id") long userId) {
+    @PostMapping("")
+    public ResponseEntity<?> addTicket(@RequestBody TicketDto ticketDto) {
         if (ticketDto.getName() == null || ticketDto.getEmail() == null || ticketDto.getPhone() == null) {
             log.warn("Ticket creation failed due to missing information");
             throw new IllegalArgumentException("Name, email, and phone number are required.");
@@ -48,8 +49,8 @@ public class TicketController {
             } while (isDuplicate); // 중복된 경우 다시 번호 생성
 
             ticketDto.setTicketNo(ticketNo);
-            ticketService.addTicket(ticketDto, userId, exhibitId);
-            log.info("Ticket creation successful for user ID: {}, Exhibit ID: {}", userId, exhibitId);
+            ticketService.addTicket(ticketDto);
+            log.info("Ticket creation successful for ticket number: {}", ticketNo);
             return ResponseEntity.ok(Map.of("message", "Ticket successfully created."));
         } catch (Exception e) {
             log.error("Error while creating ticket: ", e);

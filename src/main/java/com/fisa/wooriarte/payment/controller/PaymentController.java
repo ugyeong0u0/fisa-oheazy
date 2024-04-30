@@ -50,7 +50,7 @@ public class PaymentController {
                         .body(Map.of("verified", false, "message", "결제 검증 실패, 결제 취소 실패"));
             }
         }
-        return ResponseEntity.ok(Map.of("verified", true, "message", "결제 검증 성공"));
+        return ResponseEntity.ok(Map.of("verified", true, "paymentId", paymentDto.getPaymentId()));
     }
 
     @PostMapping("/cancel/{order_number}")
