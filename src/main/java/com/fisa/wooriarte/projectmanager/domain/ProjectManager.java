@@ -89,8 +89,6 @@ public class ProjectManager implements UserDetails {
         this.ceo = projectManagerDTO.getCeo();
         this.email = projectManagerDTO.getEmail();
         this.phone = projectManagerDTO.getPhone();
-        this.pwd=projectManagerDTO.getPwd();
-        this.id = projectManagerDTO.getId();
     }
 
     public void addRole(String role) {

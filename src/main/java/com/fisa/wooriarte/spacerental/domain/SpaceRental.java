@@ -86,7 +86,6 @@ public class SpaceRental implements UserDetails {
         this.ceo = spaceRentalDTO.getCeo();
         this.email = spaceRentalDTO.getEmail();
         this.phone = spaceRentalDTO.getPhone();
-        this.id = spaceRentalDTO.getId();
     }
 
     public void addRole(String role) {

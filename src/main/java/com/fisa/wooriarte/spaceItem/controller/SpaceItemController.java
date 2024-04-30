@@ -49,7 +49,7 @@ public class SpaceItemController {
     public ResponseEntity<?> addSpaceItem(@RequestBody SpaceItemDto spaceItemDTO) {
         try {
             Long spaceItemId = spaceItemService.addSpaceItem(spaceItemDTO);
-            return ResponseEntity.ok(Map.of("message", "Space item successfully added.", "spaceItemId", spaceItemId));
+            return ResponseEntity.ok(Map.of("spaceItemId", spaceItemId));
         } catch (Exception e) {
             log.error("Error adding space item", e);
             return ResponseEntity.badRequest().body(Map.of("message", "Failed to add space item."));

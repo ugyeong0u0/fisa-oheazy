@@ -48,7 +48,7 @@ public class ProjectItemController {
     public ResponseEntity<?> addProjectItem(@RequestBody ProjectItemDto projectItemDTO) {
         try {
             Long projectItemId = projectItemService.addProjectItem(projectItemDTO);
-            return ResponseEntity.ok(Map.of("message", "Project item successfully added.", "projectItemId", projectItemId));
+            return ResponseEntity.ok(Map.of("projectItemId", projectItemId));
         } catch (Exception e) {
             log.error("Failed to add project item", e);
             return ResponseEntity.badRequest().body(Map.of("message", "Failed to add project item."));
