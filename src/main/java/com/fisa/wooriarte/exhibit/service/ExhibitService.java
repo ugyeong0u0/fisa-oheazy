@@ -2,6 +2,7 @@ package com.fisa.wooriarte.exhibit.service;
 
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.exhibit.dto.ExhibitDto;
+import com.fisa.wooriarte.exhibit.dto.ExhibitResponseDto;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.matching.repository.MatchingRepository;
@@ -37,7 +38,7 @@ public class ExhibitService {
      * 1. 현재 진행 중인 전시데이터 목록 출력
      * @return
      */
-    public List<ExhibitDto> findAllExhibits() {
+    public List<ExhibitResponseDto> findAllExhibits() {
         System.out.println("findAllExhibits");
         //오늘 날짜를 받아옴
         LocalDate today = LocalDate.now();
@@ -49,7 +50,7 @@ public class ExhibitService {
                     LocalDate endDate = exhibit.getEndDate();
                     return startDate.isBefore(today) && endDate.isAfter(today) && !exhibit.getIsDeleted();
                 })
-                .map(ExhibitDto::fromEntity)
+                .map(ExhibitResponseDto::fromEntity)
                 .collect(Collectors.toList());
     }
 

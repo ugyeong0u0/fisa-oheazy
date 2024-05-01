@@ -55,7 +55,7 @@ public class SpaceItem {
     private Boolean parking;
 
     @Column
-    private int fee;
+    private Long fee;
 
     @Column
     private String phone;

@@ -58,15 +58,6 @@ public class Ticket {
     @Column(nullable = false)
     private Boolean status;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
-    private String phone;
-
     //티켓 취소 canceled 컬럼 변경
     public void setCanceled() {
         this.canceled = true;

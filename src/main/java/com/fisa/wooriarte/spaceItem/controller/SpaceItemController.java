@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.spaceItem.controller;
 
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
+import com.fisa.wooriarte.spaceItem.dto.SpaceItemResponseDto;
 import com.fisa.wooriarte.spaceItem.service.SpaceItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class SpaceItemController {
     @GetMapping("")
     public ResponseEntity<?> getAllSpaceItemInfo() {
         try {
-            List<SpaceItemDto> items = spaceItemService.findAll();
+            List<SpaceItemResponseDto> items = spaceItemService.findAll();
             return ResponseEntity.ok(items);
         } catch (Exception e) {
             log.error("Error retrieving all space items", e);
@@ -39,8 +40,8 @@ public class SpaceItemController {
     }
 
     @GetMapping("/space-rental/{space-rental-id}")
-    public ResponseEntity<List<SpaceItemDto>> getSpaceItemBySpaceRentalId(@PathVariable("space-rental-id") Long spaceRentalId) {
-        List<SpaceItemDto> spaceItemDtoList = spaceItemService.findBySpaceRentalId(spaceRentalId);
+    public ResponseEntity<List<SpaceItemResponseDto>> getSpaceItemBySpaceRentalId(@PathVariable("space-rental-id") Long spaceRentalId) {
+        List<SpaceItemResponseDto> spaceItemDtoList = spaceItemService.findBySpaceRentalId(spaceRentalId);
         return ResponseEntity.ok(spaceItemDtoList);
     }
 
@@ -98,7 +99,7 @@ public class SpaceItemController {
     @GetMapping("/{start-date}/{end-date}/{city}")
     public ResponseEntity<?> getSpaceItemByFilter(@PathVariable("start-date") LocalDate startDate, @PathVariable("end-date") LocalDate endDate, @PathVariable("city") String city) {
         try {
-            List<SpaceItemDto> spaceItemDtoList = spaceItemService.findByFilter(startDate, endDate, city);
+            List<SpaceItemResponseDto> spaceItemDtoList = spaceItemService.findByFilter(startDate, endDate, city);
             return ResponseEntity.ok(spaceItemDtoList);
         } catch (Exception e) {
             log.error("Failed to find space item by filter", e);

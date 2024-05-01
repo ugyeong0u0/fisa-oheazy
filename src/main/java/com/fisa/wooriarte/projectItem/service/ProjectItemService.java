@@ -3,6 +3,7 @@ package com.fisa.wooriarte.projectItem.service;
 import com.fisa.wooriarte.projectItem.domain.City;
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectItem.dto.ProjectItemDto;
+import com.fisa.wooriarte.projectItem.dto.ProjectItemResponseDto;
 import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
@@ -40,11 +41,11 @@ public class ProjectItemService {
     }
 
     // 프로젝트 아이템 전체 조회(삭제된 아이템 제외)
-    public List<ProjectItemDto> findAll() {
+    public List<ProjectItemResponseDto> findAll() {
         System.out.println("findAll");
         List<ProjectItem> projectItemList = projectItemRepository.findAllByIsDeletedFalse().orElseThrow(() -> new NoSuchElementException("No Project Item"));
         return projectItemList.stream()
-                .map(ProjectItemDto::fromEntity) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
+                .map(ProjectItemResponseDto::fromEntity) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
                 .collect(Collectors.toList());
     }
 
@@ -57,7 +58,7 @@ public class ProjectItemService {
     }
 
 
-    public List<ProjectItemDto> findByProjectManagerId(Long projectManagerId) {
+    public List<ProjectItemResponseDto> findByProjectManagerId(Long projectManagerId) {
         // Optional<List<ProjectItem>>에서 List<ProjectItem>을 얻기 위해 orElseGet을 사용합니다.
         // Optional이 비어있다면, 빈 리스트를 반환합니다.
         ProjectManager projectManager = projectManagerRepository.findById(projectManagerId).orElseThrow(() -> new NoSuchElementException("No Project Manager"));
@@ -66,7 +67,7 @@ public class ProjectItemService {
 
         // Stream을 사용하여 각 ProjectItem을 ProjectItemDTO로 변환합니다.
         return projectItems.stream()
-                .map(ProjectItemDto::fromEntity)
+                .map(ProjectItemResponseDto::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -89,9 +90,9 @@ public class ProjectItemService {
         projectItemRepository.save(projectItem);
     }
 
-    public List<ProjectItemDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
+    public List<ProjectItemResponseDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
         List<ProjectItem> projectItems = projectItemRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCityAndIsDeletedFalse(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
-        return projectItems.stream().map(ProjectItemDto::fromEntity).collect(Collectors.toList());
+        return projectItems.stream().map(ProjectItemResponseDto::fromEntity).collect(Collectors.toList());
     }
     @Transactional
     public boolean approveItem(Long projectItemId) {

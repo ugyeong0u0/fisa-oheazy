@@ -89,11 +89,15 @@ public class TicketService {
             throw new RuntimeException("이미 티켓이 발권된 주문입니다");
         } else if(payment.getStatus() != PaymentStatus.FINISH) {
             throw new RuntimeException("결제가 완료되지 않았습니다");
+        } else if(payment.getAmount() != exhibit.getPrice() * ticketDTO.getAmount()) {
+            throw new RuntimeException("티켓 매수와 결제금액이 일치 하지 않습니다");
         }
         //TicketDTO -> 엔티티 변환
         Ticket ticket = ticketDTO.toEntity(user, exhibit, payment);
         //Ticket 엔티티 저장
         ticketRepository.save(ticket);
+        payment.setStatus(PaymentStatus.CREATETICKET);
+        paymentRepository.save(payment);
     }
 
     /**

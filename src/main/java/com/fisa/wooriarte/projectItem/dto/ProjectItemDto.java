@@ -3,10 +3,13 @@ package com.fisa.wooriarte.projectItem.dto;
 import com.fisa.wooriarte.projectItem.domain.City;
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
+import com.fisa.wooriarte.projectphoto.domain.ProjectPhoto;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -25,6 +28,7 @@ public class ProjectItemDto {
     private Boolean isDeleted;
     private String city;
     private String itemType;
+    private List<String> urls;
 
     public ProjectItem toEntity(ProjectManager projectManager) {
 
@@ -55,6 +59,7 @@ public class ProjectItemDto {
                 .isDeleted(entity.getIsDeleted())
                 .city(entity.getCity().name())
                 .itemType(entity.getItemType())
+                .urls(entity.getProjectPhotos().stream().map(ProjectPhoto::getUrl).collect(Collectors.toList()))
                 .build();
     }
 }

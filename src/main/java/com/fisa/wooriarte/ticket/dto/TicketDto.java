@@ -19,9 +19,6 @@ public class TicketDto {
     private Boolean canceled;
     private String ticketNo;
     private Boolean status;
-    private String name;
-    private String email;
-    private String phone;
 
     public Ticket toEntity(User user, Exhibit exhibit, Payment payment) {
         return Ticket.builder()
@@ -32,9 +29,6 @@ public class TicketDto {
                 .canceled(this.canceled)
                 .ticketNo(this.ticketNo)
                 .status(this.status)
-                .name(this.name)
-                .email(this.email)
-                .phone(this.phone)
                 .build();
     }
 
@@ -45,9 +39,6 @@ public class TicketDto {
                 .canceled(ticket.getCanceled())
                 .ticketNo(ticket.getTicketNo())
                 .status(ticket.getStatus())
-                .name(ticket.getName())
-                .email(ticket.getEmail())
-                .phone(ticket.getPhone())
                 .exhibitId(ticket.getExhibit() != null ? ticket.getExhibit().getExhibitId() : null)
                 .userId(ticket.getUser() != null ? ticket.getUser().getUserId() : null)
                 .paymentId(ticket.getPayment().getPaymentId())

@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.exhibit.controller;
 
 import com.fisa.wooriarte.exhibit.dto.ExhibitDto;
+import com.fisa.wooriarte.exhibit.dto.ExhibitResponseDto;
 import com.fisa.wooriarte.exhibit.service.ExhibitService;
 import com.fisa.wooriarte.matching.domain.MatchingStatus;
 import com.fisa.wooriarte.matching.service.MatchingService;
@@ -35,7 +36,7 @@ public class ExhibitController {
     @GetMapping("")
     public ResponseEntity<?> findAllExhibits() {
         try {
-            List<ExhibitDto> exhibits = exhibitService.findAllExhibits();
+            List<ExhibitResponseDto> exhibits = exhibitService.findAllExhibits();
             if (exhibits.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("전시가 존재하지 않습니다.");
             }

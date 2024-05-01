@@ -3,6 +3,7 @@ package com.fisa.wooriarte.spaceItem.service;
 import com.fisa.wooriarte.spaceItem.domain.City;
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
 import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
+import com.fisa.wooriarte.spaceItem.dto.SpaceItemResponseDto;
 import com.fisa.wooriarte.spaceItem.repository.SpaceItemRepository;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
@@ -38,15 +39,14 @@ public class SpaceItemService {
         return spaceItem.getSpaceItemId();
     }
 
-    public List<SpaceItemDto> findAll() {
+    public List<SpaceItemResponseDto> findAll() {
         System.out.println("findAll");
         List<SpaceItem> spaceItemList = spaceItemRepository.findAllByIsDeletedFalse()
                 .orElseThrow(() -> new NoSuchElementException("No Space Item"));
         return spaceItemList.stream()
-                .map(SpaceItemDto::fromEntity) // 람다식을 사용하여 각 SpaceItem 엔티티를 SpaceItemDTO로 변환
+                .map(SpaceItemResponseDto::fromEntity) // 람다식을 사용하여 각 SpaceItem 엔티티를 SpaceItemDTO로 변환
                 .collect(Collectors.toList());
     }
-
 
     /**
      *
@@ -59,7 +59,7 @@ public class SpaceItemService {
         return SpaceItemDto.fromEntity(spaceItem);
     }
 
-    public List<SpaceItemDto> findBySpaceRentalId(Long spaceRentalId) {
+    public List<SpaceItemResponseDto> findBySpaceRentalId(Long spaceRentalId) {
         // Optional<List<ProjectItem>>에서 List<ProjectItem>을 얻기 위해 orElseGet을 사용합니다.
         // Optional이 비어있다면, 빈 리스트를 반환합니다.
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId).orElseThrow(() -> new NoSuchElementException("No Project Manager"));
@@ -68,7 +68,7 @@ public class SpaceItemService {
 
         // Stream을 사용하여 각 ProjectItem을 ProjectItemDTO로 변환합니다.
         return spaceItems.stream()
-                .map(SpaceItemDto::fromEntity)
+                .map(SpaceItemResponseDto::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -90,9 +90,9 @@ public class SpaceItemService {
         spaceItem.setIsDeleted();
     }
 
-    public List<SpaceItemDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
+    public List<SpaceItemResponseDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
         List<SpaceItem> spaceItems = spaceItemRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCityAndIsDeletedFalse(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
-        return spaceItems.stream().map(SpaceItemDto::fromEntity).collect(Collectors.toList());
+        return spaceItems.stream().map(SpaceItemResponseDto::fromEntity).collect(Collectors.toList());
     }
 
     public boolean approveItem(Long spaceItemId) {

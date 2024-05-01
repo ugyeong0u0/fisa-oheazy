@@ -2,11 +2,14 @@ package com.fisa.wooriarte.spaceItem.dto;
 
 import com.fisa.wooriarte.spaceItem.domain.City;
 import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
+import com.fisa.wooriarte.spacephoto.domain.SpacePhoto;
 import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -22,7 +25,7 @@ public class SpaceItemDto {
     private String city;
     private String size;
     private Boolean parking;
-    private int fee;
+    private Long fee;
     private String phone;
     private Boolean approval;
     private LocalDate startDate;
@@ -30,6 +33,7 @@ public class SpaceItemDto {
     private LocalDate createdAt;
     private Boolean isDeleted;
     private String itemType;
+    private List<String> urls;
 
     public SpaceItem toEntity(SpaceRental spaceRental) {
         return SpaceItem.builder()
@@ -66,6 +70,7 @@ public class SpaceItemDto {
                 .createdAt(entity.getCreatedAt())
                 .isDeleted(entity.getIsDeleted())
                 .itemType(entity.getItemType())
+                .urls(entity.getSpacePhoto().stream().map(SpacePhoto::getUrl).collect(Collectors.toList()))
                 .build();
     }
 

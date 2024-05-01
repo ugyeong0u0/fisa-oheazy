@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.projectItem.controller;
 
 import com.fisa.wooriarte.projectItem.dto.ProjectItemDto;
+import com.fisa.wooriarte.projectItem.dto.ProjectItemResponseDto;
 import com.fisa.wooriarte.projectItem.service.ProjectItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class ProjectItemController {
     @GetMapping("")
     public ResponseEntity<?> getAllProjectItemInfo() {
         try {
-            List<ProjectItemDto> items = projectItemService.findAll();
+            List<ProjectItemResponseDto> items = projectItemService.findAll();
             return ResponseEntity.ok(items);
         } catch (Exception e) {
             log.error("Failed to retrieve all project items", e);
@@ -38,8 +39,8 @@ public class ProjectItemController {
     }
 
     @GetMapping("/project-manager/{project-manager-id}")
-    public ResponseEntity<List<ProjectItemDto>> getProjectItemByProjectManagerId(@PathVariable("project-manager-id") Long projectManagerId) {
-        List<ProjectItemDto> projectItemDtoList = projectItemService.findByProjectManagerId(projectManagerId);
+    public ResponseEntity<List<ProjectItemResponseDto>> getProjectItemByProjectManagerId(@PathVariable("project-manager-id") Long projectManagerId) {
+        List<ProjectItemResponseDto> projectItemDtoList = projectItemService.findByProjectManagerId(projectManagerId);
         return ResponseEntity.ok(projectItemDtoList);
     }
 
@@ -94,7 +95,7 @@ public class ProjectItemController {
     @GetMapping("/{start-date}/{end-date}/{city}")
     public ResponseEntity<?> getProjectItemByFilter(@PathVariable("start-date") LocalDate startDate, @PathVariable("end-date") LocalDate endDate, @PathVariable("city") String city) {
         try {
-            List<ProjectItemDto> projectItemDtoList = projectItemService.findByFilter(startDate, endDate, city);
+            List<ProjectItemResponseDto> projectItemDtoList = projectItemService.findByFilter(startDate, endDate, city);
             return ResponseEntity.ok(projectItemDtoList);
         } catch (Exception e) {
             log.error("Failed to find project item by filter", e);

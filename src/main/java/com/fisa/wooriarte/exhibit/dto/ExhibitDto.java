@@ -4,12 +4,15 @@ import com.fisa.wooriarte.exhibit.domain.City;
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.matching.repository.MatchingRepository;
+import com.fisa.wooriarte.projectphoto.domain.ProjectPhoto;
 import lombok.*;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -27,7 +30,7 @@ public class ExhibitDto {
     private Long soldAmount;
     private String city;
     private Boolean isDeleted;
-
+    private List<String> urls;
 
     public Exhibit toEntity(MatchingRepository matchingRepository){
         // 매칭를 찾아서 Optional로 받음
@@ -68,7 +71,7 @@ public class ExhibitDto {
                 .soldAmount(exhibit.getSoldAmount())
                 .city(exhibit.getCity().name())
                 .isDeleted(exhibit.getIsDeleted())
-//                .matching_id((exhibit.getMatching() != null) ? exhibit.getMatching().getId() : null)
+                .urls(exhibit.getMatching().getProjectItem().getProjectPhotos().stream().map(ProjectPhoto::getUrl).collect(Collectors.toList()))
                 .build();
     }
 

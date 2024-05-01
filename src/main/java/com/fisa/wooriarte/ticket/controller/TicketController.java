@@ -1,6 +1,5 @@
 package com.fisa.wooriarte.ticket.controller;
 
-import com.fisa.wooriarte.payment.service.PaymentService;
 import com.fisa.wooriarte.ticket.dto.TicketDto;
 import com.fisa.wooriarte.ticket.service.TicketService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +18,10 @@ import java.util.NoSuchElementException;
 public class TicketController {
 
     private final TicketService ticketService;
-    private final PaymentService paymentService;
 
     @Autowired
-    public TicketController(TicketService ticketService, PaymentService paymentService){
+    public TicketController(TicketService ticketService){
         this.ticketService = ticketService;
-        this.paymentService = paymentService;
     }
 
     /**
@@ -34,9 +31,8 @@ public class TicketController {
      */
     @PostMapping("")
     public ResponseEntity<?> addTicket(@RequestBody TicketDto ticketDto) {
-        if (ticketDto.getName() == null || ticketDto.getEmail() == null || ticketDto.getPhone() == null) {
-            log.warn("Ticket creation failed due to missing information");
-            throw new IllegalArgumentException("Name, email, and phone number are required.");
+        if(ticketDto.getAmount() <= 0) {
+            throw new RuntimeException("티켓 매수는 양수만 가능합니다");
         }
         try {
             String ticketNo;
