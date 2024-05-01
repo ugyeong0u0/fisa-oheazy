@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 public class TicketResponesDto {
     private Long ticketId;
+    private String name;
     private Long amount;
     private String ticketNo;
     private String url;
@@ -23,6 +24,7 @@ public class TicketResponesDto {
         List<ProjectPhoto> photos = ticket.getExhibit().getMatching().getProjectItem().getProjectPhotos();
         return TicketResponesDto.builder()
                 .ticketId(ticket.getTicketId())
+                .name(ticket.getExhibit().getName())
                 .amount(ticket.getAmount())
                 .ticketNo(ticket.getTicketNo())
                 .url(photos.isEmpty() ? "" : photos.get(0).getUrl())
