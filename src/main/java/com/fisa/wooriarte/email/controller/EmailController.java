@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.email.controller;
 
 import com.fisa.wooriarte.email.dto.EmailCheckDto;
+import com.fisa.wooriarte.email.dto.EmailFindIdDto;
 import com.fisa.wooriarte.email.dto.EmailSetPwdDto;
 import com.fisa.wooriarte.email.service.EmailService;
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ public class EmailController {
     }
 
     @PostMapping("/email-send")
-    public ResponseEntity<String> emailSend(@RequestBody @Valid EmailSetPwdDto emailDto){
+    public ResponseEntity<String> emailSend(@RequestBody @Valid EmailFindIdDto emailDto){
         System.out.println("이메일 인증 요청이 들어옴");
         System.out.println("이메일 인증 이메일 :"+emailDto.getEmail());
         try {
