@@ -46,6 +46,8 @@ public class ProjectManager implements CustomUserDetails {
     private String pwd;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "project_manager_roles", joinColumns = @JoinColumn(name = "project_manager_id"))
+    @Column(name = "role")
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 

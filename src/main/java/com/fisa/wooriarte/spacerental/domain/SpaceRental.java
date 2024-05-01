@@ -46,6 +46,8 @@ public class SpaceRental implements CustomUserDetails {
     private String pwd;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "space_rental_roles", joinColumns = @JoinColumn(name = "space_rental_id"))
+    @Column(name = "role")
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 

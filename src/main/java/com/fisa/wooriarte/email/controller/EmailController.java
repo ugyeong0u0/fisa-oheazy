@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.email.controller;
 
-import com.fisa.wooriarte.email.dto.EmailCheckDto;
+import com.fisa.wooriarte.email.dto.EmailIdCheckDto;
+import com.fisa.wooriarte.email.dto.EmailPwdCheckDto;
 import com.fisa.wooriarte.email.dto.EmailFindIdDto;
 import com.fisa.wooriarte.email.dto.EmailSetPwdDto;
 import com.fisa.wooriarte.email.service.EmailService;
@@ -39,9 +40,9 @@ public class EmailController {
     }
 
     @PostMapping("/email-auth-check")
-    public ResponseEntity<?> authCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+    public ResponseEntity<?> authCheck(@RequestBody @Valid EmailIdCheckDto emailPwdCheckDto){
         try {
-            boolean Checked = emailService.checkAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
+            boolean Checked = emailService.checkAuthNum(emailPwdCheckDto.getEmail(), emailPwdCheckDto.getAuthNum());
             if(Checked){
                 return ResponseEntity.ok(Map.of("message", "인증 성공"));
             } else {
@@ -74,10 +75,10 @@ public class EmailController {
     }
 
     @PostMapping("/users/email-auth-check")
-    public ResponseEntity<?> userAuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+    public ResponseEntity<?> userAuthCheck(@RequestBody @Valid EmailPwdCheckDto emailPwdCheckDto){
         try {
-            boolean isIdChecked = emailService.checkUserId(emailCheckDto.getId());
-            boolean isAuthNumChecked = emailService.checkAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
+            boolean isIdChecked = emailService.checkUserId(emailPwdCheckDto.getId());
+            boolean isAuthNumChecked = emailService.checkAuthNum(emailPwdCheckDto.getEmail(), emailPwdCheckDto.getAuthNum());
             if(isIdChecked & isAuthNumChecked){
                 return ResponseEntity.ok(Map.of("message", "인증 성공"));
             } else {
@@ -110,10 +111,10 @@ public class EmailController {
     }
 
     @PostMapping("/project-managers/email-auth-check")
-    public ResponseEntity<?> projectManagerAuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+    public ResponseEntity<?> projectManagerAuthCheck(@RequestBody @Valid EmailPwdCheckDto emailPwdCheckDto){
         try {
-            boolean isIdChecked = emailService.checkProjectManagerId(emailCheckDto.getId());
-            boolean isAuthNumChecked = emailService.checkAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
+            boolean isIdChecked = emailService.checkProjectManagerId(emailPwdCheckDto.getId());
+            boolean isAuthNumChecked = emailService.checkAuthNum(emailPwdCheckDto.getEmail(), emailPwdCheckDto.getAuthNum());
             if(isIdChecked & isAuthNumChecked){
                 return ResponseEntity.ok(Map.of("message", "인증 성공"));
             } else {
@@ -146,10 +147,10 @@ public class EmailController {
     }
 
     @PostMapping("/space-rentals/email-auth-check")
-    public ResponseEntity<?> spaceRentalAuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+    public ResponseEntity<?> spaceRentalAuthCheck(@RequestBody @Valid EmailPwdCheckDto emailPwdCheckDto){
         try {
-            boolean isIdChecked = emailService.checkSpaceRentalId(emailCheckDto.getId());
-            boolean isAuthNumChecked = emailService.checkAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
+            boolean isIdChecked = emailService.checkSpaceRentalId(emailPwdCheckDto.getId());
+            boolean isAuthNumChecked = emailService.checkAuthNum(emailPwdCheckDto.getEmail(), emailPwdCheckDto.getAuthNum());
             if(isIdChecked & isAuthNumChecked){
                 return ResponseEntity.ok(Map.of("message", "인증 성공"));
             } else {
