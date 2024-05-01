@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 public class TicketResponesDto {
     private Long ticketId;
+    private Long exhibitId;
     private String name;
     private Long amount;
     private String ticketNo;
@@ -24,6 +25,7 @@ public class TicketResponesDto {
         List<ProjectPhoto> photos = ticket.getExhibit().getMatching().getProjectItem().getProjectPhotos();
         return TicketResponesDto.builder()
                 .ticketId(ticket.getTicketId())
+                .exhibitId(ticket.getExhibit().getExhibitId())
                 .name(ticket.getExhibit().getName())
                 .amount(ticket.getAmount())
                 .ticketNo(ticket.getTicketNo())
