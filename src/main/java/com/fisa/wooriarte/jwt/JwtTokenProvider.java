@@ -52,8 +52,9 @@ public class JwtTokenProvider {
     // Member 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
     public JwtToken generateToken(Authentication authentication) {
         // 사용자 id 가져오기
-        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
-        String id = userDetails.getUsername();
+        CustomUserDetailsImpl customUserDetails = (CustomUserDetailsImpl)authentication.getPrincipal();
+        String id = customUserDetails.getUsername();
+        Long entityId = customUserDetails.getUserId();
 
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
@@ -67,6 +68,7 @@ public class JwtTokenProvider {
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .claim("userId", id)
+                .claim("entityId", entityId)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -75,6 +77,7 @@ public class JwtTokenProvider {
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .claim("userId", id)
+                .claim("entityId", entityId)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
@@ -86,6 +89,7 @@ public class JwtTokenProvider {
                 .refreshToken(refreshToken)
                 .refreshTokenExpirationTime(REFRESH_TOKEN_EXPIRE_TIME)
                 .id(id)
+                .entityId(entityId)
                 .build();
     }
 

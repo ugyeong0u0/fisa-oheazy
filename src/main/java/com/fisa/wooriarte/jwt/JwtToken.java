@@ -14,4 +14,5 @@ public class JwtToken {
     private String refreshToken;
     private Long refreshTokenExpirationTime;
     private String id;
+    private Long entityId;
 }
