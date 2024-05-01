@@ -42,7 +42,7 @@ public class SpaceItemResponseDto {
                 .startDate(spaceItem.getStartDate())
                 .endDate(spaceItem.getEndDate())
                 .itemType(spaceItem.getItemType())
-                .url(spaceItem.getSpacePhoto().get(0).getUrl())
+                .url(spaceItem.getSpacePhoto().isEmpty() ? "" : spaceItem.getSpacePhoto().get(0).getUrl())
                 .build();
     }
 }

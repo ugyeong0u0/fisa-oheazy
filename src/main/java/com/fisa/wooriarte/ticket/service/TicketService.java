@@ -7,6 +7,7 @@ import com.fisa.wooriarte.payment.domain.PaymentStatus;
 import com.fisa.wooriarte.payment.repository.PaymentRepository;
 import com.fisa.wooriarte.ticket.domain.Ticket;
 import com.fisa.wooriarte.ticket.dto.TicketDto;
+import com.fisa.wooriarte.ticket.dto.TicketResponesDto;
 import com.fisa.wooriarte.ticket.repository.TicketRepository;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.repository.UserRepository;
@@ -48,7 +49,7 @@ public class TicketService {
      * @param status : 티켓의 사용 여부
      * @return
      */
-    public List<TicketDto> getTicketsByUserIdAndStatus(long userId, boolean status) {
+    public List<TicketResponesDto> getTicketsByUserIdAndStatus(long userId, boolean status) {
         List<Ticket> tickets;
         log.info("userId :: " + userId);
         //userId로 User 가져오기
@@ -67,7 +68,7 @@ public class TicketService {
         }
         //ticket list 출력
         return tickets.stream()
-                .map(TicketDto::fromEntity)
+                .map(TicketResponesDto::fromEntity)
                 .collect(Collectors.toList());
     }
 

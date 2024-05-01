@@ -35,7 +35,7 @@ public class ProjectItemResponseDto {
                 .endDate(entity.getEndDate())
                 .city(entity.getCity().name())
                 .itemType(entity.getItemType())
-                .url(entity.getProjectPhotos().get(0).getUrl())
+                .url(entity.getProjectPhotos().isEmpty() ? "" : entity.getProjectPhotos().get(0).getUrl())
                 .build();
     }
 }

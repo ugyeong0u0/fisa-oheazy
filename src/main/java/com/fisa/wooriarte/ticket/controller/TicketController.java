@@ -1,6 +1,7 @@
 package com.fisa.wooriarte.ticket.controller;
 
 import com.fisa.wooriarte.ticket.dto.TicketDto;
+import com.fisa.wooriarte.ticket.dto.TicketResponesDto;
 import com.fisa.wooriarte.ticket.service.TicketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +64,9 @@ public class TicketController {
     @GetMapping("/users/{user-id}/bookings/{status}")
     public ResponseEntity<?> getTicketsByUserIdAndStatus(@PathVariable(name = "user-id") long userId, @PathVariable boolean status) {
         try {
-            List<TicketDto> tickets = ticketService.getTicketsByUserIdAndStatus(userId, status);
+            List<TicketResponesDto> tickets = ticketService.getTicketsByUserIdAndStatus(userId, status);
             log.info("Fetched tickets for user ID: {} with status: {}", userId, status);
-            return ResponseEntity.ok(Map.of("message", "Tickets fetched successfully.", "tickets", tickets));
+            return ResponseEntity.ok(tickets);
         } catch (Exception e) {
             log.error("Error while fetching tickets: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Error occurred while fetching tickets."));
