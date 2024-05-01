@@ -4,4 +4,3 @@ FROM openjdk:17-alpine
 COPY build/libs/wooriarte-0.0.1-SNAPSHOT.jar /app.jar
 # 컨테이너 실행 시 자바 애플리케이션을 실행
 ENTRYPOINT ["java", "-jar", "/app.jar"]
-
