@@ -35,6 +35,7 @@ public class AdminService {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.passwordEncoder = passwordEncoder;
     }
+    
     @Transactional
     public Boolean addAdmin(AdminDto adminDto) {
 
