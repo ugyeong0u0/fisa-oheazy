@@ -176,6 +176,6 @@ public class ProjectManagerService {
     public boolean verifyPassword(Long projectManagerId, String pwd) {
         ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
                 .orElseThrow(() -> new NoSuchElementException("가입되지 않은 사용자입니다"));
-        return passwordEncoder.matches(projectManager.getPwd(),passwordEncoder.encode(pwd));
+        return passwordEncoder.matches(pwd, projectManager.getPwd());
     }
 }

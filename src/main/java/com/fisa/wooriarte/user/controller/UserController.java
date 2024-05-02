@@ -103,7 +103,6 @@ public class UserController {
     // 유저 마이페이지 수정하기 위한 -> 비밀번호 검증
     @PostMapping("/{user-id}/verify-pwd")
     public ResponseEntity<?> verifyPassword(@PathVariable(name = "user-id") Long userId, @RequestBody UserDto userDto)  {
-
         try {
             if (userService.verifyPassword(userId, userDto.getPwd())) {
                 return new ResponseEntity<>("비밀번호 인증 성공", HttpStatus.OK);

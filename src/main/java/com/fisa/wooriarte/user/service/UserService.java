@@ -66,8 +66,7 @@ public class UserService {
     public boolean verifyPassword(Long id, String password) throws Exception {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new Exception("해당 id 유저가 없습니다."));
-
-        if (passwordEncoder.matches(user.getPwd(), password)) {
+        if (passwordEncoder.matches(password, user.getPwd())) {
             System.out.println("비밀번호 일치");
             return true; //비밀번호 일치 -> true 반환
         } else {
