@@ -11,7 +11,7 @@ public class CORSFilter implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
+                .allowedOrigins("http://www.wooriarte.store")
                 .allowedMethods("*")
                 .maxAge(3000);
     }
