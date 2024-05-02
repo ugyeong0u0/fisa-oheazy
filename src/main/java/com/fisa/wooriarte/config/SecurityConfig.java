@@ -56,7 +56,7 @@ public class SecurityConfig {
 //                .build();
                 .httpBasic().disable()
                 .csrf().disable()
-                .cors().disable()
+                .cors().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
@@ -65,6 +65,8 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService),
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
+        
+
     }
 }
 
