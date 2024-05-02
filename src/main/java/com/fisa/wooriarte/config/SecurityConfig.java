@@ -1,37 +1,30 @@
 package com.fisa.wooriarte.config;
 
-import com.fisa.wooriarte.jwt.CustomUserDetailsService;
 import com.fisa.wooriarte.jwt.JwtAuthenticationFilter;
 import com.fisa.wooriarte.jwt.JwtTokenProvider;
 import com.fisa.wooriarte.redis.RedisService;
+import com.fisa.wooriarte.util.filter.CorsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
+    private final CorsConfig corsConfig;
 
     @Autowired
-    public SecurityConfig(RedisService redisService, JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfig(RedisService redisService, JwtTokenProvider jwtTokenProvider, CorsConfig corsConfig) {
         this.redisService = redisService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.corsConfig = corsConfig;
     }
 
     @Bean
@@ -61,12 +54,13 @@ public class SecurityConfig {
 //                .build();
                 .httpBasic().disable()
                 .csrf().disable()
-                .cors().and()
+                .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
                 .anyRequest().permitAll() // 모든 요청에 대해 접근을 허용
                 .and()
+                .addFilter(corsConfig.corsFilter())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService),
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
