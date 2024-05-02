@@ -3,6 +3,8 @@ package com.fisa.wooriarte.user.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fisa.wooriarte.jwt.CustomUserDetails;
 import com.fisa.wooriarte.ticket.domain.Ticket;
+import com.fisa.wooriarte.user.dto.UserDto;
+import com.fisa.wooriarte.user.dto.request.UserInfoRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -129,5 +131,11 @@ public class User implements CustomUserDetails {
 
     public void setPwd(String pwd) {
         this.pwd = pwd;
+    }
+
+    public void updateUser(UserInfoRequestDto userInfoRequestDto) {
+        this.name = userInfoRequestDto.getName();
+        this.email = userInfoRequestDto.getEmail();
+        this.phone = userInfoRequestDto.getEmail();
     }
 }

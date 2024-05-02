@@ -123,17 +123,9 @@ public class UserService {
     
     // 유저 개인 정보 수정
     public Boolean updateMyUser(Long id, UserInfoRequestDto userInfoRequestDto) {
-        // 이메일 중복 확인
-        Optional<User> userEmail = userRepository.findByEmail(userInfoRequestDto.getEmail());
-        if (userEmail.isPresent()) {
-            System.out.println("수정 불가능(이메일 중복)");
-            return false;
-        }
-
-        // 이메일이 중복되지 않은 경우, 엔터티 업데이트
-        final int result = userRepository.updateAllById(id, userInfoRequestDto.getId(),
-                userInfoRequestDto.getPwd(), userInfoRequestDto.getName(), userInfoRequestDto.getEmail(), userInfoRequestDto.getPhone());
-        System.out.println("변경된 엔터티 개수" + result);
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("해당 사용자 없음"));
+        user.updateUser(userInfoRequestDto);
+        userRepository.save(user);
         return true;
     }
 
