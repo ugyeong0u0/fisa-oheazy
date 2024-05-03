@@ -72,16 +72,10 @@ public class ExhibitService {
      * @param matchingId : 성사된 matchingId
      */
     public void addExhibit(ExhibitDto exhibitDTO, Long matchingId) {
-
         Matching matching = matchingRepository.findById(matchingId)
                 .orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + matchingId));
-        // ExhibitDTO에 사용자 정보 설정
-//        exhibitDTO.setMatchingId(matching.getMatchingId());
-        //TicketDTO -> 엔티티 변환
-        Exhibit exhibit = exhibitDTO.toEntity(matchingRepository);
-        //Ticket 엔티티 저장
+        Exhibit exhibit = exhibitDTO.toEntity(matching);
         Exhibit savedExhibit = exhibitRepository.save(exhibit);
-        //Ticket 엔티티 -> TicketDTO 변환
         ExhibitDto.fromEntity(savedExhibit);
     }
 

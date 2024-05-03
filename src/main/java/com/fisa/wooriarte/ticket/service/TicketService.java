@@ -52,7 +52,7 @@ public class TicketService {
      * @param status : 티켓의 사용 여부
      * @return
      */
-    public List<TicketResponesDto> getTicketsByUserIdAndStatus(long userId, boolean status) {
+    public List<TicketResponesDto> getTicketsByUserIdAndStatus(Long userId, boolean status) {
         List<Ticket> tickets;
         log.info("userId :: " + userId);
         //userId로 User 가져오기

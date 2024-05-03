@@ -138,11 +138,11 @@ public class UserService {
     }
 
     // 유저 비밀번호 찾기
-    public String findUserPw (String id, String name, String email){
-        User userInfo = userRepository.findByIdAndNameAndEmail(id, name, email)
+    public boolean findUserPw (UserDto userDto){
+        User user = userRepository.findByIdAndNameAndEmail(userDto.getId(), userDto.getName(), userDto.getEmail())
                 .orElseThrow(() -> new NoSuchElementException("유저 비밀번호를 찾을 수 없습니다.")); //객체 없으면 에러던지기
-
-        return userInfo.getPwd(); //아이디 던저주기
+        user.setPwd(userDto.getPwd());
+        return true;
     }
 
 

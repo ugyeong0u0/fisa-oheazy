@@ -32,12 +32,7 @@ public class ExhibitDto {
     private Boolean isDeleted;
     private List<String> urls;
 
-    public Exhibit toEntity(MatchingRepository matchingRepository){
-        // 매칭를 찾아서 Optional로 받음
-        Optional<Matching> optionalMatching = matchingRepository.findById(this.matchingId);
-
-        // Optional에서 매칭를 가져오거나 매칭이 존재하지 않으면 예외 발생
-        Matching matching = optionalMatching.orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + this.matchingId));
+    public Exhibit toEntity(Matching matching){
         return Exhibit.builder()
                 .exhibitId(this.exhibitId)
                 .matching(matching)

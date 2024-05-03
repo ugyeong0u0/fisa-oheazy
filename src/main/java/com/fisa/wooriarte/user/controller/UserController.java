@@ -189,20 +189,17 @@ public class UserController {
 
     //클라이언트가 저송한
     //비밀번호 찾기
-    @PostMapping("/find-pw")
-    public ResponseEntity<?> findUserPw(@RequestBody UserDto userDTO ) {
-        String id = userDTO.getId();
-        String name = userDTO.getName();
-        String email = userDTO.getEmail();
-
+    @PostMapping("/set-pw")
+    public ResponseEntity<?> setUserPw(@RequestBody UserDto userDTO ) {
         try {
-            String userPw = userService.findUserPw(id,name, email);
-            return ResponseEntity.ok().body("찾은 비밀번호 : " + userPw);
+            boolean result = userService.findUserPw(userDTO);
+            if(result) {
+                return ResponseEntity.ok(Map.of("message", "비밀번호 재설정 완료"));
+            }
         } catch (NoSuchElementException e) {
-            return ResponseEntity.badRequest().body("입력한 아이디, 이름과 이메일을 다시 확인해주세요.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
+            return ResponseEntity.badRequest().body(Map.of("message", "입력한 아이디, 이름과 이메일을 다시 확인해주세요."));
         }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message","서버 오류 발생"));
     }
 
     /**

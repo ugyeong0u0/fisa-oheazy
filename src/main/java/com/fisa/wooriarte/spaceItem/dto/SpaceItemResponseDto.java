@@ -21,6 +21,7 @@ public class SpaceItemResponseDto {
     private String city;
     private String size;
     private Boolean parking;
+    private Boolean approval;
     private Long fee;
     private String phone;
     private LocalDate startDate;
@@ -37,6 +38,7 @@ public class SpaceItemResponseDto {
                 .city(spaceItem.getCity().toString())
                 .size(spaceItem.getSize())
                 .parking(spaceItem.getParking())
+                .approval(spaceItem.getApproval())
                 .fee(spaceItem.getFee())
                 .phone(spaceItem.getPhone())
                 .startDate(spaceItem.getStartDate())

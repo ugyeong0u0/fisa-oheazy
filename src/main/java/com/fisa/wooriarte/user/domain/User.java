@@ -138,6 +138,6 @@ public class User implements CustomUserDetails {
     public void updateUser(UserInfoRequestDto userInfoRequestDto) {
         this.name = userInfoRequestDto.getName();
         this.email = userInfoRequestDto.getEmail();
-        this.phone = userInfoRequestDto.getEmail();
+        this.phone = userInfoRequestDto.getPhone();
     }
 }
