@@ -33,6 +33,8 @@ public class Admin implements CustomUserDetails {
     private String pwd;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "admin_roles", joinColumns = @JoinColumn(name = "admin_id"))
+    @Column(name = "role")
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 

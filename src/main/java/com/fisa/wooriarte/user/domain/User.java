@@ -46,6 +46,8 @@ public class User implements CustomUserDetails {
     private String pwd;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 

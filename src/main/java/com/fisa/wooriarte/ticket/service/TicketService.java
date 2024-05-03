@@ -1,5 +1,6 @@
 package com.fisa.wooriarte.ticket.service;
 
+import com.fisa.wooriarte.email.service.EmailService;
 import com.fisa.wooriarte.exhibit.domain.Exhibit;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
 import com.fisa.wooriarte.payment.domain.Payment;
@@ -34,13 +35,15 @@ public class TicketService {
     private final ExhibitRepository exhibitRepository;
 
     private final PaymentRepository paymentRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public TicketService(TicketRepository ticketRepository, UserRepository userRepository, ExhibitRepository exhibitRepository, PaymentRepository paymentRepository){
+    public TicketService(TicketRepository ticketRepository, UserRepository userRepository, ExhibitRepository exhibitRepository, PaymentRepository paymentRepository, EmailService emailService){
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.exhibitRepository = exhibitRepository;
         this.paymentRepository = paymentRepository;
+        this.emailService = emailService;
     }
 
     /**
@@ -97,6 +100,14 @@ public class TicketService {
         Ticket ticket = ticketDTO.toEntity(user, exhibit, payment);
         //Ticket 엔티티 저장
         ticketRepository.save(ticket);
+        String email = ticket.getUser().getEmail();
+        String ticketNo = ticket.getTicketNo();
+        String exhibitName = exhibit.getName();
+        Long ticketAmount = ticket.getAmount();
+        String exhibitTime = exhibit.getStartDate() + " - " + exhibit.getEndDate();
+
+        emailService.ticketEmail(email, ticketNo, exhibitName, ticketAmount, exhibitTime);
+
         payment.setStatus(PaymentStatus.CREATETICKET);
         paymentRepository.save(payment);
     }
