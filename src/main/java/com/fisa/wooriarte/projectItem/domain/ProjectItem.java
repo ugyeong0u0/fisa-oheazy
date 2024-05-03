@@ -49,7 +49,7 @@ public class ProjectItem {
     @Column(nullable = false)
     private String artistName;
 
-    @Column(nullable = false)
+    @Column(length = 2000, columnDefinition = "text")
     private String intro;
 
     @Column(nullable = false)

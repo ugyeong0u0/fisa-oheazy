@@ -39,7 +39,7 @@ public class SpaceItem {
     @Builder.Default
     private List<SpacePhoto> spacePhoto = new ArrayList<>();
 
-    @Column
+    @Column(length = 2000, columnDefinition = "text")
     private String intro;
 
     @Column
