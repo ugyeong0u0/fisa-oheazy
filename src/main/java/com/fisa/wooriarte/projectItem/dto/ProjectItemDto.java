@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class ProjectItemDto {
     private Long projectItemId;
     private Long projectManagerId;
+    private String title;
     private String artistName;
     private String intro;
     private String phone;
@@ -35,6 +36,7 @@ public class ProjectItemDto {
         return ProjectItem.builder()
                 .projectItemId(this.projectItemId)
                 .projectManager(projectManager)
+                .title(this.title)
                 .artistName(this.artistName)
                 .intro(this.intro)
                 .phone(this.phone)
@@ -50,6 +52,7 @@ public class ProjectItemDto {
         return ProjectItemDto.builder()
                 .projectItemId(entity.getProjectItemId())
                 .projectManagerId(entity.getProjectManager().getProjectManagerId())
+                .title(entity.getTitle())
                 .artistName(entity.getArtistName())
                 .intro(entity.getIntro())
                 .phone(entity.getPhone())

@@ -27,10 +27,21 @@ public class ProjectItemController {
         this.projectItemService = projectItemService;
     }
 
-    @GetMapping("")
-    public ResponseEntity<?> getAllProjectItemInfo() {
+    @GetMapping("/approved-all")
+    public ResponseEntity<?> getAllApprovedProjectItemInfo() {
         try {
-            List<ProjectItemResponseDto> items = projectItemService.findAll();
+            List<ProjectItemResponseDto> items = projectItemService.findApprovedAll();
+            return ResponseEntity.ok(items);
+        } catch (Exception e) {
+            log.error("Failed to retrieve all project items", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve project item information."));
+        }
+    }
+
+    @GetMapping("/unapproved-all")
+    public ResponseEntity<?> getAllUnapprovedProjectItemInfo() {
+        try {
+            List<ProjectItemResponseDto> items = projectItemService.findUnapprovedAll();
             return ResponseEntity.ok(items);
         } catch (Exception e) {
             log.error("Failed to retrieve all project items", e);

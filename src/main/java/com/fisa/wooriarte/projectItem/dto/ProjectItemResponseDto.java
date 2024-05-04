@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class ProjectItemResponseDto {
     private Long projectItemId;
     private Long projectManagerId;
+    private String title;
     private String artistName;
     private String intro;
     private String phone;
@@ -28,6 +29,7 @@ public class ProjectItemResponseDto {
         return ProjectItemResponseDto.builder()
                 .projectItemId(entity.getProjectItemId())
                 .projectManagerId(entity.getProjectManager().getProjectManagerId())
+                .title(entity.getTitle())
                 .artistName(entity.getArtistName())
                 .intro(entity.getIntro())
                 .phone(entity.getPhone())

@@ -39,28 +39,31 @@ public class SpaceItem {
     @Builder.Default
     private List<SpacePhoto> spacePhoto = new ArrayList<>();
 
+    @Column(nullable = false)
+    private String title;
+
     @Column(length = 2000, columnDefinition = "text")
     private String intro;
 
-    @Column
+    @Column(nullable = false)
     private String hostName;
 
-    @Column
+    @Column(nullable = false)
     private City city;
 
-    @Column
+    @Column(nullable = false)
     private String size;
 
-    @Column
+    @Column(nullable = false)
     private Boolean parking;
 
-    @Column
+    @Column(nullable = false)
     private Long fee;
 
-    @Column
+    @Column(nullable = false)
     private String phone;
 
-    @Column
+    @Column(nullable = false)
     private Boolean approval;
 
     @Column(nullable = false, updatable = false)
@@ -73,7 +76,7 @@ public class SpaceItem {
     @Column(nullable = false, updatable = false)
     private LocalDate createdAt;
 
-    @Column
+    @Column(nullable = false)
     private Boolean isDeleted;
 
     @Column(nullable = false, updatable = false)

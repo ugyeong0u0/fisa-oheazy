@@ -28,10 +28,22 @@ public class SpaceItemController {
     }
 
     // Retrieve all space items information
-    @GetMapping("")
-    public ResponseEntity<?> getAllSpaceItemInfo() {
+    @GetMapping("/approved-all")
+    public ResponseEntity<?> getAllApprovedSpaceItemInfo() {
         try {
-            List<SpaceItemResponseDto> items = spaceItemService.findAll();
+            List<SpaceItemResponseDto> items = spaceItemService.findApprovedAll();
+            return ResponseEntity.ok(items);
+        } catch (Exception e) {
+            log.error("Error retrieving all space items", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve space item information."));
+        }
+    }
+
+    // Retrieve all space items information
+    @GetMapping("unapproved-all")
+    public ResponseEntity<?> getAllUnapprovedSpaceItemInfo() {
+        try {
+            List<SpaceItemResponseDto> items = spaceItemService.findUnapprovedAll();
             return ResponseEntity.ok(items);
         } catch (Exception e) {
             log.error("Error retrieving all space items", e);

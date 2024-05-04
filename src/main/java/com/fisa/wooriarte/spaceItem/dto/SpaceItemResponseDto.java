@@ -16,6 +16,7 @@ public class SpaceItemResponseDto {
 
     private Long spaceItemId;
     private Long spaceRentalId;
+    private String title;
     private String intro;
     private String hostName;
     private String city;
@@ -33,6 +34,7 @@ public class SpaceItemResponseDto {
         return SpaceItemResponseDto.builder()
                 .spaceItemId(spaceItem.getSpaceItemId())
                 .spaceRentalId(spaceItem.getSpaceRental().getSpaceRentalId())
+                .title(spaceItem.getTitle())
                 .intro(spaceItem.getIntro())
                 .hostName(spaceItem.getHostName())
                 .city(spaceItem.getCity().toString())

@@ -20,6 +20,7 @@ public class SpaceItemDto {
 
     private Long spaceItemId;
     private Long spaceRentalId;
+    private String title;
     private String intro;
     private String hostName;
     private String city;
@@ -38,6 +39,7 @@ public class SpaceItemDto {
     public SpaceItem toEntity(SpaceRental spaceRental) {
         return SpaceItem.builder()
                 .spaceRental(spaceRental)
+                .title(title)
                 .intro(this.intro)
                 .hostName(this.hostName)
                 .city(City.valueOf(this.city))
@@ -57,6 +59,7 @@ public class SpaceItemDto {
         return SpaceItemDto.builder()
                 .spaceItemId(entity.getSpaceItemId())
                 .spaceRentalId(entity.getSpaceRental().getSpaceRentalId()) // SpaceRental 객체의 ID를 추출
+                .title(entity.getTitle())
                 .intro(entity.getIntro())
                 .hostName(entity.getHostName())
                 .city(entity.getCity().name())

@@ -47,6 +47,9 @@ public class ProjectItem {
     private List<ProjectPhoto> projectPhotos = new ArrayList<>();
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private String artistName;
 
     @Column(length = 2000, columnDefinition = "text")
@@ -86,6 +89,7 @@ public class ProjectItem {
 
 
     public void updateProjectItem(ProjectItemDto projectItemDto) {
+        this.title = projectItemDto.getTitle();
         this.artistName = projectItemDto.getArtistName();
         this.intro = projectItemDto.getIntro();
         this.phone = projectItemDto.getPhone();

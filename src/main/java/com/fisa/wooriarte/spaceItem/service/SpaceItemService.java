@@ -39,9 +39,16 @@ public class SpaceItemService {
         return spaceItem.getSpaceItemId();
     }
 
-    public List<SpaceItemResponseDto> findAll() {
-        System.out.println("findAll");
-        List<SpaceItem> spaceItemList = spaceItemRepository.findAllByIsDeletedFalse()
+    public List<SpaceItemResponseDto> findApprovedAll() {
+        List<SpaceItem> spaceItemList = spaceItemRepository.findAllByIsDeletedFalseAndApprovalTrue()
+                .orElseThrow(() -> new NoSuchElementException("No Space Item"));
+        return spaceItemList.stream()
+                .map(SpaceItemResponseDto::fromEntity) // 람다식을 사용하여 각 SpaceItem 엔티티를 SpaceItemDTO로 변환
+                .collect(Collectors.toList());
+    }
+
+    public List<SpaceItemResponseDto> findUnapprovedAll() {
+        List<SpaceItem> spaceItemList = spaceItemRepository.findAllByIsDeletedFalseAndApprovalFalse()
                 .orElseThrow(() -> new NoSuchElementException("No Space Item"));
         return spaceItemList.stream()
                 .map(SpaceItemResponseDto::fromEntity) // 람다식을 사용하여 각 SpaceItem 엔티티를 SpaceItemDTO로 변환

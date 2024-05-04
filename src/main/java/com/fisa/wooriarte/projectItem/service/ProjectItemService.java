@@ -40,10 +40,19 @@ public class ProjectItemService {
         return projectItem.getProjectItemId();
     }
 
-    // 프로젝트 아이템 전체 조회(삭제된 아이템 제외)
-    public List<ProjectItemResponseDto> findAll() {
+    // 프로젝트 아이템 전체 조회(삭제된 아이템 제외, 승인O)
+    public List<ProjectItemResponseDto> findApprovedAll() {
         System.out.println("findAll");
-        List<ProjectItem> projectItemList = projectItemRepository.findAllByIsDeletedFalse().orElseThrow(() -> new NoSuchElementException("No Project Item"));
+        List<ProjectItem> projectItemList = projectItemRepository.findAllByIsDeletedFalseAndApprovalTrue().orElseThrow(() -> new NoSuchElementException("No Project Item"));
+        return projectItemList.stream()
+                .map(ProjectItemResponseDto::fromEntity) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
+                .collect(Collectors.toList());
+    }
+
+    // 프로젝트 아이템 전체 조회(삭제된 아이템 제외, 승인X)
+    public List<ProjectItemResponseDto> findUnapprovedAll() {
+        System.out.println("findAll");
+        List<ProjectItem> projectItemList = projectItemRepository.findAllByIsDeletedFalseAndApprovalFalse().orElseThrow(() -> new NoSuchElementException("No Project Item"));
         return projectItemList.stream()
                 .map(ProjectItemResponseDto::fromEntity) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
                 .collect(Collectors.toList());
