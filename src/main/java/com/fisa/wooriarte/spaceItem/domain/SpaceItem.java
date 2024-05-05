@@ -90,6 +90,7 @@ public class SpaceItem {
     public void setApproval() { this.approval = true; }
 
     public void updateSpaceItem(SpaceItemDto spaceItemDto) {
+        this.title = spaceItemDto.getTitle();
         this.intro = spaceItemDto.getIntro();
         this.hostName = spaceItemDto.getHostName();
         this.city = City.valueOf(spaceItemDto.getCity());
