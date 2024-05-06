@@ -55,7 +55,9 @@ public class UserService {
         }
 
         userEntity.addRole("USER");
-        userEntity.setPwd(passwordEncoder.encode(userEntity.getPwd()));
+        if(userDto.getPwd() != null){
+            userEntity.setPwd(passwordEncoder.encode(userEntity.getPwd()));
+        }
         userRepository.save(userEntity);
         System.out.println("회원가입 가능");
 
