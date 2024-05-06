@@ -47,7 +47,9 @@ public class ProjectManagerService {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
         ProjectManager projectManager = projectManagerDTO.toEntity();
+        if(projectManagerDTO.getPwd() != null){
         projectManager.setPwd(passwordEncoder.encode(projectManagerDTO.getPwd())); // assuming 'encryption' is properly injected
+        }
         projectManager.addRole("PROJECT_MANAGER");
         projectManagerRepository.save(projectManager);
         return true;
