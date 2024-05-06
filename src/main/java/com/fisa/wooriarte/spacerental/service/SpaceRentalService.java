@@ -46,7 +46,9 @@ public class SpaceRentalService {
             throw new DataIntegrityViolationException("Duplicate User id");
         }
         SpaceRental spaceRental = spaceRentalDTO.toEntity();
-        spaceRental.setPwd(passwordEncoder.encode(spaceRentalDTO.getPwd()));
+        if(spaceRentalDTO.getPwd() != null) {
+            spaceRental.setPwd(passwordEncoder.encode(spaceRentalDTO.getPwd()));
+        }
         spaceRental.addRole("SPACE_RENTAL");
         spaceRentalRepository.save(spaceRental);
         return true;
