@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
+import org.springframework.security.web.server.header.XXssProtectionServerHttpHeadersWriter;
 
 @Configuration
 @EnableWebSecurity
@@ -64,11 +66,9 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService),
                         UsernamePasswordAuthenticationFilter.class)
                 .headers()
-                .contentSecurityPolicy("default-src 'self';" +
-                        "script-src 'self' https://wooriarte.store;" +
-                        "style-src 'self' https://wooriarte.store https://fonts.googleapis.com;" +
-                        "font-src 'self' https://wooriarte.store https://fonts.gstatic.com;" +
-                        "img-src 'self' https://wooriarte.store;")
+                .xssProtection()
+                .and()
+                .contentSecurityPolicy("script-src 'self'")
                 .and()
                 .frameOptions().deny()
                 .and()
