@@ -63,6 +63,15 @@ public class SecurityConfig {
                 .addFilter(corsConfig.corsFilter())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisService),
                         UsernamePasswordAuthenticationFilter.class)
+                .headers()
+                .contentSecurityPolicy("default-src 'self';" +
+                        "script-src 'self' https://wooriarte.store;" +
+                        "style-src 'self' https://wooriarte.store https://fonts.googleapis.com;" +
+                        "font-src 'self' https://wooriarte.store https://fonts.gstatic.com;" +
+                        "img-src 'self' https://wooriarte.store;")
+                .and()
+                .frameOptions().deny()
+                .and()
                 .build();
 
 
