@@ -6,6 +6,11 @@ import com.fisa.wooriarte.exhibit.dto.ExhibitResponseDto;
 import com.fisa.wooriarte.exhibit.repository.ExhibitRepository;
 import com.fisa.wooriarte.matching.domain.Matching;
 import com.fisa.wooriarte.matching.repository.MatchingRepository;
+import com.fisa.wooriarte.projectItem.domain.ProjectItem;
+import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
+import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
+import com.fisa.wooriarte.spaceItem.repository.SpaceItemRepository;
+import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,12 +30,16 @@ public class ExhibitService {
 
     private final ExhibitRepository exhibitRepository;
     private final MatchingRepository matchingRepository;
+    private final ProjectItemRepository projectItemRepository;
+    private final SpaceItemRepository spaceItemRepository;
 
     @Autowired
-    public ExhibitService(ExhibitRepository exhibitRepository, MatchingRepository matchingRepository){
+    public ExhibitService(ExhibitRepository exhibitRepository, MatchingRepository matchingRepository, ProjectItemRepository projectItemRepository, SpaceItemRepository spaceItemRepository){
 
         this.exhibitRepository = exhibitRepository;
         this.matchingRepository = matchingRepository;
+        this.projectItemRepository = projectItemRepository;
+        this.spaceItemRepository = spaceItemRepository;
     }
 
 
@@ -76,6 +85,16 @@ public class ExhibitService {
                 .orElseThrow(() -> new IllegalArgumentException("Matching not found with id: " + matchingId));
         Exhibit exhibit = exhibitDTO.toEntity(matching);
         Exhibit savedExhibit = exhibitRepository.save(exhibit);
+
+        ProjectItem projectItem = projectItemRepository.findById(matching.getProjectItem().getProjectItemId()).orElseThrow(NoSuchElementException::new);
+        SpaceItem spaceItem = spaceItemRepository.findById(matching.getSpaceItem().getSpaceItemId()).orElseThrow(NoSuchElementException::new);
+
+        projectItem.setApprovalFalse();
+        spaceItem.setApprovalFalse();
+
+        projectItemRepository.save(projectItem);
+        spaceItemRepository.save(spaceItem);
+
         ExhibitDto.fromEntity(savedExhibit);
     }
 

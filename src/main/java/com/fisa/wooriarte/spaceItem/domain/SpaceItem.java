@@ -89,6 +89,8 @@ public class SpaceItem {
 
     public void setApproval() { this.approval = true; }
 
+    public void setApprovalFalse() { this.approval = false; }
+
     public void updateSpaceItem(SpaceItemDto spaceItemDto) {
         this.title = spaceItemDto.getTitle();
         this.intro = spaceItemDto.getIntro();

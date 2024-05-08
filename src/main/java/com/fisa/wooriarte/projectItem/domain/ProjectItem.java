@@ -87,6 +87,7 @@ public class ProjectItem {
 
     public void setApproval() { this.approval = true; }
 
+    public void setApprovalFalse() { this.approval = false; }
 
     public void updateProjectItem(ProjectItemDto projectItemDto) {
         this.title = projectItemDto.getTitle();
