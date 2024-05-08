@@ -71,7 +71,7 @@ public class ProjectItemService {
         // Optional<List<ProjectItem>>에서 List<ProjectItem>을 얻기 위해 orElseGet을 사용합니다.
         // Optional이 비어있다면, 빈 리스트를 반환합니다.
         ProjectManager projectManager = projectManagerRepository.findById(projectManagerId).orElseThrow(() -> new NoSuchElementException("No Project Manager"));
-        List<ProjectItem> projectItems = projectItemRepository.findByProjectManagerAndIsDeletedFalse(projectManager)
+        List<ProjectItem> projectItems = projectItemRepository.findByProjectManagerAndIsDeletedFalseAndApprovalTrue(projectManager)
                 .orElse(Collections.emptyList());
 
         // Stream을 사용하여 각 ProjectItem을 ProjectItemDTO로 변환합니다.

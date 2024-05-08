@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface SpaceItemRepository extends JpaRepository<SpaceItem, Long> {
 
     Optional<SpaceItem> findBySpaceItemIdAndIsDeletedFalse(Long id);
-    Optional<List<SpaceItem>> findBySpaceRentalAndIsDeletedFalse(SpaceRental spaceRental);
+    Optional<List<SpaceItem>> findBySpaceRentalAndIsDeletedFalseAndApprovalTrue(SpaceRental spaceRental);
     Optional<List<SpaceItem>> findAllByIsDeletedFalseAndApprovalTrue();
     Optional<List<SpaceItem>> findAllByIsDeletedFalseAndApprovalFalse();
 

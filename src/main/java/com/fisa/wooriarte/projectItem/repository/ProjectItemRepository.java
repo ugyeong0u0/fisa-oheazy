@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface ProjectItemRepository extends JpaRepository<ProjectItem, Long> {
 
     Optional<ProjectItem> findByProjectItemIdAndIsDeletedFalse(Long projectItemId);
-    Optional<List<ProjectItem>> findByProjectManagerAndIsDeletedFalse(ProjectManager projectManager);
+    Optional<List<ProjectItem>> findByProjectManagerAndIsDeletedFalseAndApprovalTrue(ProjectManager projectManager);
     Optional<List<ProjectItem>> findAllByIsDeletedFalseAndApprovalTrue();
     Optional<List<ProjectItem>> findAllByIsDeletedFalseAndApprovalFalse();
     Optional<List<ProjectItem>> findAllByApprovalFalseAndIsDeletedFalse();

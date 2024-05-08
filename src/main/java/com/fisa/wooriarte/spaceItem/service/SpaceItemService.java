@@ -70,7 +70,7 @@ public class SpaceItemService {
         // Optional<List<ProjectItem>>에서 List<ProjectItem>을 얻기 위해 orElseGet을 사용합니다.
         // Optional이 비어있다면, 빈 리스트를 반환합니다.
         SpaceRental spaceRental = spaceRentalRepository.findById(spaceRentalId).orElseThrow(() -> new NoSuchElementException("No Project Manager"));
-        List<SpaceItem> spaceItems = spaceItemRepository.findBySpaceRentalAndIsDeletedFalse(spaceRental)
+        List<SpaceItem> spaceItems = spaceItemRepository.findBySpaceRentalAndIsDeletedFalseAndApprovalTrue(spaceRental)
                 .orElse(Collections.emptyList());
 
         // Stream을 사용하여 각 ProjectItem을 ProjectItemDTO로 변환합니다.
