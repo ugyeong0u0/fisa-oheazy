@@ -3,6 +3,7 @@ package com.fisa.wooriarte.projectItem.repository;
 import com.fisa.wooriarte.projectItem.domain.City;
 import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
+import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,7 @@ public interface ProjectItemRepository extends JpaRepository<ProjectItem, Long> 
     Optional<List<ProjectItem>> findByProjectManagerAndIsDeletedFalse(ProjectManager projectManager);
     Optional<List<ProjectItem>> findAllByIsDeletedFalseAndApprovalTrue();
     Optional<List<ProjectItem>> findAllByIsDeletedFalseAndApprovalFalse();
-    Optional<List<ProjectItem>> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCityAndIsDeletedFalse(LocalDate startDate, LocalDate endDate, City city);
     Optional<List<ProjectItem>> findAllByApprovalFalseAndIsDeletedFalse();
+
+    Optional<List<ProjectItem>> findByEndDateGreaterThanEqualAndStartDateLessThanEqualAndCityAndIsDeletedFalseAndApprovalTrue(LocalDate startDate, LocalDate endDate, City city);
 }

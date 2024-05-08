@@ -98,7 +98,7 @@ public class SpaceItemService {
     }
 
     public List<SpaceItemResponseDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
-        List<SpaceItem> spaceItems = spaceItemRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCityAndIsDeletedFalse(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
+        List<SpaceItem> spaceItems = spaceItemRepository.findByEndDateGreaterThanEqualAndStartDateLessThanEqualAndCityAndIsDeletedFalseAndApprovalTrue(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
         return spaceItems.stream().map(SpaceItemResponseDto::fromEntity).collect(Collectors.toList());
     }
 

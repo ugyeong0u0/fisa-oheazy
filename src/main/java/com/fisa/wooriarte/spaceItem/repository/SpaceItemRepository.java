@@ -17,7 +17,8 @@ public interface SpaceItemRepository extends JpaRepository<SpaceItem, Long> {
     Optional<List<SpaceItem>> findBySpaceRentalAndIsDeletedFalse(SpaceRental spaceRental);
     Optional<List<SpaceItem>> findAllByIsDeletedFalseAndApprovalTrue();
     Optional<List<SpaceItem>> findAllByIsDeletedFalseAndApprovalFalse();
-    Optional<List<SpaceItem>> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCityAndIsDeletedFalse(LocalDate startDate, LocalDate endDate, City city);
 
     Optional<List<SpaceItem>> findAllByApprovalFalseAndIsDeletedFalse();
+
+    Optional<List<SpaceItem>> findByEndDateGreaterThanEqualAndStartDateLessThanEqualAndCityAndIsDeletedFalseAndApprovalTrue(LocalDate startDate, LocalDate endDate, City city);
 }

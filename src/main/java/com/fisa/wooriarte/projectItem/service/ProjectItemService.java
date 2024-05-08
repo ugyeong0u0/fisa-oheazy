@@ -100,7 +100,7 @@ public class ProjectItemService {
     }
 
     public List<ProjectItemResponseDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
-        List<ProjectItem> projectItems = projectItemRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndCityAndIsDeletedFalse(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
+        List<ProjectItem> projectItems = projectItemRepository.findByEndDateGreaterThanEqualAndStartDateLessThanEqualAndCityAndIsDeletedFalseAndApprovalTrue(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
         return projectItems.stream().map(ProjectItemResponseDto::fromEntity).collect(Collectors.toList());
     }
     @Transactional
