@@ -1,4 +1,4 @@
-# WOORI ARTE 전시 예매 및 중개 플랫폼 
+# WOORI ARTE 전시 예매 및 중개 플랫폼
 
 ## 프로젝트 소개
 
@@ -38,11 +38,11 @@
 	- 사업자 페이지의 작품 및 공간 아이템 조회(날짜, 지역 필터링 조회 가능), 공간 아이템에 대해 매칭 신청
 	- 작품 아이템 관리(작품 등록, 수정, 삭제), 매칭신청 현황(받은 제안, 신청 현황, 성사된 매칭), 개인정보 수정, 탈퇴하기
 
-**[임대 사업자]**
+**[임대사업자]**
 
 ![](https://github.com/no-wead/fisa-oheazy/assets/124620452/30f1090b-8905-4631-9c50-94933bf0812e)
 
-- 임대 사업자는 자신의 공간을 사업자 사이트에 등록할 수 있고, 관리자 승인 후 공간이 사업자 사이트에 업로드 됩니다.
+- 임대사업자는 자신의 공간을 사업자 사이트에 등록할 수 있고, 관리자 승인 후 공간이 사업자 사이트에 업로드 됩니다.
 - 자신의 공간에 전시를 개최하고싶은 작품이 있다면, 자신의 공간을 선택하여 작가에게 매칭 신청을 보낼 수 있습니다.
 - 주요 기능:
 	- 회원가입, 로그인, 아이디 찾기 & 비밀번호 찾기(이메일 인증번호)
@@ -57,19 +57,22 @@
 	- 등록된 전시 목록 조회(전시 정보 및 티켓 판매 수), 등록된 전시 정보수정
 
 ## 프로젝트 목표
-서버 이중화와 고가용성 인프라를 구축하여 사용자들에게 안정적인 전자상거래 서비스를 제공하고자 하였습니다. 
+
+내결함성, 고가용성 인프라를 구축하여 사용자들에게 안정적인 전자상거래 서비스를 제공하고자 하였습니다. 
+이러한 안정적인 인프라를 바탕으로 WOORI ARTE는 예매자, 임대사업자, 작가 모두에게 최적의 서비스를 제공하고자 합니다. 예매자들이 다양한 전시를 쉽게 예약할 수 있고, 임대사업자와 작가가 원활하게 전시를 개최할 수 있도록 지원함으로써, 예술을 사랑하는 모든 이들이 만족할 수 있는 플랫폼을 구축하고자 하였습니다.
 
 ## 개발 기간
 
-2024/03 ~ 2024/05
-
-
+2024.03.18 ~ 2024.05.08
 
 ## 팀원 구성
-|| 이대원 | 김영현 | 장지은 | 진민호 | 이유경 |
-|--|--|--|--|--|--|
-| 역할 | 백엔드(도메인 CRUD, JWT, Email 인증), 인프라(AWS 3-tier 설계) | 백엔드(도메인 CRUD, 결제 API) | 백엔드(도메인 CRUD), 인프라 | 인프라 | 프론트 |
-| github | [no-wead](https://github.com/no-wead) | [kim-young-hyun](https://github.com/kim-young-hyun) | [jieunjea](https://github.com/jieunjea) | [minho](https://github.com/mlnho) | [ugyeong0u0](https://github.com/ugyeong0u0) |
+| 이름   | 역할                                                                                 | GitHub                                   |
+|--------|--------------------------------------------------------------------------------------|------------------------------------------|
+| 이대원 | 백엔드(도메인 CRUD, JWT, Email 인증), 인프라(AWS 3-tier 설계)                        | [no-wead](https://github.com/no-wead)    |
+| 김영현 | 백엔드(도메인 CRUD, 결제 API)                                                        | [kim-young-hyun](https://github.com/kim-young-hyun) |
+| 장지은 | 백엔드(도메인 CRUD, S3 사진 저장 API), 인프라, DevOps                                | [jieunjea](https://github.com/jieunjea)  |
+| 진민호 | 인프라, DevOps                                                                       | [minho](https://github.com/mlnho)        |
+| 이유경 | 프론트엔드                                                                           | [ugyeong0u0](https://github.com/ugyeong0u0) |
 
 ## 개발환경
 **Front-end**: HTML, CSS, JavaScript, React.js
@@ -109,7 +112,7 @@
 
 ### 브랜치 전략
 - git-flow 전략을 선택하였습니다
-	-  main 브랜치는 배포를 위해 사용하는 브랜치입니다.
+	- main 브랜치는 배포를 위해 사용하는 브랜치입니다.
 	- develop 브랜치는 개발 과정에서 사용하는 브랜치입니다. 기능 개발이 완료된 코드로 관리되며 프로젝트의 가장 최신 코드로 유지됩니다. 개발 완료된 기능은 CI/CD를 통해 자동 배포됩니다.
 	- feat 브랜치는 기능 개발 시 기능마다 develop 브랜치에서 분기하여 기능 개발 완료 후 develop 브랜치에 PR을 통해 merge하였습니다.
 
@@ -122,15 +125,34 @@
 - [https://techblog-hyunjun.tistory.com/21](https://techblog-hyunjun.tistory.com/21)
 -   [](https://velog.io/@shin6403/Git-git-%EC%BB%A4%EB%B0%8B-%EC%BB%A8%EB%B2%A4%EC%85%98-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0)[https://velog.io/@shin6403/Git-git-커밋-컨벤션-설정하기](https://velog.io/@shin6403/Git-git-%EC%BB%A4%EB%B0%8B-%EC%BB%A8%EB%B2%A4%EC%85%98-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0)
 
-
 ## 서비스 아키텍처
 ![](https://github.com/no-wead/fisa-oheazy/assets/124620452/5c20e684-b53e-44ee-9945-72f2ed00b15e)
+
+- 프론트엔드는 비동기 방식의 React.js로 구현, 서버는 Nginx  사용
+- 백엔드는 Spring Boot를 이용한 restful API와 결제 시스템 구현
+- 클라이언트 정보와 전시 등의 정보를 Mysql에 저장
+- Redis를 사용하여 email 인증번호와 JWT refresh 토큰에 대해 만료기간 설정하여 저장
+- Amazon CloudWatch와 Grafana를 이용하여 CPU, Memory, 활성화된 EC2 개수, 트래픽 수 모니터링 시스템 구축
 
 ## CI/CD 아키텍처
 ![](https://github.com/no-wead/fisa-oheazy/assets/124620452/a435b178-1705-437f-83d7-6d2fb3c0ed09)
 
+- 모든 어플리케이션은 일관된 환경으로 확장성, 이식성을 용이하게 하기 위해 도커 이미지 파일로 배포
+- 이미지 버전관리와 컨테이너를 이용한 배포, 오토스케일링을 위해 ECR, ECS 사용
+- Github Webhook을 이용해 Git Repository에 생긴 변경사항 인식하여 Jenkins에서 빌드, 도커 이미지로 변환 후 ECR로 도커 이미지 파일 배포
+-  ECR - Code Deploy - ECS 를 이용하여 지속적인 서비스 제공을 위한 무중단 배포 방식 중 블루/그린 배포 구현
+
 ## 인프라 아키텍처
 ![](https://github.com/no-wead/fisa-oheazy/assets/124620452/1b555c61-2dd8-4a27-8c83-ca5be7c7be29)
+
+- 웹 프로젝트이므로 유지보수, 확장성, 보안을 고려해 3티어 아키텍처로 구성
+- 전자 상거래 서비스에서 중요한 부분인 대용량 트래픽, 내결함성, 고가용성, 보안을 적용한 아키텍처 구성
+	- 로드밸런싱을 배치해 트래픽 분산, 오토스케일링 그룹과 가용영역을 나누어 배치
+	- 클라이언트로부터 들어온 요청을 Nginx의 reverse proxy를 통해 백엔드 서버와 프론트엔드 서버로 분산
+	- 외부의 IP 접근이 불가능하도록 서버를 Private Subnet에 구성, 운영관리를 위한 Bastion Host 배치
+	- DB를 primary, standby로 나누어 이중화 구성
+	- WAF를 사용해 SQL Injection, XSS, 해외 IP 차단
+- Amazon CloudWatch, AWS Lambda를 사용해 서버에 대한 이상 지표 발생 대비 Slack 알람 시스템 구성
 
 ## DB 모델링
 ![](https://github.com/no-wead/fisa-oheazy/assets/124620452/22e91fb8-1d2e-441e-bd80-2eba38b3f4ba)
@@ -139,7 +161,6 @@
 ## 서비스 기능
 **[예매자 메인 페이지]**
 
-![](https://github.com/no-wead/fisa-oheazy/assets/124620452/9d63d89f-e7df-4063-b0a9-a99411b1cc6f)
 ![image](https://github.com/no-wead/fisa-oheazy/assets/124620452/3146bee6-cf3a-4547-b52a-7337f47a74e4)
 
 **[전시 상세 페이지]**
