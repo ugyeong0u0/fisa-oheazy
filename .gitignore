@@ -18,6 +18,8 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+application.yml
+
 .idea
 *.iws
 *.iml
@@ -35,3 +37,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+src/main/resources/application.yml
+
+.DS_Store

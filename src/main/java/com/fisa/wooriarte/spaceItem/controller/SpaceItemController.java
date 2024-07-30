@@ -1,0 +1,121 @@
+package com.fisa.wooriarte.spaceItem.controller;
+
+import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
+import com.fisa.wooriarte.spaceItem.dto.SpaceItemResponseDto;
+import com.fisa.wooriarte.spaceItem.service.SpaceItemService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+@RequestMapping("/api/space-items")
+@RestController
+public class SpaceItemController {
+
+    private static final Logger log = LoggerFactory.getLogger(SpaceItemController.class);
+
+    private final SpaceItemService spaceItemService;
+
+    @Autowired
+    public SpaceItemController(SpaceItemService spaceItemService) {
+        this.spaceItemService = spaceItemService;
+    }
+
+    // Retrieve all space items information
+    @GetMapping("/approved-all")
+    public ResponseEntity<?> getAllApprovedSpaceItemInfo() {
+        try {
+            List<SpaceItemResponseDto> items = spaceItemService.findApprovedAll();
+            return ResponseEntity.ok(items);
+        } catch (Exception e) {
+            log.error("Error retrieving all space items", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve space item information."));
+        }
+    }
+
+    // Retrieve all space items information
+    @GetMapping("unapproved-all")
+    public ResponseEntity<?> getAllUnapprovedSpaceItemInfo() {
+        try {
+            List<SpaceItemResponseDto> items = spaceItemService.findUnapprovedAll();
+            return ResponseEntity.ok(items);
+        } catch (Exception e) {
+            log.error("Error retrieving all space items", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve space item information."));
+        }
+    }
+
+    @GetMapping("/space-rental/{space-rental-id}")
+    public ResponseEntity<List<SpaceItemResponseDto>> getSpaceItemBySpaceRentalId(@PathVariable("space-rental-id") Long spaceRentalId) {
+        List<SpaceItemResponseDto> spaceItemDtoList = spaceItemService.findBySpaceRentalId(spaceRentalId);
+        return ResponseEntity.ok(spaceItemDtoList);
+    }
+
+    // Add a space item
+    @PostMapping("")
+    public ResponseEntity<?> addSpaceItem(@RequestBody SpaceItemDto spaceItemDTO) {
+        try {
+            Long spaceItemId = spaceItemService.addSpaceItem(spaceItemDTO);
+            return ResponseEntity.ok(Map.of("spaceItemId", spaceItemId));
+        } catch (Exception e) {
+            log.error("Error adding space item", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to add space item."));
+        }
+    }
+
+    // Retrieve detail of a space item
+    @GetMapping("/{space-item-id}")
+    public ResponseEntity<?> getSpaceItemInfo(@PathVariable(name = "space-item-id") Long spaceItemId) {
+        try {
+            SpaceItemDto spaceItemDto = spaceItemService.findSpaceItemById(spaceItemId);
+            return ResponseEntity.ok(spaceItemDto);
+        } catch (NoSuchElementException e) {
+            log.error("Failed to retrieve space item with id: {}", spaceItemId, e);
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error("Error retrieving space item with id: {}", spaceItemId, e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to retrieve space item details."));
+        }
+    }
+
+    // Update a space item
+    @PutMapping("/{space-item-id}")
+    public ResponseEntity<?> updateSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId, @RequestBody SpaceItemDto spaceItemDTO) {
+        try {
+            spaceItemService.updateSpaceItem(spaceItemId, spaceItemDTO);
+            return ResponseEntity.ok(Map.of("message", "Space item successfully updated."));
+        } catch (Exception e) {
+            log.error("Error updating space item with id: {}", spaceItemId, e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to update space item."));
+        }
+    }
+
+    // Delete a space item
+    @DeleteMapping("/{space-item-id}")
+    public ResponseEntity<?> deleteSpaceItem(@PathVariable(name = "space-item-id") Long spaceItemId) {
+        try {
+            spaceItemService.deleteSpaceItem(spaceItemId);
+            return ResponseEntity.ok(Map.of("message", "Space item successfully deleted."));
+        } catch (Exception e) {
+            log.error("Error deleting space item with id: {}", spaceItemId, e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to delete space item."));
+        }
+    }
+
+    @GetMapping("/{start-date}/{end-date}/{city}")
+    public ResponseEntity<?> getSpaceItemByFilter(@PathVariable("start-date") LocalDate startDate, @PathVariable("end-date") LocalDate endDate, @PathVariable("city") String city) {
+        try {
+            List<SpaceItemResponseDto> spaceItemDtoList = spaceItemService.findByFilter(startDate, endDate, city);
+            return ResponseEntity.ok(spaceItemDtoList);
+        } catch (Exception e) {
+            log.error("Failed to find space item by filter", e);
+            return ResponseEntity.badRequest().body(Map.of("message", "Failed to find space item"));
+        }
+    }
+}
