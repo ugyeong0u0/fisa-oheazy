@@ -1,12 +1,12 @@
 package com.fisa.wooriarte.email.service;
 
+import com.fisa.wooriarte.email.controller.EmailController;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
 import com.fisa.wooriarte.redis.RedisUtil;
 import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
-import com.fisa.wooriarte.ticket.domain.Ticket;
-import com.fisa.wooriarte.ticket.repository.TicketRepository;
-import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
-import java.util.NoSuchElementException;
 import java.util.Random;
 
 @Service
@@ -23,132 +22,136 @@ public class EmailService {
     private final UserRepository userRepository;
     private final ProjectManagerRepository projectManagerRepository;
     private final SpaceRentalRepository spaceRentalRepository;
-    private final TicketRepository ticketRepository;
     private final JavaMailSender mailSender;
     private final RedisUtil redisUtil;
+    private final Logger log = LoggerFactory.getLogger(EmailController.class);
     private int authNumber;
 
     @Autowired
     public EmailService(UserRepository userRepository,
                         ProjectManagerRepository projectManagerRepository,
-                        SpaceRentalRepository spaceRentalRepository, TicketRepository ticketRepository,
+                        SpaceRentalRepository spaceRentalRepository,
                         JavaMailSender mailSender,
                         RedisUtil redisUtil) {
         this.userRepository = userRepository;
         this.projectManagerRepository = projectManagerRepository;
         this.spaceRentalRepository = spaceRentalRepository;
-        this.ticketRepository = ticketRepository;
         this.mailSender = mailSender;
         this.redisUtil = redisUtil;
     }
 
-    public boolean checkAuthNum(String email,String authNum){
-        if(redisUtil.getData(authNum)==null){
-            return false;
-        }
-        else if(redisUtil.getData(authNum).equals(email)){
-            return true;
-        }
-        else{
-            return false;
-        }
+    /**
+     * 사용자 입력 이메일, 인증번호와 Redis 내 인증번호 일치 여부 확인
+     * @param email 이메일 주소
+     * @param authNum 인증번호
+     * @return 인증 성공 여부
+     */
+    public boolean checkAuthNum(String email, String authNum) {
+        String storedEmail = redisUtil.getData(authNum);
+        return storedEmail != null && storedEmail.equals(email);
     }
 
+    /**
+     * 사용자 ID 존재 여부 확인
+     * @param id 사용자 ID
+     * @return ID 존재 여부
+     */
     public boolean checkUserId(String id) {
         return userRepository.existsById(id);
     }
 
+    /**
+     * 프로젝트 매니저 ID의 존재 여부 확인
+     * @param id 프로젝트 매니저 ID
+     * @return ID 존재 여부
+     */
     public boolean checkProjectManagerId(String id) {
         return projectManagerRepository.existsById(id);
     }
 
+    /**
+     * 임대사업자 ID 존재 여부 확인
+     * @param id 임대사업자 ID
+     * @return ID 존재 여부
+     */
     public boolean checkSpaceRentalId(String id) {
         return spaceRentalRepository.existsById(id);
     }
 
-    //임의의 6자리 양수 반환
-    public void makeRandomNumber() {
-        Random r = new Random();
-        String randomNumber = "";
-        for(int i = 0; i < 6; i++) {
-            randomNumber += Integer.toString(r.nextInt(10));
-        }
-
-        authNumber = Integer.parseInt(randomNumber);
-    }
-
-    //mail을 어디서 보내는지, 어디로 보내는지 , 인증 번호를 html 형식으로 어떻게 보내는지 작성합니다.
+    /**
+     * 회원가입 인증 이메일 내용 생성
+     * @param email 수신자 이메일 주소
+     * @return 생성된 인증번호
+     */
     public String joinEmail(String email) {
-        makeRandomNumber();
-        String setFrom = "nowead814@gmail.com"; // email-config에 설정한 자신의 이메일 주소를 입력
-        String toMail = email;
-        String title = "Woori Arte 회원 가입 인증 이메일 입니다."; // 이메일 제목
-        String content =
-                "Woori Arte" + 	//html 형식으로 작성 !
-                        "<br><br>" +
-                        "인증 번호는 " + authNumber + "입니다." +
-                        "<br>"; //이메일 내용 삽입
-        mailSend(setFrom, toMail, title, content);
-        return Integer.toString(authNumber);
-    }
-
-    //이메일을 전송합니다.
-    public void mailSend(String setFrom, String toMail, String title, String content) {
-        MimeMessage message = mailSender.createMimeMessage();//JavaMailSender 객체를 사용하여 MimeMessage 객체를 생성
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message,true,"utf-8");//이메일 메시지와 관련된 설정을 수행합니다.
-            // true를 전달하여 multipart 형식의 메시지를 지원하고, "utf-8"을 전달하여 문자 인코딩을 설정
-            helper.setFrom(setFrom);//이메일의 발신자 주소 설정
-            helper.setTo(toMail);//이메일의 수신자 주소 설정
-            helper.setSubject(title);//이메일의 제목을 설정
-            helper.setText(content,true);//이메일의 내용 설정 두 번째 매개 변수에 true를 설정하여 html 설정으로한다.
-            mailSender.send(message);
-        } catch (MessagingException e) {//이메일 서버에 연결할 수 없거나, 잘못된 이메일 주소를 사용하거나, 인증 오류가 발생하는 등 오류
-            // 이러한 경우 MessagingException이 발생
-            e.printStackTrace();//e.printStackTrace()는 예외를 기본 오류 스트림에 출력하는 메서드
+            makeRandomNumber();
+            String setFrom = "nowead814@gmail.com";
+            String title = "Woori Arte 회원 가입 인증 이메일 입니다.";
+            String content = "Woori Arte<br><br>인증 번호는 " + authNumber + "입니다.<br>";
+            mailSend(setFrom, email, title, content);
+            return Integer.toString(authNumber);
+        } catch (MessagingException e) {
+            log.error("이메일 전송 실패: {}", e.getMessage());
+            throw new RuntimeException("이메일 전송 실패", e);
         }
-        redisUtil.setDataExpire(Integer.toString(authNumber),toMail,60*3L);
     }
 
+    /**
+     * 이메일 전송 및 Redis에 인증번호, 이메일 저장
+     * @param setFrom 발신자 이메일 주소
+     * @param toMail 수신자 이메일 주소
+     * @param title 이메일 제목
+     * @param content 이메일 내용
+     * @throws MessagingException 이메일 전송 중 오류가 발생할 경우
+     */
+    public void mailSend(String setFrom, String toMail, String title, String content) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
+        helper.setFrom(setFrom);
+        helper.setTo(toMail);
+        helper.setSubject(title);
+        helper.setText(content, true);
+        mailSender.send(message);
+        redisUtil.setDataExpire(Integer.toString(authNumber), toMail, 60 * 3L); // 인증번호를 Redis에 3분간 저장
+    }
+
+    /**
+     * 랜덤 6자리 인증번호를 생성
+     */
+    private void makeRandomNumber() {
+        Random r = new Random();
+        StringBuilder randomNumber = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            randomNumber.append(r.nextInt(10));
+        }
+        authNumber = Integer.parseInt(randomNumber.toString());
+    }
+
+    /**
+     * 티켓 내용 생성 및 전송
+     * @param email 수신자 이메일 주소
+     * @param ticketNo 티켓 번호
+     * @param exhibitName 전시 이름
+     * @param ticketAmount 티켓 수량
+     * @param exhibitTime 전시 시간
+     */
     public void ticketEmail(String email, String ticketNo, String exhibitName, Long ticketAmount, String exhibitTime) {
-
-        String setFrom = "nowead814@gmail.com"; // 발신자 이메일 주소
-        String toMail = email; // 수신자 이메일 주소
-        String title = "Woori Arte 전시 티켓 구매가 완료되었습니다."; // 이메일 제목
-        String content =
-                "<h1>Woori Arte 전시 티켓 구매 확인</h1>" + // 이메일 내용 시작
-                        "<br><br>" +
-                        "안녕하세요, Woori Arte입니다. 귀하의 전시 티켓 구매가 성공적으로 완료되었습니다." +
-                        "<br><br>" +
-                        "구매하신 티켓 정보는 다음과 같습니다." +
-                        "<br><br>" +
-                        "<b>전시 이름:</b> " + exhibitName + "<br>" + // 전시 이름 파라미터 삽입
-                        "<b>티켓 번호:</b> " + ticketNo + "<br>" + // 티켓 번호 파라미터 삽입
-                        "<b>구매 티켓 수량:</b> " + ticketAmount.toString() + "장<br>" + // 티켓 금액 파라미터 삽입
-                        "<b>전시 시간:</b> " + exhibitTime + "<br><br>" + // 전시 시간 파라미터 삽입
-                        "다시 한번 Woori Arte 전시에 관심을 가져주셔서 감사드립니다." +
-                        "<br><br>" +
-                        "Woori Arte"; // 이메일 내용 마무리
-
-        ticketEmailSend(setFrom, toMail, title, content);
-    // 메일 발송 메소드 호출
-    }
-
-    public void ticketEmailSend(String setFrom, String toMail, String title, String content) {
-        MimeMessage message = mailSender.createMimeMessage();//JavaMailSender 객체를 사용하여 MimeMessage 객체를 생성
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message,true,"utf-8");//이메일 메시지와 관련된 설정을 수행합니다.
-            // true를 전달하여 multipart 형식의 메시지를 지원하고, "utf-8"을 전달하여 문자 인코딩을 설정
-            helper.setFrom(setFrom);//이메일의 발신자 주소 설정
-            helper.setTo(toMail);//이메일의 수신자 주소 설정
-            helper.setSubject(title);//이메일의 제목을 설정
-            helper.setText(content,true);//이메일의 내용 설정 두 번째 매개 변수에 true를 설정하여 html 설정으로한다.
-            mailSender.send(message);
-        } catch (MessagingException e) {//이메일 서버에 연결할 수 없거나, 잘못된 이메일 주소를 사용하거나, 인증 오류가 발생하는 등 오류
-            // 이러한 경우 MessagingException이 발생
-            e.printStackTrace();//e.printStackTrace()는 예외를 기본 오류 스트림에 출력하는 메서드
+            String setFrom = "nowead814@gmail.com";
+            String title = "Woori Arte 전시 티켓 구매가 완료되었습니다.";
+            String content = "<h1>Woori Arte 전시 티켓 구매 확인</h1><br><br>" +
+                    "안녕하세요, Woori Arte입니다. 귀하의 전시 티켓 구매가 성공적으로 완료되었습니다.<br><br>" +
+                    "구매하신 티켓 정보는 다음과 같습니다.<br><br>" +
+                    "<b>전시 이름:</b> " + exhibitName + "<br>" +
+                    "<b>티켓 번호:</b> " + ticketNo + "<br>" +
+                    "<b>구매 티켓 수량:</b> " + ticketAmount + "장<br>" +
+                    "<b>전시 시간:</b> " + exhibitTime + "<br><br>" +
+                    "다시 한번 Woori Arte 전시에 관심을 가져주셔서 감사드립니다.<br><br>Woori Arte";
+            mailSend(setFrom, email, title, content);
+        } catch (MessagingException e) {
+            log.error("티켓 이메일 전송 실패: {}", e.getMessage());
+            throw new RuntimeException("티켓 이메일 전송 실패", e);
         }
     }
-
-
 }

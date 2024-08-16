@@ -3,38 +3,28 @@ package com.fisa.wooriarte.admin.controller;
 import com.fisa.wooriarte.admin.dto.AdminDto;
 import com.fisa.wooriarte.admin.service.AdminService;
 import com.fisa.wooriarte.jwt.JwtToken;
-import com.fisa.wooriarte.matching.domain.Matching;
-import com.fisa.wooriarte.projectItem.domain.ProjectItem;
 import com.fisa.wooriarte.projectItem.dto.ProjectItemDto;
-import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
 import com.fisa.wooriarte.projectItem.service.ProjectItemService;
-import com.fisa.wooriarte.projectmanager.controller.ProjectManagerController;
-import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import com.fisa.wooriarte.spaceItem.dto.SpaceItemDto;
 import com.fisa.wooriarte.spaceItem.service.SpaceItemService;
-import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
-import com.fisa.wooriarte.spacerental.service.SpaceRentalService;
 import com.fisa.wooriarte.user.dto.request.UserLoginRequestDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
+@Slf4j
 public class AdminController {
 
     private final AdminService adminService;
     private final ProjectItemService projectItemService;
     private final SpaceItemService spaceItemService;
-    private final Logger log = LoggerFactory.getLogger(ProjectManagerController.class);
 
     @Autowired
     public AdminController(AdminService adminService, ProjectItemService projectItemService, SpaceItemService spaceItemService) {
@@ -43,94 +33,101 @@ public class AdminController {
         this.spaceItemService = spaceItemService;
     }
 
-    @GetMapping("/health-check")
-    public ResponseEntity<?> healthCheck() {
-        return ResponseEntity.ok().build();
-    }
-
+    // 관리자 추가
     @PostMapping("/add-admin")
-    public ResponseEntity<?> addAdmin(@RequestBody AdminDto adminDto) {
+    public ResponseEntity<String> addAdmin(@RequestBody AdminDto adminDto) {
         try {
-            log.info("Adding a new admin");
+            log.info("관리자 추가 시도");
             adminService.addAdmin(adminDto);
-            return ResponseEntity.ok(Map.of("message", "Admin added successfully"));
+            return ResponseEntity.ok("관리자 추가 성공");
         } catch (Exception e) {
-            log.error("Exception occurred while adding an admin: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message","Failed to add admin"));
+            log.error("관리자 추가 중 예외 발생: ", e);
+            return ResponseEntity.internalServerError().body("관리자 추가 실패");
         }
     }
 
+    // JWT를 이용한 관리자 로그인
     @PostMapping("/jwtlogin")
-    public JwtToken login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
+    public ResponseEntity<JwtToken> login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         try {
-            log.info("Trying to login with JWT");
-            String id = userLoginRequestDto.getId();
-            String pwd = userLoginRequestDto.getPwd();
-            return adminService.login(id, pwd);
+            log.info("JWT를 이용한 관리자 로그인 시도");
+            JwtToken token = adminService.login(userLoginRequestDto.getId(), userLoginRequestDto.getPwd());
+            return ResponseEntity.ok(token);
         } catch (Exception e) {
-            log.error("Exception occurred while logging in with JWT: ", e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Login failed due to an exception.");
+            log.error("JWT 로그인 중 예외 발생: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
+    // 승인 대기 중인 아이템 관리
     @GetMapping("/manage-item-approval")
-    public ResponseEntity<?> manageItemApproval() {
+    public ResponseEntity<Map<String, List<?>>> manageItemApproval() {
         try {
-            log.info("Managing item approval");
+            log.info("아이템 승인 관리 시도");
             List<ProjectItemDto> projectItemList = projectItemService.getUnapprovedItems();
             List<SpaceItemDto> spaceItemList = spaceItemService.getUnapprovedItems();
             return ResponseEntity.ok(Map.of("projectItems", projectItemList, "spaceItems", spaceItemList));
         } catch (Exception e) {
-            log.error("Exception occurred while managing item approval: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to manage item approval"));
+            log.error("아이템 승인 관리 중 예외 발생: ", e);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
+    // 프로젝트 아이템 승인
     @PostMapping("/approve-project-item/{project-item-id}")
-    public ResponseEntity<?> projectItemApproval(@PathVariable("project-item-id") Long projectItemId) {
+    public ResponseEntity<String> projectItemApproval(@PathVariable("project-item-id") Long projectItemId) {
         try {
-            log.info("Approving project item with id: {}", projectItemId);
+            log.info("프로젝트 아이템 승인 시도 - ID: {}", projectItemId);
             projectItemService.approveItem(projectItemId);
-            return ResponseEntity.ok(Map.of("message", "Success to approve project item"));
+            return ResponseEntity.ok("프로젝트 아이템 승인 성공");
         } catch (Exception e) {
-            log.error("Exception occurred while approving project item: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to approve project item"));
+            log.error("프로젝트 아이템 승인 중 예외 발생 - ID: {}", projectItemId, e);
+            return ResponseEntity.internalServerError().body("프로젝트 아이템 승인 실패");
         }
     }
 
+    // 공간 아이템 승인
     @PostMapping("/approve-space-item/{space-item-id}")
-    public ResponseEntity<?> spaceItemApproval(@PathVariable("space-item-id") Long spaceItemId) {
+    public ResponseEntity<String> spaceItemApproval(@PathVariable("space-item-id") Long spaceItemId) {
         try {
-            log.info("Approving space item with ID: {}", spaceItemId);
+            log.info("공간 아이템 승인 시도 - ID: {}", spaceItemId);
             spaceItemService.approveItem(spaceItemId);
-            return ResponseEntity.ok(Map.of("message", "Success to approve space item"));
+            return ResponseEntity.ok("공간 아이템 승인 성공");
         } catch (Exception e) {
-            log.error("Exception occurred while approving space item with ID: {}: ", spaceItemId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to approve space item"));
+            log.error("공간 아이템 승인 중 예외 발생 - ID: {}", spaceItemId, e);
+            return ResponseEntity.internalServerError().body("공간 아이템 승인 실패");
         }
     }
 
+    // 프로젝트 아이템 거절
     @PostMapping("/refuse-project-item/{project-item-id}")
-    public ResponseEntity<?> refuseProjectItem(@PathVariable("project-item-id") Long projectItemId) {
+    public ResponseEntity<String> refuseProjectItem(@PathVariable("project-item-id") Long projectItemId) {
         try {
-            log.info("Refusing project item with ID: {}", projectItemId);
+            log.info("프로젝트 아이템 거절 시도 - ID: {}", projectItemId);
             projectItemService.refuseItem(projectItemId);
-            return ResponseEntity.ok(Map.of("message", "Success to refuse project item"));
+            return ResponseEntity.ok("프로젝트 아이템 거절 성공");
         } catch (Exception e) {
-            log.error("Exception occurred while refusing project item with ID: {}: ", projectItemId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to refuse project item"));
+            log.error("프로젝트 아이템 거절 중 예외 발생 - ID: {}", projectItemId, e);
+            return ResponseEntity.internalServerError().body("프로젝트 아이템 거절 실패");
         }
     }
 
+    // 공간 아이템 거절
     @PostMapping("/refuse-space-item/{space-item-id}")
-    public ResponseEntity<?> refuseSpaceItem(@PathVariable("space-item-id") Long spaceItemId) {
+    public ResponseEntity<String> refuseSpaceItem(@PathVariable("space-item-id") Long spaceItemId) {
         try {
-            log.info("Refusing space item with ID: {}", spaceItemId);
+            log.info("공간 아이템 거절 시도 - ID: {}", spaceItemId);
             spaceItemService.refuseItem(spaceItemId);
-            return ResponseEntity.ok(Map.of("message", "Success to refuse space item"));
+            return ResponseEntity.ok("공간 아이템 거절 성공");
         } catch (Exception e) {
-            log.error("Exception occurred while refusing space item with ID: {}: ", spaceItemId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to refuse space item"));
+            log.error("공간 아이템 거절 중 예외 발생 - ID: {}", spaceItemId, e);
+            return ResponseEntity.internalServerError().body("공간 아이템 거절 실패");
         }
+    }
+
+    // 헬스 체크 엔드포인트
+    @GetMapping("/health-check")
+    public ResponseEntity<Void> healthCheck() {
+        return ResponseEntity.ok().build();
     }
 }

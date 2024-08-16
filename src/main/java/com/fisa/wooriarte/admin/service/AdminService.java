@@ -5,20 +5,13 @@ import com.fisa.wooriarte.admin.dto.AdminDto;
 import com.fisa.wooriarte.admin.repository.AdminRepository;
 import com.fisa.wooriarte.jwt.JwtToken;
 import com.fisa.wooriarte.jwt.JwtTokenProvider;
-import com.fisa.wooriarte.projectItem.domain.ProjectItem;
-import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
-import com.fisa.wooriarte.spaceItem.domain.SpaceItem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class AdminService {
@@ -35,34 +28,36 @@ public class AdminService {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.passwordEncoder = passwordEncoder;
     }
-    
+
+    /**
+     * 새로운 관리자 계정 추가
+     * @param adminDto 관리자 정보 DTO
+     * @return 추가 성공 여부
+     */
     @Transactional
     public Boolean addAdmin(AdminDto adminDto) {
-
         Admin admin = adminDto.toEntity();
         admin.addRole("ADMIN");
         admin.setPwd(passwordEncoder.encode(adminDto.getPwd()));
         adminRepository.save(admin);
-
         return true;
     }
 
+    /**
+     * 관리자 로그인 및 JWT 토큰을 생성
+     * @param id 관리자 아이디
+     * @param pwd 관리자 비밀번호
+     * @return 생성된 JWT 토큰
+     */
     public JwtToken login(String id, String pwd) {
-        // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-        // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, pwd);
-        // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
-        // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
-
-        Authentication authentication = null;
         try {
-            authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, pwd);
+            // 사용자 인증
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            // 인증 정보를 기반으로 JWT 토큰 생성
+            return jwtTokenProvider.generateToken(authentication);
         } catch (Exception e) {
-            e.printStackTrace(); // 예외를 로깅
-            throw e; // 필요한 경우, 예외를 다시 던져 처리할 수 있습니다.
+            throw e;
         }
-        // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
-        return jwtToken;
     }
 }

@@ -5,7 +5,6 @@ import com.fisa.wooriarte.jwt.JwtTokenProvider;
 import com.fisa.wooriarte.projectmanager.dto.ProjectManagerDto;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
-import com.fisa.wooriarte.util.encryption.Encryption;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,7 +27,7 @@ public class ProjectManagerService {
 
     @Autowired
     public ProjectManagerService(ProjectManagerRepository projectManagerRepository, AuthenticationManagerBuilder authenticationManagerBuilder,
-                                 JwtTokenProvider jwtTokenProvider, Encryption encryption, PasswordEncoder passwordEncoder) {
+                                 JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
         this.projectManagerRepository = projectManagerRepository;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.jwtTokenProvider = jwtTokenProvider;

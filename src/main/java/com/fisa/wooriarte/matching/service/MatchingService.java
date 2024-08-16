@@ -22,32 +22,46 @@ import java.util.stream.Stream;
 
 @Service
 public class MatchingService {
+
     private final MatchingRepository matchingRepository;
     private final ProjectItemRepository projectItemRepository;
     private final SpaceItemRepository spaceItemRepository;
 
     @Autowired
-    public MatchingService(MatchingRepository matchingRepository,ProjectItemRepository projectItemRepository, SpaceItemRepository spaceItemRepository) {
+    public MatchingService(MatchingRepository matchingRepository, ProjectItemRepository projectItemRepository, SpaceItemRepository spaceItemRepository) {
         this.matchingRepository = matchingRepository;
-        this.spaceItemRepository = spaceItemRepository;
         this.projectItemRepository = projectItemRepository;
+        this.spaceItemRepository = spaceItemRepository;
     }
 
-    // 모든 매칭 조회
+    /**
+     * 모든 매칭 조회
+     * @return 모든 매칭의 DTO 리스트
+     */
     public List<MatchingDto> getAllMatching() {
-        return matchingRepository.findAll().stream().map(MatchingDto::fromEntity).collect(Collectors.toList());
+        return matchingRepository.findAll()
+                .stream()
+                .map(MatchingDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    //공간 대여자가 매칭 신청
+    /**
+     * 임대사업자가 매칭 신청
+     * @param spaceItemId 공간 아이템 ID
+     * @param projectItemId 프로젝트 아이템 ID
+     * @return 생성된 매칭의 DTO
+     */
     @Transactional
     public MatchingDto addMatchingBySpaceRental(Long spaceItemId, Long projectItemId) {
+        SpaceItem spaceItem = spaceItemRepository.findById(spaceItemId)
+                .orElseThrow(() -> new NoSuchElementException("해당 공간 아이템을 찾을 수 없습니다."));
+        ProjectItem projectItem = projectItemRepository.findById(projectItemId)
+                .orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템을 찾을 수 없습니다."));
 
-        SpaceItem spaceItem = spaceItemRepository.findById(spaceItemId).orElseThrow(() -> new NoSuchElementException("해당 공간 아이템 없음"));
-        ProjectItem projectItem = projectItemRepository.findById(projectItemId).orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템 없음"));
-
-        if(matchingRepository.findByProjectItemAndSpaceItem(projectItem, spaceItem).isPresent()) {
-                throw new DataIntegrityViolationException("해당 매칭이 이미 존재합니다");
+        if (matchingRepository.findByProjectItemAndSpaceItem(projectItem, spaceItem).isPresent()) {
+            throw new DataIntegrityViolationException("해당 매칭이 이미 존재합니다.");
         }
+
         Matching matching = Matching.builder()
                 .matchingStatus(MatchingStatus.REQUESTWAITING)
                 .spaceItem(spaceItem)
@@ -56,27 +70,26 @@ public class MatchingService {
                 .receiver(projectItem.getProjectManager().getProjectManagerId())
                 .senderType(SenderType.SPACERENTAL)
                 .build();
+
         matchingRepository.save(matching);
         return MatchingDto.fromEntity(matching);
     }
 
-    //프로젝트 매니저가 매칭 신청
     /**
-     * 프로젝트 매니저가 작가가 선택한 공간과의 매칭 -
-     *  - 작가가 보유하고 있는 프로젝트를 작가가 선택한 공간 id (=공간대여자의 item id)
-     * @param projectItemId : 작가가 보유하고 있는 프로젝트 id
-     * @param spaceItemId : 작가가 선택한 공간 id
-     * @return 작가가 선택한 공간 id 와 공간대여자가 가지고 있는 item id 가 일치하여 해당 공간에 대한 객체가 반환
+     * 프로젝트 매니저가 매칭 신청
+     * @param projectItemId 프로젝트 아이템 ID
+     * @param spaceItemId 공간 아이템 ID
+     * @return 생성된 매칭의 DTO
      */
     @Transactional
     public MatchingDto addMatchingByProjectManager(Long projectItemId, Long spaceItemId) {
+        SpaceItem spaceItem = spaceItemRepository.findById(spaceItemId)
+                .orElseThrow(() -> new NoSuchElementException("해당 공간 아이템을 찾을 수 없습니다."));
+        ProjectItem projectItem = projectItemRepository.findById(projectItemId)
+                .orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템을 찾을 수 없습니다."));
 
-        SpaceItem spaceItem = spaceItemRepository.findById(spaceItemId).orElseThrow(() -> new NoSuchElementException("해당 공간 아이템 없음"));
-        ProjectItem projectItem = projectItemRepository.findById(projectItemId).orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템 없음"));
-
-        // 신청하려는 작가 item 과 공간대여자의 item이 이미 매칭이 된 대상인가 (=매칭테이블에 있는가)
-        if(matchingRepository.findByProjectItemAndSpaceItem(projectItem, spaceItem).isPresent()) {
-            throw new DataIntegrityViolationException("해당 매칭이 이미 존재합니다");
+        if (matchingRepository.findByProjectItemAndSpaceItem(projectItem, spaceItem).isPresent()) {
+            throw new DataIntegrityViolationException("해당 매칭이 이미 존재합니다.");
         }
 
         Matching matching = Matching.builder()
@@ -92,54 +105,108 @@ public class MatchingService {
         return MatchingDto.fromEntity(matching);
     }
 
+    /**
+     * 특정 매칭을 조회
+     * @param matchingId 매칭 ID
+     * @return 매칭의 DTO
+     */
     public MatchingDto getMatching(Long matchingId) {
-        Matching matching = matchingRepository.findById(matchingId).orElseThrow(() -> new NoSuchElementException("해당 매칭 없음"));
+        Matching matching = matchingRepository.findById(matchingId)
+                .orElseThrow(() -> new NoSuchElementException("해당 매칭을 찾을 수 없습니다."));
         return MatchingDto.fromEntity(matching);
     }
 
-    // 매칭 진행 상태 변경
+    /**
+     * 매칭 상태 변경
+     * @param matchingId 매칭 ID
+     * @param matchingStatus 변경할 매칭 상태
+     * @return 상태 변경 성공 여부
+     */
+    @Transactional
     public boolean updateMatching(Long matchingId, MatchingStatus matchingStatus) {
-        Matching matching = matchingRepository.findById(matchingId).orElseThrow(() -> new NoSuchElementException("해당 매칭 없음"));
+        Matching matching = matchingRepository.findById(matchingId)
+                .orElseThrow(() -> new NoSuchElementException("해당 매칭을 찾을 수 없습니다."));
+
         matching.setMatchingStatus(matchingStatus);
         matchingRepository.save(matching);
         return true;
     }
 
-    // 공간 대여자가 보낸 매칭 조회
+    /**
+     * 임대사업자가 보낸 대기 중인 매칭 조회
+     * @param spaceRentalId 공간 대여자 ID
+     * @return 매칭 응답 DTO 리스트
+     */
     public List<MatchingResponseDto> findSpaceRentalWaitingMatching(Long spaceRentalId) {
-        List<Matching> list = matchingRepository.findBySenderAndMatchingStatusAndSenderType(spaceRentalId, MatchingStatus.REQUESTWAITING, SenderType.SPACERENTAL);
-        return list.stream().map(MatchingResponseDto::fromEntityBySpaceRental).collect(Collectors.toList());
+        List<Matching> list = matchingRepository.findBySenderAndMatchingStatusAndSenderType(
+                spaceRentalId, MatchingStatus.REQUESTWAITING, SenderType.SPACERENTAL);
+        return list.stream()
+                .map(MatchingResponseDto::fromEntityBySpaceRental)
+                .collect(Collectors.toList());
     }
 
-    // 공간 대여자가 받은 매칭 조회
+    /**
+     * 임대사업자가 받은 대기 중인 매칭 조회
+     * @param spaceRentalId 공간 대여자 ID
+     * @return 매칭 응답 DTO 리스트
+     */
     public List<MatchingResponseDto> findSpaceRentalOfferMatching(Long spaceRentalId) {
-        List<Matching> list = matchingRepository.findByReceiverAndMatchingStatusAndSenderType(spaceRentalId, MatchingStatus.REQUESTWAITING, SenderType.PROJECTMANAGER);
-        return list.stream().map(MatchingResponseDto::fromEntityBySpaceRental).collect(Collectors.toList());
+        List<Matching> list = matchingRepository.findByReceiverAndMatchingStatusAndSenderType(
+                spaceRentalId, MatchingStatus.REQUESTWAITING, SenderType.PROJECTMANAGER);
+        return list.stream()
+                .map(MatchingResponseDto::fromEntityBySpaceRental)
+                .collect(Collectors.toList());
     }
 
-    // 공간 대여자의 성사된 매칭 조회
+    /**
+     * 임대사업자의 성사된 매칭을 조회
+     * @param spaceRentalId 공간 대여자 ID
+     * @return 매칭 응답 DTO 리스트
+     */
     public List<MatchingResponseDto> findSpaceRentalSuccessMatching(Long spaceRentalId) {
         List<Matching> senderList = matchingRepository.findSuccessMatchingSenderSpaceRental(spaceRentalId);
         List<Matching> receiverList = matchingRepository.findSuccessMatchingReceiverSpaceRental(spaceRentalId);
-        return Stream.concat(senderList.stream(), receiverList.stream()).map(MatchingResponseDto::fromEntityBySpaceRental).collect(Collectors.toList());
+        return Stream.concat(senderList.stream(), receiverList.stream())
+                .map(MatchingResponseDto::fromEntityBySpaceRental)
+                .collect(Collectors.toList());
     }
 
-    // 프로젝트 매니저가 보낸 매칭 조회
+    /**
+     * 프로젝트 매니저가 보낸 대기 중인 매칭 조회
+     * @param projectManagerId 프로젝트 매니저 ID
+     * @return 매칭 응답 DTO 리스트
+     */
     public List<MatchingResponseDto> findProjectManagerWaitingMatching(Long projectManagerId) {
-        List<Matching> list = matchingRepository.findBySenderAndMatchingStatusAndSenderType(projectManagerId, MatchingStatus.REQUESTWAITING, SenderType.PROJECTMANAGER);
-        return list.stream().map(MatchingResponseDto::fromEntityByProjectManager).collect(Collectors.toList());
+        List<Matching> list = matchingRepository.findBySenderAndMatchingStatusAndSenderType(
+                projectManagerId, MatchingStatus.REQUESTWAITING, SenderType.PROJECTMANAGER);
+        return list.stream()
+                .map(MatchingResponseDto::fromEntityByProjectManager)
+                .collect(Collectors.toList());
     }
 
-    // 프로젝트 매니저가 받은 매칭
+    /**
+     * 프로젝트 매니저가 받은 대기 중인 매칭 조회
+     * @param projectManagerId 프로젝트 매니저 ID
+     * @return 매칭 응답 DTO 리스트
+     */
     public List<MatchingResponseDto> findProjectManagerOfferMatching(Long projectManagerId) {
-        List<Matching> list = matchingRepository.findByReceiverAndMatchingStatusAndSenderType(projectManagerId, MatchingStatus.REQUESTWAITING, SenderType.SPACERENTAL);
-        return list.stream().map(MatchingResponseDto::fromEntityByProjectManager).collect(Collectors.toList());
+        List<Matching> list = matchingRepository.findByReceiverAndMatchingStatusAndSenderType(
+                projectManagerId, MatchingStatus.REQUESTWAITING, SenderType.SPACERENTAL);
+        return list.stream()
+                .map(MatchingResponseDto::fromEntityByProjectManager)
+                .collect(Collectors.toList());
     }
 
-    //프로젝트 매니저의 성사된 매칭
+    /**
+     * 프로젝트 매니저의 성사된 매칭 조회
+     * @param projectManagerId 프로젝트 매니저 ID
+     * @return 매칭 응답 DTO 리스트
+     */
     public List<MatchingResponseDto> findProjectManagerSuccessMatching(Long projectManagerId) {
         List<Matching> senderList = matchingRepository.findSuccessMatchingSenderProjectManager(projectManagerId);
         List<Matching> receiverList = matchingRepository.findSuccessMatchingReceiverProjectManager(projectManagerId);
-        return Stream.concat(senderList.stream(), receiverList.stream()).map(MatchingResponseDto::fromEntityByProjectManager).collect(Collectors.toList());
+        return Stream.concat(senderList.stream(), receiverList.stream())
+                .map(MatchingResponseDto::fromEntityByProjectManager)
+                .collect(Collectors.toList());
     }
 }
