@@ -49,7 +49,7 @@ public class JwtTokenProvider {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    // Member 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
+    // AccessToken과 RefreshToken을 생성
     public JwtToken generateToken(Authentication authentication) {
         // 사용자 id 가져오기
         CustomUserDetailsImpl customUserDetails = (CustomUserDetailsImpl)authentication.getPrincipal();
@@ -74,10 +74,12 @@ public class JwtTokenProvider {
                 .compact();
 
         // Refresh Token 생성
+        Date refreshTokenExpiresIn = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+                .setSubject(authentication.getName())  // 추가 가능 (선택사항)
                 .claim("userId", id)
                 .claim("entityId", entityId)
+                .setExpiration(refreshTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
@@ -93,7 +95,7 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
+    // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼냄
     public Authentication getAuthentication(String accessToken) {
         // Jwt 토큰 복호화
         Claims claims = parseClaims(accessToken);
@@ -107,8 +109,6 @@ public class JwtTokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        // UserDetails 객체를 만들어서 Authentication return
-        // UserDetails: interface, User: UserDetails를 구현한 class
         UserDetails principal = new User(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
@@ -134,7 +134,7 @@ public class JwtTokenProvider {
         return (expiration.getTime() - now);
     }
 
-    // 토큰 정보를 검증하는 메서드
+    // 토큰 정보 검증 메서드
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()

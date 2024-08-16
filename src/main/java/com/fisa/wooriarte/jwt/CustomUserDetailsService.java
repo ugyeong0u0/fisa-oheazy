@@ -8,7 +8,6 @@ import com.fisa.wooriarte.spacerental.domain.SpaceRental;
 import com.fisa.wooriarte.spacerental.repository.SpaceRentalRepository;
 import com.fisa.wooriarte.user.domain.User;
 import com.fisa.wooriarte.user.repository.UserRepository;
-import com.fisa.wooriarte.util.encryption.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     public CustomUserDetailsService( UserRepository userRepository,
             ProjectManagerRepository projectManagerRepository,
-            SpaceRentalRepository spaceRentalRepository, AdminRepository adminRepository, Encryption encryption) {
+            SpaceRentalRepository spaceRentalRepository, AdminRepository adminRepository) {
         this.userRepository = userRepository;
         this.projectManagerRepository = projectManagerRepository;
         this.spaceRentalRepository = spaceRentalRepository;

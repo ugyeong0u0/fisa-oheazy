@@ -7,19 +7,19 @@ import com.fisa.wooriarte.projectItem.dto.ProjectItemResponseDto;
 import com.fisa.wooriarte.projectItem.repository.ProjectItemRepository;
 import com.fisa.wooriarte.projectmanager.domain.ProjectManager;
 import com.fisa.wooriarte.projectmanager.repository.ProjectManagerRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ProjectItemService {
+
     private final ProjectItemRepository projectItemRepository;
     private final ProjectManagerRepository projectManagerRepository;
 
@@ -29,97 +29,141 @@ public class ProjectItemService {
         this.projectManagerRepository = projectManagerRepository;
     }
 
-    // 프로젝트 추가
+    /**
+     * 프로젝트 아이템을 추가
+     * @param projectItemDTO 추가할 프로젝트 아이템 정보
+     * @return 추가된 프로젝트 아이템의 ID
+     */
     @Transactional
-    public Long addProjectItem(ProjectItemDto projectItemDTO){
-        System.out.println("addProjectItem");
+    public Long addProjectItem(ProjectItemDto projectItemDTO) {
         ProjectManager projectManager = projectManagerRepository.findById(projectItemDTO.getProjectManagerId())
-                .orElseThrow(() -> new NoSuchElementException("No Project Manager"));
+                .orElseThrow(() -> new NoSuchElementException("해당 프로젝트 관리자를 찾을 수 없습니다."));
         ProjectItem projectItem = projectItemDTO.toEntity(projectManager);
         projectItemRepository.save(projectItem);
         return projectItem.getProjectItemId();
     }
 
-    // 프로젝트 아이템 전체 조회(삭제된 아이템 제외, 승인O)
+    /**
+     * 승인된 모든 프로젝트 아이템 조회
+     * @return 승인된 프로젝트 아이템 리스트
+     */
     public List<ProjectItemResponseDto> findApprovedAll() {
-        System.out.println("findAll");
-        List<ProjectItem> projectItemList = projectItemRepository.findAllByIsDeletedFalseAndApprovalTrue().orElseThrow(() -> new NoSuchElementException("No Project Item"));
-        return projectItemList.stream()
-                .map(ProjectItemResponseDto::fromEntity) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
-                .collect(Collectors.toList());
-    }
-
-    // 프로젝트 아이템 전체 조회(삭제된 아이템 제외, 승인X)
-    public List<ProjectItemResponseDto> findUnapprovedAll() {
-        System.out.println("findAll");
-        List<ProjectItem> projectItemList = projectItemRepository.findAllByIsDeletedFalseAndApprovalFalse().orElseThrow(() -> new NoSuchElementException("No Project Item"));
-        return projectItemList.stream()
-                .map(ProjectItemResponseDto::fromEntity) // 람다식을 사용하여 각 ProjectItem 엔티티를 ProjectItemDTO로 변환
-                .collect(Collectors.toList());
-    }
-
-    // 프로젝트 아이템 조회(삭제된 아이템 제외)
-    public ProjectItemDto findByProjectItemId(Long projectItemId) {
-        System.out.println("findByProjectItemId");
-        ProjectItem projectItem = projectItemRepository.findByProjectItemIdAndIsDeletedFalse(projectItemId)
-                .orElseThrow(() -> new NoSuchElementException("No Project Item found with ID: " + projectItemId));
-        return ProjectItemDto.fromEntity(projectItem);
-    }
-
-
-    public List<ProjectItemResponseDto> findByProjectManagerId(Long projectManagerId) {
-        // Optional<List<ProjectItem>>에서 List<ProjectItem>을 얻기 위해 orElseGet을 사용합니다.
-        // Optional이 비어있다면, 빈 리스트를 반환합니다.
-        ProjectManager projectManager = projectManagerRepository.findById(projectManagerId).orElseThrow(() -> new NoSuchElementException("No Project Manager"));
-        List<ProjectItem> projectItems = projectItemRepository.findByProjectManagerAndIsDeletedFalseAndApprovalTrue(projectManager)
-                .orElse(Collections.emptyList());
-
-        // Stream을 사용하여 각 ProjectItem을 ProjectItemDTO로 변환합니다.
+        List<ProjectItem> projectItems = projectItemRepository.findAllByIsDeletedFalseAndApprovalTrue()
+                .orElseThrow(() -> new NoSuchElementException("승인된 프로젝트 아이템이 없습니다."));
         return projectItems.stream()
                 .map(ProjectItemResponseDto::fromEntity)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public void updateProjectItem(Long projectItemId, ProjectItemDto projectItemDTO) {
-        System.out.println("updateProjectItem");
-        // 기존 엔티티를 찾고, 있으면 업데이트
-        projectItemRepository.findById(projectItemId).ifPresent(existingItem -> {
-            existingItem.updateProjectItem(projectItemDTO);
-            // 변경된 엔티티 저장
-            projectItemRepository.save(existingItem);
-        });
+    /**
+     * 승인되지 않은 모든 프로젝트 아이템 조회
+     * @return 승인되지 않은 프로젝트 아이템 리스트
+     */
+    public List<ProjectItemResponseDto> findUnapprovedAll() {
+        List<ProjectItem> projectItems = projectItemRepository.findAllByIsDeletedFalseAndApprovalFalse()
+                .orElseThrow(() -> new NoSuchElementException("승인되지 않은 프로젝트 아이템이 없습니다."));
+        return projectItems.stream()
+                .map(ProjectItemResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    @Transactional
-    public void deleteProjectItem(Long projectItemId) throws Exception {
+    /**
+     * 특정 ID의 프로젝트 아이템 조회
+     * @param projectItemId 조회할 프로젝트 아이템 ID
+     * @return 조회된 프로젝트 아이템 정보
+     */
+    public ProjectItemDto findByProjectItemId(Long projectItemId) {
         ProjectItem projectItem = projectItemRepository.findByProjectItemIdAndIsDeletedFalse(projectItemId)
-                .orElseThrow(() -> new Exception("projectItem id: " + projectItemId + " 는 존재하지 않습니다"));
+                .orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템을 찾을 수 없습니다."));
+        return ProjectItemDto.fromEntity(projectItem);
+    }
+
+    /**
+     * 특정 프로젝트 매니저 ID에 속한 프로젝트 아이템 조회
+     * @param projectManagerId 프로젝트 관리자 ID
+     * @return 해당 프로젝트 매니저에 속한 프로젝트 아이템 리스트
+     */
+    public List<ProjectItemResponseDto> findByProjectManagerId(Long projectManagerId) {
+        ProjectManager projectManager = projectManagerRepository.findById(projectManagerId)
+                .orElseThrow(() -> new NoSuchElementException("해당 프로젝트 관리자를 찾을 수 없습니다."));
+        List<ProjectItem> projectItems = projectItemRepository.findByProjectManagerAndIsDeletedFalseAndApprovalTrue(projectManager)
+                .orElse(Collections.emptyList());
+
+        return projectItems.stream()
+                .map(ProjectItemResponseDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 프로젝트 아이템 정보 수정
+     * @param projectItemId 수정할 프로젝트 아이템 ID
+     * @param projectItemDTO 수정할 프로젝트 아이템 정보
+     */
+    @Transactional
+    public void updateProjectItem(Long projectItemId, ProjectItemDto projectItemDTO) {
+        ProjectItem projectItem = projectItemRepository.findById(projectItemId)
+                .orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템을 찾을 수 없습니다."));
+        projectItem.updateProjectItem(projectItemDTO);
+        projectItemRepository.save(projectItem);
+    }
+
+    /**
+     * 프로젝트 아이템 삭제
+     * @param projectItemId 삭제할 프로젝트 아이템 ID
+     */
+    @Transactional
+    public void deleteProjectItem(Long projectItemId) {
+        ProjectItem projectItem = projectItemRepository.findByProjectItemIdAndIsDeletedFalse(projectItemId)
+                .orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템을 찾을 수 없습니다."));
         projectItem.setIsDeleted();
         projectItemRepository.save(projectItem);
     }
 
+    /**
+     * 필터 조건에 따라 프로젝트 아이템 조회
+     * @param startDate 시작 날짜
+     * @param endDate 종료 날짜
+     * @param city 도시 이름
+     * @return 필터 조건에 맞는 프로젝트 아이템 리스트
+     */
     public List<ProjectItemResponseDto> findByFilter(LocalDate startDate, LocalDate endDate, String city) {
-        List<ProjectItem> projectItems = projectItemRepository.findByEndDateGreaterThanEqualAndStartDateLessThanEqualAndCityAndIsDeletedFalseAndApprovalTrue(startDate, endDate, City.valueOf(city)).orElse(Collections.emptyList());
+        List<ProjectItem> projectItems = projectItemRepository.findByEndDateGreaterThanEqualAndStartDateLessThanEqualAndCityAndIsDeletedFalseAndApprovalTrue(startDate, endDate, City.valueOf(city))
+                .orElse(Collections.emptyList());
         return projectItems.stream().map(ProjectItemResponseDto::fromEntity).collect(Collectors.toList());
     }
+
+    /**
+     * 프로젝트 아이템 승인
+     * @param projectItemId 승인할 프로젝트 아이템 ID
+     * @return 승인 성공 여부
+     */
     @Transactional
     public boolean approveItem(Long projectItemId) {
-        ProjectItem projectItem = projectItemRepository.findById(projectItemId).orElseThrow(() -> new NoSuchElementException("No Project Item found with ID: " + projectItemId));
+        ProjectItem projectItem = projectItemRepository.findById(projectItemId)
+                .orElseThrow(() -> new NoSuchElementException("해당 프로젝트 아이템을 찾을 수 없습니다."));
         projectItem.setApproval();
         projectItemRepository.save(projectItem);
         return true;
     }
+
+    /**
+     * 프로젝트 아이템 거절 처리
+     * @param projectItemId 거절할 프로젝트 아이템 ID
+     * @return 거절 성공 여부
+     */
     @Transactional
     public boolean refuseItem(Long projectItemId) {
         projectItemRepository.deleteById(projectItemId);
         return true;
     }
 
+    /**
+     * 승인되지 않은 모든 프로젝트 아이템 조회
+     * @return 승인되지 않은 프로젝트 아이템 리스트
+     */
     public List<ProjectItemDto> getUnapprovedItems() {
         List<ProjectItem> projectItems = projectItemRepository.findAllByApprovalFalseAndIsDeletedFalse()
-                .orElseThrow(() -> new NoSuchElementException("No Project Item"));
-
+                .orElseThrow(() -> new NoSuchElementException("승인되지 않은 프로젝트 아이템이 없습니다."));
         return projectItems.stream()
                 .map(ProjectItemDto::fromEntity)
                 .collect(Collectors.toList());

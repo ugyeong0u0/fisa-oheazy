@@ -6,160 +6,171 @@ import com.fisa.wooriarte.email.dto.EmailFindIdDto;
 import com.fisa.wooriarte.email.dto.EmailSetPwdDto;
 import com.fisa.wooriarte.email.service.EmailService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/email")
+@Slf4j
 public class EmailController {
-    private final EmailService emailService;
-    private final Logger log = LoggerFactory.getLogger(EmailController.class);
 
-    public EmailController(EmailService mailService) {
-        this.emailService = mailService;
+    private final EmailService emailService;
+
+    public EmailController(EmailService emailService) {
+        this.emailService = emailService;
     }
 
+    // 이메일 인증 요청 처리
     @PostMapping("/email-send")
-    public ResponseEntity<String> emailSend(@RequestBody @Valid EmailFindIdDto emailDto){
-        System.out.println("이메일 인증 요청이 들어옴");
-        System.out.println("이메일 인증 이메일 :"+emailDto.getEmail());
+    public ResponseEntity<String> emailSend(@RequestBody @Valid EmailFindIdDto emailDto) {
+        log.info("이메일 인증 요청 - 이메일: {}", emailDto.getEmail());
         try {
             String result = emailService.joinEmail(emailDto.getEmail());
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            log.info("이메일 전송 성공 - 이메일: {}", emailDto.getEmail());
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
-            return new ResponseEntity<>("이메일 전송 실패: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            log.error("이메일 전송 실패 - 이메일: {}", emailDto.getEmail(), e);
+            return ResponseEntity.badRequest().body("이메일 전송 실패");
         }
     }
 
+    // 이메일 인증 번호 확인 처리
     @PostMapping("/email-auth-check")
-    public ResponseEntity<?> authCheck(@RequestBody @Valid EmailIdCheckDto emailPwdCheckDto){
+    public ResponseEntity<String> authCheck(@RequestBody @Valid EmailIdCheckDto emailPwdCheckDto) {
         try {
-            boolean Checked = emailService.checkAuthNum(emailPwdCheckDto.getEmail(), emailPwdCheckDto.getAuthNum());
-            if(Checked){
-                return ResponseEntity.ok(Map.of("message", "인증 성공"));
-            } else {
-                return ResponseEntity.badRequest().body(Map.of("error", "인증 번호 불일치"));
-            }
+            // 인증번호 확인
+            boolean isChecked = emailService.checkAuthNum(emailPwdCheckDto.getEmail(), emailPwdCheckDto.getAuthNum());
+            log.info("이메일 인증 {} - 이메일: {}", isChecked ? "성공" : "실패", emailPwdCheckDto.getEmail());
+            return isChecked ? ResponseEntity.ok("인증 성공") : ResponseEntity.badRequest().body("인증 번호 불일치");
         } catch (Exception e) {
-            // 일반적인 예외 처리
-            return new ResponseEntity<>(Map.of("error", "뭔가 잘못됐습니다: " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("이메일 인증 중 오류 발생 - 이메일: {}", emailPwdCheckDto.getEmail(), e);
+            return ResponseEntity.badRequest().body("인증 처리 중 오류 발생");
         }
     }
 
+    // 사용자 비밀번호 재설정용 이메일 인증
     @PostMapping("/users/email-send")
     public ResponseEntity<String> userEmailSend(@RequestBody @Valid EmailSetPwdDto emailDto) {
-        log.info("Email verification request received.");
-        log.info("Email for verification: {}", emailDto.getEmail());
+        log.info("사용자 이메일 인증 요청 - 이메일: {}", emailDto.getEmail());
         try {
+            // 사용자 ID 확인
             boolean isIdChecked = emailService.checkUserId(emailDto.getId());
             if (isIdChecked) {
                 String result = emailService.joinEmail(emailDto.getEmail());
-                log.info("Email sent successfully to: {}", emailDto.getEmail());
-                return ResponseEntity.ok(result); // Success response
+                log.info("이메일 전송 성공 - 이메일: {}", emailDto.getEmail());
+                return ResponseEntity.ok(result);
             } else {
-                log.error("User ID not found: {}", emailDto.getId());
-                return ResponseEntity.badRequest().body("User ID does not exist."); // User ID not found
+                log.warn("사용자 ID 확인 실패 - ID: {}", emailDto.getId());
+                return ResponseEntity.badRequest().body("존재하지 않는 사용자 ID입니다.");
             }
         } catch (Exception e) {
-            log.error("Email sending failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body("Email sending failed: " + e.getMessage()); // Failure response
+            log.error("이메일 전송 실패 - 이메일: {}", emailDto.getEmail(), e);
+            return ResponseEntity.badRequest().body("이메일 전송 실패");
         }
     }
 
+    // 사용자 비밀번호 재설정용 인증번호 확인
     @PostMapping("/users/email-auth-check")
-    public ResponseEntity<?> userAuthCheck(@RequestBody @Valid EmailPwdCheckDto emailPwdCheckDto){
+    public ResponseEntity<String> userAuthCheck(@RequestBody @Valid EmailPwdCheckDto emailPwdCheckDto) {
         try {
+            // 사용자 ID와 인증번호 확인
             boolean isIdChecked = emailService.checkUserId(emailPwdCheckDto.getId());
             boolean isAuthNumChecked = emailService.checkAuthNum(emailPwdCheckDto.getEmail(), emailPwdCheckDto.getAuthNum());
-            if(isIdChecked & isAuthNumChecked){
-                return ResponseEntity.ok(Map.of("message", "인증 성공"));
+            if (isIdChecked && isAuthNumChecked) {
+                log.info("사용자 인증 성공 - ID: {}", emailPwdCheckDto.getId());
+                return ResponseEntity.ok("인증 성공");
             } else {
-                return ResponseEntity.badRequest().body(Map.of("error", "입력 정보 불일치"));
+                log.warn("사용자 인증 실패 - ID: {}", emailPwdCheckDto.getId());
+                return ResponseEntity.badRequest().body("입력 정보 불일치");
             }
         } catch (Exception e) {
-            // 일반적인 예외 처리
-            return new ResponseEntity<>(Map.of("error", "에러 발생" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("사용자 인증 중 오류 발생 - ID: {}", emailPwdCheckDto.getId(), e);
+            return ResponseEntity.badRequest().body("인증 처리 중 오류 발생");
         }
     }
+
+    // 프로젝트 매니저 비밀번호 재설정용 이메일 인증
 
     @PostMapping("/project-managers/email-send")
     public ResponseEntity<String> projectManagerEmailSend(@RequestBody @Valid EmailSetPwdDto emailDto) {
-        log.info("Email verification request received.");
-        log.info("Email for verification: {}", emailDto.getEmail());
+        log.info("프로젝트 매니저 이메일 인증 요청 - 이메일: {}", emailDto.getEmail());
         try {
+            // 프로젝트 매니저 ID 확인
             boolean isIdChecked = emailService.checkProjectManagerId(emailDto.getId());
             if (isIdChecked) {
                 String result = emailService.joinEmail(emailDto.getEmail());
-                log.info("Email sent successfully to: {}", emailDto.getEmail());
-                return ResponseEntity.ok(result); // Success response
+                log.info("이메일 전송 성공 - 이메일: {}", emailDto.getEmail());
+                return ResponseEntity.ok(result);
             } else {
-                log.error("Project Manager ID not found: {}", emailDto.getId());
-                return ResponseEntity.badRequest().body("Project Manager ID does not exist."); // User ID not found
+                log.warn("프로젝트 매니저 ID 확인 실패 - ID: {}", emailDto.getId());
+                return ResponseEntity.badRequest().body("존재하지 않는 프로젝트 매니저 ID입니다.");
             }
         } catch (Exception e) {
-            log.error("Email sending failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body("Email sending failed: " + e.getMessage()); // Failure response
+            log.error("이메일 전송 실패 - 이메일: {}", emailDto.getEmail(), e);
+            return ResponseEntity.badRequest().body("이메일 전송 실패");
         }
     }
 
+    // 프로젝트 매니저 비밀번호 재설정용 인증번호 확인
     @PostMapping("/project-managers/email-auth-check")
-    public ResponseEntity<?> projectManagerAuthCheck(@RequestBody @Valid EmailPwdCheckDto emailPwdCheckDto){
+    public ResponseEntity<String> projectManagerAuthCheck(@RequestBody @Valid EmailPwdCheckDto emailPwdCheckDto) {
         try {
+            // 프로젝트 매니저 ID와 인증번호 확인
             boolean isIdChecked = emailService.checkProjectManagerId(emailPwdCheckDto.getId());
             boolean isAuthNumChecked = emailService.checkAuthNum(emailPwdCheckDto.getEmail(), emailPwdCheckDto.getAuthNum());
-            if(isIdChecked & isAuthNumChecked){
-                return ResponseEntity.ok(Map.of("message", "인증 성공"));
+            if (isIdChecked && isAuthNumChecked) {
+                log.info("프로젝트 매니저 인증 성공 - ID: {}", emailPwdCheckDto.getId());
+                return ResponseEntity.ok("인증 성공");
             } else {
-                return ResponseEntity.badRequest().body(Map.of("error", "입력 정보 불일치"));
+                log.warn("프로젝트 매니저 인증 실패 - ID: {}", emailPwdCheckDto.getId());
+                return ResponseEntity.badRequest().body("입력 정보 불일치");
             }
         } catch (Exception e) {
-            // 일반적인 예외 처리
-            return new ResponseEntity<>(Map.of("error", "에러 발생" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("프로젝트 매니저 인증 중 오류 발생 - ID: {}", emailPwdCheckDto.getId(), e);
+            return ResponseEntity.badRequest().body("인증 처리 중 오류 발생");
         }
     }
 
+    // 임대사업자 비밀번호 재설정용 이메일 인증
     @PostMapping("/space-rentals/email-send")
     public ResponseEntity<String> spaceRentalEmailSend(@RequestBody @Valid EmailSetPwdDto emailDto) {
-        log.info("Email verification request received.");
-        log.info("Email for verification: {}", emailDto.getEmail());
+        log.info("임대사업자 이메일 인증 요청 - 이메일: {}", emailDto.getEmail());
         try {
+            // 임대사업자 ID 확인
             boolean isIdChecked = emailService.checkSpaceRentalId(emailDto.getId());
             if (isIdChecked) {
                 String result = emailService.joinEmail(emailDto.getEmail());
-                log.info("Email sent successfully to: {}", emailDto.getEmail());
-                return ResponseEntity.ok(result); // Success response
+                log.info("이메일 전송 성공 - 이메일: {}", emailDto.getEmail());
+                return ResponseEntity.ok(result);
             } else {
-                log.error("Space Rental ID not found: {}", emailDto.getId());
-                return ResponseEntity.badRequest().body("Space Rental ID does not exist."); // User ID not found
+                log.warn("임대사업자 ID 확인 실패 - ID: {}", emailDto.getId());
+                return ResponseEntity.badRequest().body("존재하지 않는 임대사업자 ID입니다.");
             }
         } catch (Exception e) {
-            log.error("Email sending failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body("Email sending failed: " + e.getMessage()); // Failure response
+            log.error("이메일 전송 실패 - 이메일: {}", emailDto.getEmail(), e);
+            return ResponseEntity.badRequest().body("이메일 전송 실패");
         }
     }
 
+
+    // 임대사업자 비밀번호 재설정용 인증번호 확인
     @PostMapping("/space-rentals/email-auth-check")
-    public ResponseEntity<?> spaceRentalAuthCheck(@RequestBody @Valid EmailPwdCheckDto emailPwdCheckDto){
+    public ResponseEntity<String> spaceRentalAuthCheck(@RequestBody @Valid EmailPwdCheckDto emailPwdCheckDto) {
         try {
+            // 임대사업자 ID와 인증번호 확인
             boolean isIdChecked = emailService.checkSpaceRentalId(emailPwdCheckDto.getId());
             boolean isAuthNumChecked = emailService.checkAuthNum(emailPwdCheckDto.getEmail(), emailPwdCheckDto.getAuthNum());
-            if(isIdChecked & isAuthNumChecked){
-                return ResponseEntity.ok(Map.of("message", "인증 성공"));
+            if (isIdChecked && isAuthNumChecked) {
+                log.info("임대사업자 인증 성공 - ID: {}", emailPwdCheckDto.getId());
+                return ResponseEntity.ok("인증 성공");
             } else {
-                return ResponseEntity.badRequest().body(Map.of("error", "입력 정보 불일치"));
+                log.warn("임대사업자 인증 실패 - ID: {}", emailPwdCheckDto.getId());
+                return ResponseEntity.badRequest().body("입력 정보 불일치");
             }
         } catch (Exception e) {
-            // 일반적인 예외 처리
-            return new ResponseEntity<>(Map.of("error", "에러 발생" + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("임대사업자 인증 중 오류 발생 - ID: {}", emailPwdCheckDto.getId(), e);
+            return ResponseEntity.badRequest().body("인증 처리 중 오류 발생");
         }
     }
-
 }

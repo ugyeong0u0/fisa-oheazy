@@ -1,6 +1,5 @@
 package com.fisa.wooriarte.refund.controller;
 
-import com.fisa.wooriarte.projectmanager.controller.ProjectManagerController;
 import com.fisa.wooriarte.refund.dto.RefundDto;
 import com.fisa.wooriarte.refund.service.RefundService;
 import org.slf4j.Logger;
@@ -9,31 +8,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api/refund")
 public class RefundController {
 
     private final RefundService refundService;
-    private final Logger log = LoggerFactory.getLogger(ProjectManagerController.class);
+    private final Logger log = LoggerFactory.getLogger(RefundController.class);
+
     @Autowired
     public RefundController(RefundService refundService) {
         this.refundService = refundService;
     }
 
     @PostMapping("")
-    public ResponseEntity<?> refundTicket(@RequestBody RefundDto refundDto) {
+    public ResponseEntity<String> refundTicket(@RequestBody RefundDto refundDto) {
         try {
-            log.info("Trying to refund ticket");
-            if(refundService.addRefund(refundDto.getTicketId(), refundDto.getReason())) {
-                return ResponseEntity.ok(Map.of("message", "refund success"));
+            log.info("티켓 환불 시도 - 티켓 ID: {}", refundDto.getTicketId());
+            boolean refundSuccess = refundService.addRefund(refundDto.getTicketId(), refundDto.getReason());
+
+            if (refundSuccess) {
+                log.info("티켓 환불 성공 - 티켓 ID: {}", refundDto.getTicketId());
+                return ResponseEntity.ok("환불 성공");
             } else {
-                return ResponseEntity.badRequest().body(Map.of("message", "refund failed"));
+                log.warn("티켓 환불 실패 - 티켓 ID: {}", refundDto.getTicketId());
+                return ResponseEntity.badRequest().body("환불 실패");
             }
         } catch (Exception e) {
-            log.info("Exception occurred while refunding ticket {}", refundDto.getTicketId(), e);
-            return ResponseEntity.badRequest().body(Map.of("message", "refund fail by exception"));
+            log.error("티켓 환불 중 예외 발생 - 티켓 ID: {}", refundDto.getTicketId(), e);
+            return ResponseEntity.internalServerError().body("예외로 인한 환불 실패");
         }
     }
 }

@@ -16,13 +16,14 @@ import java.util.List;
 @Configuration
 public class RedisConfig {
 
-    @Value("${spring.data.redis.host}") // 이 줄을 추가하여 설정 값을 주입받습니다.
-    private List<String> clusterNodes; // 데이터 타입을 List<String>으로 변경합니다.
+    @Value("${spring.data.redis.host}")
+    private String host;
+    @Value("${spring.data.redis.port}")
+    private int port;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        RedisClusterConfiguration clusterConfiguration = new RedisClusterConfiguration(clusterNodes);
-        return new LettuceConnectionFactory(clusterConfiguration);
+        return new LettuceConnectionFactory(host, port);
     }
 
     @Bean

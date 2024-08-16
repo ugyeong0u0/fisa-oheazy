@@ -1,4 +1,4 @@
-package com.fisa.wooriarte.util.filter;
+package com.fisa.wooriarte.config;
 
 
 import org.springframework.context.annotation.Bean;
